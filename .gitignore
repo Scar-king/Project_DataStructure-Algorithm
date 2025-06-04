@@ -1,0 +1,21 @@
+# Ignore executable files
+*.exe
+
+# Ignore object files (if any get created)
+*.o
+*.obj
+
+# Ignore VSCode workspace settings (optional)
+.vscode/
+
+# Ignore any temporary or log files
+*.tmp
+*.log
+
+# Ignore build folders (if you add any later)
+build/
+bin/
+
+# Ignore test outputs folder (empty now, but in future)
+test/output/
+test/coverage/

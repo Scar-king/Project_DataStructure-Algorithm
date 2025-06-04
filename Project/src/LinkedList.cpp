@@ -1,19 +1,8 @@
 // Kheang Ann and Sok Leap
 
+#include "LinkedList.h"
 #include <iostream>
 using namespace std;
-
-struct Product {
-    // Put Attribute
-    Product *next;
-};
-
-struct List {
-    // Put Attribute
-    int n;
-    Product *head;
-    Product *tail;
-};
 
 List *createList(){
     List *ls = new List;
@@ -24,8 +13,16 @@ List *createList(){
 }
 
 // Add Product
-void addBeg(List *ls){
+void addBeg(List *ls, int data){
+    Product *newNode = new Product;
+    newNode->data = data;
+    newNode->next = ls->head;
+    ls->head = newNode;
 
+    if(ls->n == 0){
+        ls->tail = newNode;
+    }
+    ls->n++;
 }
 
 void addEnd(List *ls){
@@ -76,5 +73,10 @@ void bubbleSort(List *ls){
 
 // Display Product
 void display(List *ls){
-
+    Product *temp = ls->head;
+    while(temp != nullptr){
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+    cout << endl;
 }
