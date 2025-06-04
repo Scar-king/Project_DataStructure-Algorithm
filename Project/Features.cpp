@@ -1,5 +1,8 @@
 // Kheang Ann and Sok Leap
 
+#include <iostream>
+using namespace std;
+
 struct Product {
     // Put Attribute
     Product *next;
