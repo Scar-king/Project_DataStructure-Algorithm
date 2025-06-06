@@ -9,7 +9,8 @@ struct Product {
     // string name;
     // int quantity;
     // float price;
-    Product* next;
+    Product *next;
+    Product *prev;
     // Add More Attributes
 };
 
@@ -30,13 +31,14 @@ List *createList(){
 
 // Add Product
 void addBeg(List *ls, int data){
-    Product *newNode = new Product;
-    newNode->data = data;
-    newNode->next = ls->head;
-    ls->head = newNode;
+    Product *p = new Product;
+    p->data = data;
+    p->next = ls->head;
+    p->prev = nullptr;
+    ls->head = p;
 
     if(ls->n == 0){
-        ls->tail = newNode;
+        ls->tail = p;
     }
     ls->n++;
 }
