@@ -11,7 +11,7 @@ using namespace std;
 #define WHITE   "\033[37m"
 
 void menu(){
-    cout << RED << "\t\t\t\t\t";
+    cout << YELLOW << "\t\t\t\t\t";
     for(int i = 0; i <= 50; i++){
         cout << "-";
         Sleep(20);

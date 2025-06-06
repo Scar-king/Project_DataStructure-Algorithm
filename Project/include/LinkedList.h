@@ -35,11 +35,13 @@ void addBeg(List *ls, int data){
     p->data = data;
     p->next = ls->head;
     p->prev = nullptr;
-    ls->head = p;
 
     if(ls->n == 0){
         ls->tail = p;
+    } else {
+        ls->head->prev = p;
     }
+    ls->head = p;
     ls->n++;
 }
 
@@ -90,11 +92,21 @@ void bubbleSort(List *ls){
 }
 
 // Display Product
-void display(List *ls){
+void displayBeg(List *ls){
     Product *temp = ls->head;
     while(temp != nullptr){
         cout << temp->data << " ";
         temp = temp->next;
+    }
+    cout << endl;
+}
+
+void displayEnd(List *ls) {
+    if(ls->n == 0) return;
+    Product *p = ls->tail;
+    while(p != nullptr) {
+        cout << p->data << " ";
+        p = p->prev;
     }
     cout << endl;
 }

@@ -17,7 +17,7 @@ int main() {
     }
 
     cout << "\nList: ";
-    display(myList);
+    displayBeg(myList);
 
     return 0;
 }
