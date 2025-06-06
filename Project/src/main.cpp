@@ -7,6 +7,8 @@ int main() {
 
     welcome();
 
+    menu();
+
     List *myList = createList();
 
     for(int i = 1; i <= 10; i++){
@@ -14,7 +16,7 @@ int main() {
         addBeg(myList, i);
     }
 
-    cout << "List: ";
+    cout << "\nList: ";
     display(myList);
 
     return 0;
