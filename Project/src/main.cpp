@@ -11,10 +11,7 @@ int main() {
 
     List *myList = createList();
 
-    for(int i = 1; i <= 10; i++){
-
-        addBeg(myList, i);
-    }
+    addBeg(myList, "iPhone", 1, 10.0); 
 
     cout << "\nList: ";
     displayBeg(myList);

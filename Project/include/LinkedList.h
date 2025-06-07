@@ -2,13 +2,13 @@
 #include <iostream>
 using namespace std;
 
-// Define Product structure
+// Each Record must has 5 to 9 columns/fields
+// We are using Doubly List
 struct Product {
-    int data;
-    // int id;
-    // string name;
-    // int quantity;
-    // float price;
+    int id;
+    string name;
+    int quantity;
+    double price;
     Product *next;
     Product *prev;
     // Add More Attributes
@@ -30,9 +30,11 @@ List *createList(){
 }
 
 // Add Product
-void addBeg(List *ls, int data){
+void addBeg(List *ls, string name, int quantity, double price){
     Product *p = new Product;
-    p->data = data;
+    p->name = name;
+    p->quantity = quantity;
+    p->price = price;
     p->next = ls->head;
     p->prev = nullptr;
 
@@ -95,7 +97,7 @@ void bubbleSort(List *ls){
 void displayBeg(List *ls){
     Product *temp = ls->head;
     while(temp != nullptr){
-        cout << temp->data << " ";
+        cout << temp->name << " ";
         temp = temp->next;
     }
     cout << endl;
@@ -105,7 +107,7 @@ void displayEnd(List *ls) {
     if(ls->n == 0) return;
     Product *p = ls->tail;
     while(p != nullptr) {
-        cout << p->data << " ";
+        cout << p->name << " ";
         p = p->prev;
     }
     cout << endl;
