@@ -47,8 +47,22 @@ void addBeg(List *ls, string name, int quantity, double price){
     ls->n++;
 }
 
-void addEnd(List *ls){
+void addEnd(List *ls, string name, int quantity, double price){
+    Product *p = new Product;
+    p -> name = name;
+    p -> quantity = quantity;
+    p -> price = price;
+    p -> next = nullptr;
+    p -> prev = ls -> tail;
 
+    if(ls -> n == 0){
+        ls -> head = p;
+    }
+    else{
+        ls -> tail -> next = p; 
+    }
+    ls -> tail = p;
+    ls -> n++;
 }
 
 void addPos(List *ls, int pos){
@@ -69,8 +83,27 @@ void deleteEnd(List *ls){
 
 }
 
-void deletePos(List *ls){
+void deletePos(List *ls, int pos){
+    Product* temp = ls -> head;
+    // 1 2 3 4
+    // 2
+    if(ls -> n == 0){
+        cout << "The list is empty!" << endl;
+        return;
+    }
+    else if(pos > ls -> n || pos < 1){
+        cout << "Invalid position!" << endl;
+        return;
+    }
 
+    for(int i = 1; i < pos; i++){
+        temp = temp -> next;
+    }
+    temp -> next -> prev = temp -> prev;
+    temp -> prev = temp -> next;
+    delete temp;
+    ls -> n--;
+    cout << "Successfully deleted product at position" << pos << endl;
 }
 
 // Reverse List
@@ -84,7 +117,19 @@ void combine(List *ls){
 }
 
 // Search Product by ID
-int searchProduct(List *ls){
+int searchProductID(List *ls, int ID){
+    Product* temp = ls -> head;
+    while(temp != nullptr){
+        if(temp -> id == ID){
+            // cout << "Product found:\n";
+            // cout << "Product ID: " << temp -> id << ", \n";
+            // cout << "Product Name: " << temp -> name << ", \n";
+            // cout << "Quantity" << temp -> quantity << ", \n";
+            // cout << "Price: " << temp -> price << ", \n\n";
+            return ID;
+        } 
+        temp = temp -> next;
+    }
     return 0;
 }
 
