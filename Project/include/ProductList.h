@@ -147,7 +147,16 @@ void bubbleSort(List *ls){
 }
 
 // Display Product
-void displayBeg(List *ls){
+void displayUserProductList(List *ls){ // Kheang Ann, Not include *** inStock and sold ***
+    Product *temp = ls->head;
+    while(temp != nullptr){
+        // cout << temp->name << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+}
+
+void displayAdminProductList(List *ls){ 
     Product *temp = ls->head;
     while(temp != nullptr){
         // cout << temp->name << " ";
