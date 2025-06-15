@@ -1,3 +1,4 @@
+// Sok Leap
 #include <string>
 #include <iostream>
 using namespace std;
@@ -6,9 +7,12 @@ using namespace std;
 // We are using Doubly List
 struct Product {
     int id;
-    string name;
-    int quantity;
+    string model;
+    int inStock;
+    int sold;
+    string description;
     double price;
+    string status;
     Product *next;
     Product *prev;
     // Add More Attributes
@@ -30,28 +34,32 @@ List *createList(){
 }
 
 // Add Product
-void addBeg(List *ls, string name, int quantity, double price){
-    Product *p = new Product;
-    p->name = name;
-    p->quantity = quantity;
-    p->price = price;
-    p->next = ls->head;
-    p->prev = nullptr;
+// void addBeg(List *ls, int id, string model, int inStock, int sold, string description, double price, string status){
+//     Product *p = new Product;
+//     p->name = name;
+//     p->quantity = quantity;
+//     p->price = price;
+//     p->next = ls->head;
+//     p->prev = nullptr;
 
-    if(ls->n == 0){
-        ls->tail = p;
-    } else {
-        ls->head->prev = p;
-    }
-    ls->head = p;
-    ls->n++;
-}
+//     if(ls->n == 0){
+//         ls->tail = p;
+//     } else {
+//         ls->head->prev = p;
+//     }
+//     ls->head = p;
+//     ls->n++;
+// }
 
-void addEnd(List *ls, string name, int quantity, double price){
+void addEnd(List *ls, int id, string model, int inStock, int sold, string description, double price, string status){
     Product *p = new Product;
-    p -> name = name;
-    p -> quantity = quantity;
+    p -> id = 1000 + ls -> n;
+    p -> model = model;
+    p -> inStock = inStock;
+    p -> sold = sold;
+    p -> description = description;
     p -> price = price;
+    p -> status = status;
     p -> next = nullptr;
     p -> prev = ls -> tail;
 
@@ -142,7 +150,7 @@ void bubbleSort(List *ls){
 void displayBeg(List *ls){
     Product *temp = ls->head;
     while(temp != nullptr){
-        cout << temp->name << " ";
+        // cout << temp->name << " ";
         temp = temp->next;
     }
     cout << endl;
@@ -152,7 +160,7 @@ void displayEnd(List *ls) {
     if(ls->n == 0) return;
     Product *p = ls->tail;
     while(p != nullptr) {
-        cout << p->name << " ";
+        // cout << p->name << " ";
         p = p->prev;
     }
     cout << endl;
