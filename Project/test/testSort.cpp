@@ -73,7 +73,7 @@ int main(){
 
     for(int i = 0; i <= 10; i++){
         double price = rand() % 10 + 1;
-        addBeg(ls, price);
+        addBeg(ls, price); 
     }
 
     cout << "Unsort: ";
