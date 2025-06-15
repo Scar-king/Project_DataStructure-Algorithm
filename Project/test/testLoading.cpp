@@ -10,23 +10,24 @@ using namespace std;
 #define BLUE "\033[34m"
 #define WHITE "\033[37m"
 
-void loading(int width = 50, int delay = 50){
-    cout << YELLOW << "[";
+// void loading(int width = 50, int delay = 50){
+//     cout << YELLOW << "[";
 
-    for (int i = 0; i < width; i++){
-        cout << "-";
-    }
-    cout << "]\r["; // It goes back to the beginning and write the new one
-    for (int i = 0; i <= width; i++){
-        cout << GREEN << "=";
-        Sleep(delay);
-    }
-    cout << YELLOW << "]" << RESET << endl;
-    cout << "Loading Complete!\n";
-}
+//     for (int i = 0; i < width; i++){
+//         cout << "-";
+//     }
+//     cout << "]\r["; 
+//     for (int i = 0; i <= width; i++){
+//         cout << GREEN << "=";
+//         Sleep(delay);
+//     }
+//     cout << YELLOW << "]" << RESET << endl;
+//     cout << "Loading Complete!\n";
+// }
+
 // another loading style
-void loading2(){
-    system("COLOR 0e");
+void loading(){
+    cout << GREEN;
     system("cls");
     //printf("\e[?251");
 
@@ -45,16 +46,16 @@ void loading2(){
     cout << "\t\t\t\t";
     for (int i = 0; i < 25; i++){
         cout << (char)bar2;
-        Sleep(150);
+        Sleep(50);
     }
-    cout << "\n\t\t\t\t" << (char)1 << "!";
+    cout << "\n\n\t\t\t\t" << (char)1;
     system("Pause");
 }
 
 int main(){
 
     // loading();
-    loading2();
+    loading();
 
     return 0;
 }
