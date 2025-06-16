@@ -5,11 +5,14 @@ using namespace std;
 
 int main() {
 
-    welcome();
+    // welcome();
 
-    menu();
+    // menu();
 
     List *myList = createList();
-
+    addEnd(myList, "Iphone 11", 10, 10, "IOS, Ram 8GB, Storage 256GB", 1111.10);
+    addEnd(myList, "Iphone 12", 3, 10, "IOS, Ram 8GB, Storage 256GB", 1111.10);
+    addEnd(myList, "Iphone 13", 10, 9, "IOS, Ram 8GB, Storage 256GB", 1111.10);
+    displayAdminProductList(myList);
     return 0;
 }
