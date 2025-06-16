@@ -51,7 +51,7 @@ List *createList(){
 //     ls->n++;
 // }
 
-void addEnd(List *ls, int id, string model, int inStock, int sold, string description, double price, string status){
+void addEnd(List *ls, string model, int inStock, int sold, string description, double price){
     Product *p = new Product;
     p -> id = 1000 + ls -> n;
     p -> model = model;
@@ -59,9 +59,17 @@ void addEnd(List *ls, int id, string model, int inStock, int sold, string descri
     p -> sold = sold;
     p -> description = description;
     p -> price = price;
-    p -> status = status;
     p -> next = nullptr;
     p -> prev = ls -> tail;
+    if(inStock == sold){
+        p -> status = "Out of Stock";   
+    }
+    else if((4*inStock) < (sold+inStock)){
+        p -> status = "Low Stock";  
+    }
+    else{
+        p -> status = "Available";  
+    }
 
     if(ls -> n == 0){
         ls -> head = p;
@@ -158,11 +166,14 @@ void displayUserProductList(List *ls){ // Kheang Ann, Not include *** inStock an
 
 void displayAdminProductList(List *ls){ 
     Product *temp = ls->head;
+    cout << "\n+------+-----------------+-------+-------+-------------------------------------+----------+--------------+\n";
+    printf("| %-4s | %-15s | %-5s | %-5s | %-35s | %-8s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PRICE($)", "STATUS");
+    cout << "+------+-----------------+-------+-------+-------------------------------------+----------+--------------+\n";
     while(temp != nullptr){
-        // cout << temp->name << " ";
+        printf("| %4d | %-15s | %5d | %5d | %-35s | %8.2f | %-12s |\n", temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> price, temp -> status.c_str());
         temp = temp->next;
     }
-    cout << endl;
+    cout << "+------+-----------------+-------+-------+-------------------------------------+----------+--------------+\n";
 }
 
 void displayEnd(List *ls) {
