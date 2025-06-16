@@ -58,6 +58,7 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "*.dbclient-js": "javascript",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "cstdlib": "cpp"
   }
 }
