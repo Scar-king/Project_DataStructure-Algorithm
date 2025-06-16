@@ -158,15 +158,15 @@ void bubbleSort(List *ls){
 // Display Product
 void displayUserProductList(List *ls){ // Kheang Ann, Not include *** inStock and sold ***
     Product *temp = ls->head;
-    cout << "+-------+-----------------+----------------------+-----------------+-----------------+" << endl;
-    printf("| %-5s | %-15s | %-20s | %-15s | %-15s |\n", "ID","MODEL", "DESCRIPTION", "PRICE($)", "STATUS");
-    cout << "+-------+-----------------+----------------------+-----------------+-----------------+" << endl;
+    cout << "+-------+-----------------+-------------------------------------+----------+--------------+" << endl;
+    printf("| %-5s | %-15s | %-35s | %-8s | %-12s |\n", "ID","MODEL", "DESCRIPTION", "PRICE($)", "STATUS");
+    cout << "+-------+-----------------+-------------------------------------+----------+--------------+" << endl;
     while(temp != nullptr){
         // cout << temp->name << " ";
-        printf("| %-5d | %-15s | %-20s | %-15f | %-15s |\n", temp->id, temp->model.c_str(), temp->description.c_str(), temp->price, temp->status.c_str());
+        printf("| %-5d | %-15s | %-35s | %8.2f | %-12s |\n", temp->id, temp->model.c_str(), temp->description.c_str(), temp->price, temp->status.c_str());
         temp = temp->next;
     }
-    cout << "+-------+-----------------+----------------------+-----------------+-----------------+" << endl;
+    cout << "+-------+-----------------+-------------------------------------+----------+--------------+" << endl;
 }
 
 void displayAdminProductList(List *ls){ 
