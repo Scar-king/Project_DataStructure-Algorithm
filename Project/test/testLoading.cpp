@@ -39,12 +39,12 @@ void loading(){
     cout << "\n\n\n\t\t\t\tLoading...";
     cout << "\n\n\t\t\t\t";
 
-    for (int i = 0; i < 25; i++){
+    for (int i = 0; i < 30; i++){
         cout << (char)bar1;
     }
     cout << "\r";
     cout << "\t\t\t\t";
-    for (int i = 0; i < 25; i++){
+    for (int i = 0; i < 30; i++){
         cout << (char)bar2;
         Sleep(50);
     }
