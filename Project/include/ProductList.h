@@ -6,7 +6,7 @@ using namespace std;
 
 // Each Record must has 5 to 9 columns/fields
 // We are using Doubly List
-struct Product {
+struct ProductElement {
     int id;
     string model;
     int inStock;
@@ -15,16 +15,16 @@ struct Product {
     double purchaseCost;
     double salePrice;
     string status;
-    Product *next;
-    Product *prev;
+    ProductElement *next;
+    ProductElement *prev;
     // Add More Attributes
 };
 
 // Define Linked List structure
 struct ProductList {
     int n;
-    Product* head;
-    Product* tail;
+    ProductElement *head;
+    ProductElement *tail;
 };
 
 ProductList *createList(){
@@ -54,7 +54,7 @@ ProductList *createList(){
 // }
 
 void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice){
-    Product *p = new Product;
+    ProductElement *p = new ProductElement;
     p -> id = 1000 + ls -> n;
     p -> model = model;
     p -> inStock = inStock;
@@ -103,7 +103,7 @@ void deleteEnd(ProductList *ls){
 }
 
 void deletePos(ProductList *ls, int pos){
-    Product* temp = ls -> head;
+    ProductElement* temp = ls -> head;
     // 1 2 3 4
     // 2
     if(ls -> n == 0){
@@ -137,7 +137,7 @@ void combine(ProductList *ls){
 
 // Search Product by ID
 int searchProductID(ProductList *ls, int ID){
-    Product* temp = ls -> head;
+    ProductElement* temp = ls -> head;
     while(temp != nullptr){
         if(temp -> id == ID){
             // cout << "Product found:\n";
@@ -159,7 +159,7 @@ void bubbleSort(ProductList *ls){
 
 // Display Product
 void displayUserProductList(ProductList *ls){ // Kheang Ann, Not include *** inStock and sold ***
-    Product *temp = ls->head;
+    ProductElement *temp = ls->head;
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
     printf("| %-5s | %-20s | %-35s | %-8s | %-12s |\n", "ID","MODEL", "DESCRIPTION", "PRICE($)", "STATUS");
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
@@ -172,7 +172,7 @@ void displayUserProductList(ProductList *ls){ // Kheang Ann, Not include *** inS
 }
 
 void displayAdminProductList(ProductList *ls){ 
-    Product *temp = ls->head;
+    ProductElement *temp = ls->head;
     cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
@@ -185,10 +185,86 @@ void displayAdminProductList(ProductList *ls){
 
 void displayEnd(ProductList *ls) {
     if(ls->n == 0) return;
-    Product *p = ls->tail;
+    ProductElement *p = ls->tail;
     while(p != nullptr) {
         // cout << p->name << " ";
         p = p->prev;
     }
     cout << endl;
+}
+
+// Davin
+
+struct ReportElement {
+    int id;
+    string model;
+    int totalStock;
+    int totalSold;
+    double totalPurchaseCost;
+    double totalEarn;
+    double profit;
+    double estimatProfit;
+    ReportElement *next;
+    ReportElement *prev;
+};
+
+struct ReportList {
+    int n;
+    ReportElement *head;
+    ReportElement *tail;
+};
+
+ReportList *createReportList(){
+    ReportList *ls = new ReportList;
+    ls->n = 0;
+    ls->head = nullptr;
+    ls->tail = nullptr;
+    return ls;
+}
+
+void addReport(ReportList *ls, ProductElement *p){
+    ReportElement *re = new ReportElement;
+    re -> id = 1000 + ls -> n;
+    re -> model = p -> model;
+    
+    int totalStock = p->inStock;
+    int totalSold = p->sold;
+    double totalPurchaseCost = p->purchaseCost * totalSold;
+    double totalEarn = p->salePrice * totalSold;
+    double profit = totalEarn - totalPurchaseCost;
+    double estimatProfit = profit + (totalStock * (p->salePrice - p->purchaseCost));
+
+    re -> totalStock = totalStock;
+    re -> totalSold = totalSold;
+    re -> totalPurchaseCost = totalPurchaseCost;
+    re -> totalEarn = totalEarn;
+    re -> profit = profit;
+    re -> estimatProfit = estimatProfit;
+
+    re -> next = nullptr;
+    re -> prev = ls -> tail;
+
+    if(ls -> n == 0){
+        ls -> head = re;
+    }
+    else{
+        ls -> tail -> next = re; 
+    }
+    ls -> tail = re;
+    ls -> n++;
+}
+
+void displayMonthlyReport(ReportList *ls) { // Davin
+    ReportElement *temp = ls->head;
+    cout << "\n+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
+    printf("| %-5s | %-20s | %-12s | %-5s | %-20s | %-11s | %-11s | %-16s |\n",
+           "ID", "MODEL", "TOTAL STOCK", "SOLD", "TOTAL PURCHASE COST", "TOTAL EARN", "PROFIT", "ESTIMATE PROFIT");
+    cout << "+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
+    while (temp != nullptr) {
+        printf("| %-5d | %-20s | %-12d | %-5d | %-20.2f | %-11.2f | %-11.2f | %-16.2f |\n",
+               temp->id, temp->model.c_str(), temp->totalStock, temp->totalSold,
+               temp->totalPurchaseCost, temp->totalEarn, temp->profit, temp->estimatProfit);
+        temp = temp->next;
+    }
+    cout << "+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
 }
