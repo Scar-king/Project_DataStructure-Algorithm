@@ -23,13 +23,15 @@ struct ProductElement {
 // Define Linked List structure
 struct ProductList {
     int n;
+    int i;
     ProductElement *head;
     ProductElement *tail;
 };
 
 ProductList *createList(){
     ProductList *ls = new ProductList;
-    ls->n = 0;
+    ls-> n = 0;
+    ls -> i = 1000;
     ls->head = nullptr;
     ls->tail = nullptr;
     return ls;
@@ -55,7 +57,7 @@ ProductList *createList(){
 
 void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice){
     ProductElement *p = new ProductElement;
-    p -> id = 1000 + ls -> n;
+    p -> id = ls -> i;
     p -> model = model;
     p -> inStock = inStock;
     p -> sold = sold;
@@ -82,6 +84,7 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
     }
     ls -> tail = p;
     ls -> n++;
+    ls -> i++;
 }
 
 void addPos(ProductList *ls, int pos){
@@ -125,6 +128,68 @@ void deletePos(ProductList *ls, int pos){
     cout << "Successfully deleted product at position" << pos << endl;
 }
 
+// Search Product by ID
+ProductElement* searchProductByID(ProductList *ls, int ID){
+    ProductElement* temp = ls -> head;
+    while(temp != nullptr){
+        if(temp -> id == ID){
+            return temp;
+        } 
+        temp = temp -> next;
+    }
+    return nullptr;
+}
+
+void deleteProductByID(ProductList* ls, int ID){
+    ProductElement* temp = searchProductByID(ls, ID);
+    if(temp != nullptr){
+        if(ls -> n == 1){
+            delete temp;
+            ls -> head = nullptr;
+            ls -> tail = nullptr;
+        }
+        else{
+            // 1 2 3 4
+            // delete 1 -> temp = 1, prev of temp = nullptr;
+            if(temp -> prev == nullptr){
+                temp -> next -> prev = nullptr;
+                ls -> head = temp -> next;
+                delete temp;
+            }
+            else{
+                // 1 2 3 4
+                // delete 4 -> temp = 4, next of temp = nullptr;
+                temp -> prev -> next = temp -> next; 
+                ls -> tail = temp -> prev;
+                delete temp;
+            }
+            cout << "Successfully deleted product!\n";
+            // else{
+            //     temp -> next -> prev = temp -> prev;
+            //     temp -> prev = temp -> next;
+            //     delete temp;
+            //     ls -> n--;
+            // cout << "Successfully deleted product!\n";
+            // }
+        }
+        ls -> n--;
+        return;
+    }
+    cout << "Cannot delete!\n";
+}
+
+void displayProductByID(ProductList* ls, int ID){
+    ProductElement* temp = searchProductByID(ls, ID);
+    if(temp != nullptr){
+        cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+        printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
+        cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
+        cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+        return;
+    }
+    cout << "Product not found!\n";
+}
 // Reverse ProductList
 void reverseList(ProductList *ls){
 
@@ -135,22 +200,6 @@ void combine(ProductList *ls){
 
 }
 
-// Search Product by ID
-int searchProductID(ProductList *ls, int ID){
-    ProductElement* temp = ls -> head;
-    while(temp != nullptr){
-        if(temp -> id == ID){
-            // cout << "Product found:\n";
-            // cout << "Product ID: " << temp -> id << ", \n";
-            // cout << "Product Name: " << temp -> name << ", \n";
-            // cout << "Quantity" << temp -> quantity << ", \n";
-            // cout << "Price: " << temp -> price << ", \n\n";
-            return ID;
-        } 
-        temp = temp -> next;
-    }
-    return 0;
-}
 
 // Sort Product using Bubble Sort Algorithm
 void bubbleSort(ProductList *ls){
