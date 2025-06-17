@@ -11,13 +11,13 @@ int main() {
 
     // menu();
 
-    List *myList = createList();
+    ProductList *myList = createList();
     ReportList *rl = createReportList();
 
-    addEnd(myList, "Iphone 11", 10, 10, "IOS, Ram 8GB, Storage 256GB", 1111.10);
-    addEnd(myList, "Iphone 12", 3, 10, "IOS, Ram 8GB, Storage 256GB", 1111.10);
-    addEnd(myList, "Iphone 13", 10, 9, "IOS, Ram 8GB, Storage 256GB", 1111.10);
-    displayAdminProductList(myList);
+    addProduct(myList, "Iphone 11", 3, 20, "IOS, Ram 8GB, Storage 256GB", 1011.10, 1111.10);
+    addProduct(myList, "Iphone 12", 0, 30, "IOS, Ram 8GB, Storage 256GB", 1111.10, 1300.10);
+    addProduct(myList, "Iphone 13", 10, 5, "IOS, Ram 8GB, Storage 256GB", 1211.10, 1400.10);
+    displayAdminProductList(myList); 
     cout <<endl<<endl;
     displayUserProductList(myList);
 
