@@ -18,17 +18,17 @@ int main() {
     addProduct(myList, "Iphone 13", 10, 5, "IOS, Ram 8GB, Storage 256GB", 1211.10, 1400.10);
 
     displayAdminProductList(myList); 
-    cout <<endl;
+    // cout <<endl;
     // displayUserProductList(myList);
 
-    ProductElement *curr = myList->head;
-    while(curr != nullptr){
-        addReport(rl , curr);
-        curr = curr->next;
-    }
+    // ProductElement *curr = myList->head;
+    // while(curr != nullptr){
+    //     addReport(rl , curr);
+    //     curr = curr->next;
+    // }
 
-    displayMonthlyReport(rl);
-    cout << endl;
+    // displayMonthlyReport(rl);
+    // cout << endl;
 
     // Testing Stack
     // Stack* s = createStack();
@@ -37,6 +37,22 @@ int main() {
     // push(s, 2, "MacBook Air M3", "Laptop", 1, "IN", 1299.00, "2025-06-16 11:00:00");
 
     // displayStack(s);
+    displayProductByID(myList, 1004); // search not exist productID
+    displayProductByID(myList, 999); // search not exist productID
+    displayProductByID(myList, 1000); // search correct ProductID
 
+    cout << "\nDeleted: \n";
+
+    deleteProductByID(myList, 1004); // delete not exist productID
+    deleteProductByID(myList, 999); // delete not exist productID
+    deleteProductByID(myList, 1000); // delete first ProductID
+
+    displayAdminProductList(myList);
+
+    deleteProductByID(myList, 1002); // delete last ProductID
+
+    displayAdminProductList(myList);
+    addProduct(myList, "Iphone 14", 1, 5, "IOS, Ram 8GB, Storage 256GB", 1411.10, 1600.10);
+    displayAdminProductList(myList);
     return 0;
 }
