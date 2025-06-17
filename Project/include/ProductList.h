@@ -12,7 +12,8 @@ struct Product {
     int inStock;
     int sold;
     string description;
-    double price;
+    double purchaseCost;
+    double salePrice;
     string status;
     Product *next;
     Product *prev;
@@ -20,14 +21,14 @@ struct Product {
 };
 
 // Define Linked List structure
-struct List {
+struct ProductList {
     int n;
     Product* head;
     Product* tail;
 };
 
-List *createList(){
-    List *ls = new List;
+ProductList *createList(){
+    ProductList *ls = new ProductList;
     ls->n = 0;
     ls->head = nullptr;
     ls->tail = nullptr;
@@ -52,20 +53,21 @@ List *createList(){
 //     ls->n++;
 // }
 
-void addEnd(List *ls, string model, int inStock, int sold, string description, double price){
+void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice){
     Product *p = new Product;
     p -> id = 1000 + ls -> n;
     p -> model = model;
     p -> inStock = inStock;
     p -> sold = sold;
     p -> description = description;
-    p -> price = price;
+    p -> purchaseCost = purchaseCost;
+    p -> salePrice = salePrice;
     p -> next = nullptr;
     p -> prev = ls -> tail;
-    if(inStock == sold){
+    if(inStock == 0){
         p -> status = "Out of Stock";   
     }
-    else if((4*inStock) < (sold+inStock)){
+    else if(inStock < (sold/4)){
         p -> status = "Low Stock";  
     }
     else{
@@ -82,25 +84,25 @@ void addEnd(List *ls, string model, int inStock, int sold, string description, d
     ls -> n++;
 }
 
-void addPos(List *ls, int pos){
+void addPos(ProductList *ls, int pos){
 
 }
 
 // Update Product
-void updateProduct(List *ls){
+void updateProduct(ProductList *ls){
 
 }
 
 // Delete Product
-void deleteBeg(List *ls){
+void deleteBeg(ProductList *ls){
 
 }
 
-void deleteEnd(List *ls){
+void deleteEnd(ProductList *ls){
 
 }
 
-void deletePos(List *ls, int pos){
+void deletePos(ProductList *ls, int pos){
     Product* temp = ls -> head;
     // 1 2 3 4
     // 2
@@ -123,18 +125,18 @@ void deletePos(List *ls, int pos){
     cout << "Successfully deleted product at position" << pos << endl;
 }
 
-// Reverse List
-void reverseList(List *ls){
+// Reverse ProductList
+void reverseList(ProductList *ls){
 
 }
 
 // Combine List
-void combine(List *ls){
+void combine(ProductList *ls){
 
 }
 
 // Search Product by ID
-int searchProductID(List *ls, int ID){
+int searchProductID(ProductList *ls, int ID){
     Product* temp = ls -> head;
     while(temp != nullptr){
         if(temp -> id == ID){
@@ -151,37 +153,37 @@ int searchProductID(List *ls, int ID){
 }
 
 // Sort Product using Bubble Sort Algorithm
-void bubbleSort(List *ls){
+void bubbleSort(ProductList *ls){
 
 }
 
 // Display Product
-void displayUserProductList(List *ls){ // Kheang Ann, Not include *** inStock and sold ***
+void displayUserProductList(ProductList *ls){ // Kheang Ann, Not include *** inStock and sold ***
     Product *temp = ls->head;
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
     printf("| %-5s | %-20s | %-35s | %-8s | %-12s |\n", "ID","MODEL", "DESCRIPTION", "PRICE($)", "STATUS");
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
     while(temp != nullptr){
         // cout << temp->name << " ";
-        printf("| %-5d | %-20s | %-35s | %8.2f | %-12s |\n", temp->id, temp->model.c_str(), temp->description.c_str(), temp->price, temp->status.c_str());
+        printf("| %-5d | %-20s | %-35s | %8.2f | %-12s |\n", temp->id, temp->model.c_str(), temp->description.c_str(), temp-> salePrice, temp->status.c_str());
         temp = temp->next;
     }
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
 }
 
-void displayAdminProductList(List *ls){ 
+void displayAdminProductList(ProductList *ls){ 
     Product *temp = ls->head;
-    cout << "\n+-------+----------------------+-------+-------+-------------------------------------+----------+--------------+\n";
-    printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-8s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PRICE($)", "STATUS");
-    cout << "+-------+----------------------+-------+-------+-------------------------------------+----------+--------------+\n";
+    cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+    printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     while(temp != nullptr){
-        printf("| %5d | %-20s | %5d | %5d | %-35s | %8.2f | %-12s |\n", temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> price, temp -> status.c_str());
+        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
         temp = temp->next;
     }
-    cout << "+-------+----------------------+-------+-------+-------------------------------------+----------+--------------+\n";
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
 }
 
-void displayEnd(List *ls) {
+void displayEnd(ProductList *ls) {
     if(ls->n == 0) return;
     Product *p = ls->tail;
     while(p != nullptr) {
