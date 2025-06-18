@@ -1,6 +1,5 @@
 #include "../include/Design_Structure.h"
 #include "../include/ProductList.h"
-#include "../include/TransactionReport.h"
 
 using namespace std;
 
@@ -31,28 +30,32 @@ int main() {
     // cout << endl;
 
     // Testing Stack
-    // Stack* s = createStack();
+    Stack* s = createStack();
 
-    // push(s, 1, "iPhone 17 Pro Max", "Phone", 2, "OUT", 1599.99, "2025-06-16 10:30:00");
-    // push(s, 2, "MacBook Air M3", "Laptop", 1, "IN", 1299.00, "2025-06-16 11:00:00");
+    ProductElement *curr = myList->head;
+    while(curr != nullptr){
+        push(s, curr, "Phone", 100, "IN", "2025-06-16 10:30:00");
+        curr = curr->next;
+    }
 
-    // displayStack(s);
-    displayProductByID(myList, 1004); // search not exist productID
-    displayProductByID(myList, 999); // search not exist productID
-    displayProductByID(myList, 1000); // search correct ProductID
+    displayStack(s);
 
-    cout << "\nDeleted: \n";
+    // displayProductByID(myList, 1004); // search not exist productID
+    // displayProductByID(myList, 999); // search not exist productID
+    // displayProductByID(myList, 1000); // search correct ProductID
 
-    deleteProductByID(myList, 1004); // delete not exist productID
-    deleteProductByID(myList, 999); // delete not exist productID
-    deleteProductByID(myList, 1000); // delete first ProductID
+    // cout << "\nDeleted: \n";
 
-    displayAdminProductList(myList);
+    // deleteProductByID(myList, 1004); // delete not exist productID
+    // deleteProductByID(myList, 999); // delete not exist productID
+    // deleteProductByID(myList, 1000); // delete first ProductID
 
-    deleteProductByID(myList, 1002); // delete last ProductID
+    // displayAdminProductList(myList);
 
-    displayAdminProductList(myList);
-    addProduct(myList, "Iphone 14", 1, 5, "IOS, Ram 8GB, Storage 256GB", 1411.10, 1600.10);
-    displayAdminProductList(myList);
+    // deleteProductByID(myList, 1002); // delete last ProductID
+
+    // displayAdminProductList(myList);
+    // addProduct(myList, "Iphone 14", 1, 5, "IOS, Ram 8GB, Storage 256GB", 1411.10, 1600.10);
+    // displayAdminProductList(myList);
     return 0;
 }
