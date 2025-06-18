@@ -38,7 +38,7 @@ void menu(){
         cout << "-";
         Sleep(10);
     }
-    printf("\n\t\t\t\t\t\t\t\t%-20s", "Menu");
+    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
     Sleep(500);
     cout << "\n\t\t\t\t\t";
     for(int i = 0; i <= 50; i++){
@@ -46,30 +46,85 @@ void menu(){
         Sleep(10);
     }
     printf("\n\t\t\t\t\t\t\t%-20s", "1. Add New Product");
-    Sleep(500);
-    printf("\n\t\t\t\t\t\t\t%-20s", "2. View All Product");
-    Sleep(500);
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "2. View Table");
+    Sleep(50);
     printf("\n\t\t\t\t\t\t\t%-20s", "3. Update Product");
-    Sleep(500);
+    Sleep(50);
     printf("\n\t\t\t\t\t\t\t%-20s", "4. Delete Product");
-    Sleep(500);
-    printf("\n\t\t\t\t\t\t\t%-20s", "5. Quit");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "5. Search Product");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "6. Quit");
+    Sleep(50);
+    cout << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\n\t\t\t\t\t%s", "Choice: ");
+    Sleep(50);
+    cout << RESET;
+}
+
+// When Admin click on View All Product
+void viewTableMenu(){
+    cout << YELLOW << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
     Sleep(500);
     cout << "\n\t\t\t\t\t";
     for(int i = 0; i <= 50; i++){
         cout << "-";
         Sleep(10);
     }
+    printf("\n\t\t\t\t\t\t\t%-20s", "1. View Product List");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "2. View Overall Report");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "3. View Transaction Report");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "0. Back");
+    Sleep(50);
+    cout << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\n\t\t\t\t\t%s", "Choice: ");
+    Sleep(50);
     cout << RESET;
 }
 
 // Click login as User
 void loginAsUser(){
-    cout << R"(
-                    1. View Product List
-                    2. Search 
-                    0. Back
-
-                    Choice:
-    )";
+        cout << YELLOW << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
+    Sleep(500);
+    cout << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\t\t\t\t\t\t\t%-20s", "1. View Product List");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "2. Search Product");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "0. Back");
+    Sleep(50);
+    cout << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\n\t\t\t\t\t%s", "Choice: ");
+    Sleep(50);
+    cout << RESET;
 }

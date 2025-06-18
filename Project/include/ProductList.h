@@ -67,13 +67,13 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
     p -> next = nullptr;
     p -> prev = ls -> tail;
     if(inStock == 0){
-        p -> status = "Out of Stock";   
+        p -> status = "\033[31mOut of Stock\033[0m";   
     }
-    else if(inStock < (sold/4)){
-        p -> status = "Low Stock";  
+    else if(inStock < sold && inStock <= 10){
+        p -> status = "\033[33mLow Stock\033[0m   ";  
     }
     else{
-        p -> status = "Available";  
+        p -> status = "\033[32mAvailable\033[0m   ";  
     }
 
     if(ls -> n == 0){
@@ -226,7 +226,8 @@ void displayAdminProductList(ProductList *ls){
     printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     while(temp != nullptr){
-        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
+        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", 
+        temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
         temp = temp->next;
     }
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
