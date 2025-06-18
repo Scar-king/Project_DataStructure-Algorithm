@@ -12,33 +12,34 @@ int main() {
     ProductList *myList = createList();
     ReportList *rl = createReportList();
 
-    addProduct(myList, "Iphone 11", 3, 20, "IOS, Ram 8GB, Storage 256GB", 1011.10, 1111.10);
-    addProduct(myList, "Iphone 12", 0, 30, "IOS, Ram 8GB, Storage 256GB", 1111.10, 1300.10);
-    addProduct(myList, "Iphone 13", 10, 5, "IOS, Ram 8GB, Storage 256GB", 1211.10, 1400.10);
+    addProduct(myList, "Iphone 13 PRO MAX", 10, 20, "IOS, Ram 8GB, Storage 256GB", 899.99, 999.99);
+    addProduct(myList, "Iphone 14 PRO MAX", 0, 30, "IOS, Ram 8GB, Storage 128GB", 999.99, 1399.99);
+    addProduct(myList, "Iphone 16 PRO", 3, 5, "IOS, Ram 8GB, Storage 1T", 1299.99, 1499.99);
 
     displayAdminProductList(myList); 
-    // cout <<endl;
+    cout <<endl;
+
     // displayUserProductList(myList);
-
-    // ProductElement *curr = myList->head;
-    // while(curr != nullptr){
-    //     addReport(rl , curr);
-    //     curr = curr->next;
-    // }
-
-    // displayMonthlyReport(rl);
-    // cout << endl;
-
-    // Testing Stack
-    Stack* s = createStack();
 
     ProductElement *curr = myList->head;
     while(curr != nullptr){
-        push(s, curr, "Phone", 100, "IN", "2025-06-16 10:30:00");
+        addReport(rl , curr);
         curr = curr->next;
     }
 
-    displayStack(s);
+    displayOverallReport(rl);
+    cout << endl;
+
+    // Testing Stack
+    // Stack* s = createStack();
+
+    // ProductElement *curr = myList->head;
+    // while(curr != nullptr){
+    //     push(s, curr, "Phone", 100, "IN", "2025-06-16 10:30:00");
+    //     curr = curr->next;
+    // }
+
+    // displayStack(s);
 
     // displayProductByID(myList, 1004); // search not exist productID
     // displayProductByID(myList, 999); // search not exist productID

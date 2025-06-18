@@ -303,7 +303,7 @@ void addReport(ReportList *ls, ProductElement *p){
     ls -> n++;
 }
 
-void displayMonthlyReport(ReportList *ls) { // Davin
+void displayOverallReport(ReportList *ls) { // Davin
     ReportElement *temp = ls->head;
     cout << "\n+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
     printf("| %-5s | %-20s | %-12s | %-5s | %-20s | %-11s | %-11s | %-16s |\n",
