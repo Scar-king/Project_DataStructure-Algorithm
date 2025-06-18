@@ -69,7 +69,7 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
     if(inStock == 0){
         p -> status = "\033[31mOut of Stock\033[0m";   
     }
-    else if(inStock < sold && inStock <= 10){
+    else if(inStock <= static_cast<int>((inStock + sold) * 0.25)){
         p -> status = "\033[33mLow Stock\033[0m   ";  
     }
     else{
