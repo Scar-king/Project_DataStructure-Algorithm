@@ -1,4 +1,3 @@
-// Sok Leap
 #include <string>
 #include <iostream>
 #include <cstdio>
@@ -17,7 +16,6 @@ struct ProductElement {
     string status;
     ProductElement *next;
     ProductElement *prev;
-    // Add More Attributes
 };
 
 // Define Linked List structure
@@ -36,24 +34,6 @@ ProductList *createList(){
     ls->tail = nullptr;
     return ls;
 }
-
-// Add Product
-// void addBeg(List *ls, int id, string model, int inStock, int sold, string description, double price, string status){
-//     Product *p = new Product;
-//     p->name = name;
-//     p->quantity = quantity;
-//     p->price = price;
-//     p->next = ls->head;
-//     p->prev = nullptr;
-
-//     if(ls->n == 0){
-//         ls->tail = p;
-//     } else {
-//         ls->head->prev = p;
-//     }
-//     ls->head = p;
-//     ls->n++;
-// }
 
 void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice){
     ProductElement *p = new ProductElement;
@@ -87,49 +67,19 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
     ls -> i++;
 }
 
-void addPos(ProductList *ls, int pos){
-
-}
-
 // Update Product
-void updateProduct(ProductList *ls){
-
+void updateProductById(ProductList *ls, int ID){
+    // updateTransaction(, int id);
+    // updateReport(, int id);
 }
 
 // Delete Product
-void deleteBeg(ProductList *ls){
+void deleteById(ProductList *ls, int ID){
 
-}
-
-void deleteEnd(ProductList *ls){
-
-}
-
-void deletePos(ProductList *ls, int pos){
-    ProductElement* temp = ls -> head;
-    // 1 2 3 4
-    // 2
-    if(ls -> n == 0){
-        cout << "The list is empty!" << endl;
-        return;
-    }
-    else if(pos > ls -> n || pos < 1){
-        cout << "Invalid position!" << endl;
-        return;
-    }
-
-    for(int i = 1; i < pos; i++){
-        temp = temp -> next;
-    }
-    temp -> next -> prev = temp -> prev;
-    temp -> prev = temp -> next;
-    delete temp;
-    ls -> n--;
-    cout << "Successfully deleted product at position" << pos << endl;
 }
 
 // Search Product by ID
-ProductElement* searchProductByID(ProductList *ls, int ID){
+ProductElement* searchProductByID(ProductList *ls, int ID){ // Sokleap
     ProductElement* temp = ls -> head;
     while(temp != nullptr){
         if(temp -> id == ID){
@@ -140,7 +90,7 @@ ProductElement* searchProductByID(ProductList *ls, int ID){
     return nullptr;
 }
 
-void deleteProductByID(ProductList* ls, int ID){
+void deleteProductByID(ProductList* ls, int ID){ // Sokleap
     ProductElement* temp = searchProductByID(ls, ID);
     if(temp != nullptr){
         if(ls -> n == 1){
@@ -206,8 +156,8 @@ void bubbleSort(ProductList *ls){
 
 }
 
-// Display Product
-void displayAdminProductList(ProductList *ls){ // Admin
+// Display Admin ProductList
+void displayAdminProductList(ProductList *ls){ // Sokleap
     ProductElement *temp = ls->head;
     cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
@@ -244,9 +194,7 @@ void displayEnd(ProductList *ls) {
     cout << endl;
 }
 
-// Davin
-
-struct ReportElement {
+struct ReportElement { // Davin
     int id;
     string model;
     int totalStock;
@@ -305,7 +253,12 @@ void addReport(ReportList *ls, ProductElement *p){
     ls -> n++;
 }
 
-void displayOverallReport(ReportList *ls) { // Davin
+// Update Report
+void updateReport(ReportList *rl){
+
+}
+
+void displayOverallReport(ReportList *ls) { 
     ReportElement *temp = ls->head;
     cout << "\n+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
     printf("| %-5s | %-20s | %-12s | %-5s | %-20s | %-11s | %-11s | %-16s |\n",
@@ -320,9 +273,7 @@ void displayOverallReport(ReportList *ls) { // Davin
     cout << "+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
 }
 
-// Davin
-
-struct TransactionElement {
+struct TransactionElement { // Davin
     int id;
     string model;
     string category;
@@ -383,6 +334,11 @@ void pop(Stack *s){
     s->top = s->top->next;
     delete temp;
     s->size--;
+}
+
+// Update Stack
+void updateTransaction(Stack *s){
+    
 }
 
 void displayStack(Stack* s) {
