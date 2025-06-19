@@ -207,6 +207,19 @@ void bubbleSort(ProductList *ls){
 }
 
 // Display Product
+void displayAdminProductList(ProductList *ls){ // Admin
+    ProductElement *temp = ls->head;
+    cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+    printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+    while(temp != nullptr){
+        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", 
+        temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
+        temp = temp->next;
+    }
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+}
+
 void displayUserProductList(ProductList *ls){ // Kheang Ann, Not include *** inStock and sold ***
     ProductElement *temp = ls->head;
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
@@ -220,18 +233,6 @@ void displayUserProductList(ProductList *ls){ // Kheang Ann, Not include *** inS
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
 }
 
-void displayAdminProductList(ProductList *ls){ 
-    ProductElement *temp = ls->head;
-    cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
-    printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
-    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
-    while(temp != nullptr){
-        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", 
-        temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
-        temp = temp->next;
-    }
-    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
-}
 
 void displayEnd(ProductList *ls) {
     if(ls->n == 0) return;
