@@ -21,14 +21,34 @@ void welcome(){
 }
 
 void loginPage(){
-    cout <<  YELLOW <<  R"(
-                    1. Login as Administrator
-                    2. Login as User
-                    3. Register
-                    4. Exit
-
-                    Choice: 
-    )" << RESET;
+    cout << YELLOW << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
+    Sleep(500);
+    cout << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\t\t\t\t\t\t\t%-20s", "1. Login as Administrator");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "2. Login as User");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "3. Register");
+    Sleep(50);
+    printf("\n\t\t\t\t\t\t\t%-20s", "0. Quit");
+    Sleep(50);
+    cout << "\n\t\t\t\t\t";
+    for(int i = 0; i <= 50; i++){
+        cout << "-";
+        Sleep(10);
+    }
+    printf("\n\n\t\t\t\t\t%s", "Choice: ");
+    Sleep(50);
+    cout << RESET;
 }
 
 // When Click Login as Administrator
@@ -55,7 +75,7 @@ void menu(){
     Sleep(50);
     printf("\n\t\t\t\t\t\t\t%-20s", "5. Search Product");
     Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "6. Quit");
+    printf("\n\t\t\t\t\t\t\t%-20s", "0. Back");
     Sleep(50);
     cout << "\n\t\t\t\t\t";
     for(int i = 0; i <= 50; i++){

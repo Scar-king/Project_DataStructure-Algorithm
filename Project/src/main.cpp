@@ -5,9 +5,11 @@ using namespace std;
 
 int main() {
 
-    // welcome();
+    welcome();
 
-    // menu();
+    menu();
+
+    loginPage();
 
     ProductList *myList = createList();
     ReportList *rl = createReportList();
