@@ -23,7 +23,8 @@ int main() {
     displayAdminProductList(myList); 
     cout <<endl;
 
-    // displayUserProductList(myList);
+    displayUserProductList(myList);
+    cout << endl;
 
     ProductElement *curr = myList->head;
     while(curr != nullptr){
@@ -64,3 +65,5 @@ int main() {
     // displayAdminProductList(myList);
     return 0;
 }
+
+
