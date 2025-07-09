@@ -70,6 +70,11 @@ int main() {
     // displayAdminProductList(myList);
     // addProduct(myList, "Iphone 14", 1, 5, "IOS, Ram 8GB, Storage 256GB", 1411.10, 1600.10);
     // displayAdminProductList(myList);
+    AdminHistoryStack* s = createEmptyStack();
+    push(s, 111, "Sok Leap", "Update", "Iphone11 sales price from 1000 to 1100", getCurrentUTCTime());
+    push(s, 222, "Sok Leap", "Add", "Add Iphone11 20 units", getCurrentUTCTime());
+    displayAllAdminHistory(s);
+    return 0;
     return 0;
 }
 
