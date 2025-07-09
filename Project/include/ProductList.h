@@ -140,20 +140,66 @@ void displayProductByID(ProductList* ls, int ID){
     }
     cout << "Product not found!\n";
 }
-// Reverse ProductList
-void reverseList(ProductList *ls){
 
+// *** Sort Product using Merge Sort Algorithm ***
+ProductElement *split(ProductElement *head) {
+    // Both fast and slow are starting from head
+    ProductElement *fast = head;
+    ProductElement *slow = head;
+
+    // This technique helps you find the middle node efficiently.
+    while(fast->next && fast->next->next) { // Finding the middle node
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+
+    ProductElement *second = slow->next; // the node after the midpoint become the head of the second half
+    slow->next = nullptr; // cuts the list at midpoint, ending the first half
+    if(second) second->prev = nullptr; // avoid second node point back to the first half
+
+    return second; // second half
 }
 
-// Combine List
-void combine(ProductList *ls){
+ProductElement *merge(ProductElement *first, ProductElement *second) {
+    // Base cases to handle null inputs
+    if(!first) return second;
+    if(!second) return first;
 
+    if(first->salePrice >= second->salePrice) { // >= for descending order
+        first->next = merge(first->next, second);
+        if(first->next) first->next->prev = first;
+        first->prev = nullptr;
+        return first;
+    } else {
+        second->next = merge(first, second->next);
+        if(second->next) second->next->prev = second;
+        second->prev = nullptr;
+        return second;
+    }
 }
 
+ProductElement *mergeSort(ProductElement *head) {
+    // prevents null or only one element
+    if(!head || !head->next) return head;
 
-// Sort Product using Bubble Sort Algorithm
-void bubbleSort(ProductList *ls){
+    ProductElement *second = split(head);
+    // Both head and second keep splitting until each part has 1 node
+    head = mergeSort(head);
+    second = mergeSort(second); 
 
+    // Now it take 2 sorted halves, and combine them into one sorted list
+    return merge(head, second);
+}
+
+void sortProductList(ProductList *plist){
+    plist->head = mergeSort(plist->head);
+
+    ProductElement *temp = plist->head;
+    plist->tail = nullptr;
+    while(temp && temp->next){
+        temp = temp->next;
+    }
+    plist->tail = temp;
 }
 
 // Display Admin ProductList
