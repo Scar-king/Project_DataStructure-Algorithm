@@ -4,7 +4,15 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
+
+#include "validation.h"
 using namespace std;
+
+constexpr int MIN_STOCK = 0;
+constexpr int MAX_STOCK = 1000;
+
+constexpr double MIN_PRICE = 1.0;
+constexpr double MAX_PRICE = 10000.0;
 
 // Each Record must has 5 to 9 columns/fields
 // We are using Doubly List
@@ -71,14 +79,41 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
 }
 
 // Update Product
-void updateProductById(ProductList *ls, int ID){
-    // updateTransaction(, int id);
-    // updateReport(, int id);
-}
+void updateProductById(ProductList *ls, int targetId){
+    ProductElement *temp = ls->head;
+    while(temp != nullptr && temp->id != targetId) {
+        temp = temp->next;
+    }
 
-// Delete Product
-void deleteById(ProductList *ls, int ID){
+    if(temp == nullptr) {
+        cout << "Product with ID " << targetId << " not found.\n";
+        return;
+    }
 
+    cout << "\nUpdating Product ID: " << targetId << "\n";
+    cout << "Current model: " << temp->model << "\nNew model: ";
+    cin.ignore();
+    getline(cin, temp->model);
+
+    temp->inStock = getValidateIntInRange("Enter new quantity in stock (1-1000): ", MIN_STOCK, MAX_STOCK);
+    temp->sold = getValidateIntInRange("Enter new quantity sold (1-1000): ", MIN_STOCK, MAX_STOCK);
+    
+    cout << "New description: ";
+    getline(cin, temp->description);
+
+    temp->purchaseCost = getValidateDoubleInRange("New purchase cost($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
+    temp->salePrice = getValidateDoubleInRange("New sale price($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
+
+    // Update status
+    if(temp->inStock == 0) {
+        temp->status = "\033[31mOut of Stock\033[0m";
+    } else if(temp->inStock <= static_cast<int>((temp->inStock + temp->sold) * 0.25)) {
+        temp->status = "\033[33mLow Stock\033[0m   ";
+    } else {
+        temp->status = "\033[32mAvailable\033[0m   ";
+    }
+
+    cout << "Product updated successfully.\n";
 }
 
 // Search Product by ID
@@ -93,6 +128,7 @@ ProductElement* searchProductByID(ProductList *ls, int ID){ // Sokleap
     return nullptr;
 }
 
+// Delete Product by ID
 void deleteProductByID(ProductList* ls, int ID){ // Sokleap
     ProductElement* temp = searchProductByID(ls, ID);
     if(temp != nullptr){
@@ -117,13 +153,6 @@ void deleteProductByID(ProductList* ls, int ID){ // Sokleap
                 delete temp;
             }
             cout << "Successfully deleted product!\n";
-            // else{
-            //     temp -> next -> prev = temp -> prev;
-            //     temp -> prev = temp -> next;
-            //     delete temp;
-            //     ls -> n--;
-            // cout << "Successfully deleted product!\n";
-            // }
         }
         ls -> n--;
         return;
