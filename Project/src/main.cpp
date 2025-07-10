@@ -24,6 +24,8 @@ int main() {
     displayAdminProductList(myList); 
     cout <<endl;
 
+    updateProductById(myList, 1000);
+
     sortProductList(myList);
 
     cout << "\nAfter sorting by sale price:\n";
