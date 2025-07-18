@@ -4,17 +4,16 @@
 #include <sstream>
 #include <conio.h>
 #include <algorithm>
+#include "../include/Design_Structure.h"
 
 using namespace std;
 
-const char Encryption_key = 'K'; 
+const char Encryption_key = 'K';
 const string AdminPassword = "admin";
 
-//The algorithm that we use to encrypt and decrypt is XOR for read and write data of user from the userdata.csv
-
-struct User { // Kheang Ann
+struct User {
     string username;
-    string gender;
+    char gender;
     int age;
     string password;
     User* prev;
@@ -35,20 +34,17 @@ Userlist* createList() {
     return ls;
 }
 
-void AddEnd(Userlist* ls, string username, string gender, int age, string password) {
+void AddEnd(Userlist* ls, string username, char gender, int age, string password) {
     User* user = new User{username, gender, age, password, ls->tail, nullptr};
-
     if (ls->n == 0) {
         ls->head = user;
     } else {
         ls->tail->next = user;
     }
-
     ls->tail = user;
     ls->n++;
 }
 
-// Encrypt password using XOR
 string encryptPassword(const string& password) {
     string encrypted = password;
     for (char& ch : encrypted) {
@@ -57,9 +53,8 @@ string encryptPassword(const string& password) {
     return encrypted;
 }
 
-// Decrypt password (same as encrypt for XOR)
 string decryptPassword(const string& encrypted) {
-    return encryptPassword(encrypted); 
+    return encryptPassword(encrypted);
 }
 
 void DisplayUsername(Userlist* ls) {
@@ -72,7 +67,7 @@ void DisplayUsername(Userlist* ls) {
     }
 }
 
-void addUserToFile(string username, string gender, int age, string password) {
+void addUserToFile(string username, char gender, int age, string password) {
     ofstream user("../data/userdata.csv", ios::app);
     if (user.is_open()) {
         user << username << "," << gender << "," << age << "," << encryptPassword(password) << "\n";
@@ -92,13 +87,16 @@ void loadUsersFromFile(Userlist* ls) {
     string line;
     while (getline(user, line)) {
         stringstream ss(line);
-        string username, gender, ageStr, encryptedPassword;
+        string username, genderStr, ageStr, encryptedPassword;
 
         getline(ss, username, ',');
-        getline(ss, gender, ',');
+        getline(ss, genderStr, ',');
         getline(ss, ageStr, ',');
         getline(ss, encryptedPassword);
 
+        if (username.empty() || genderStr.empty() || ageStr.empty() || encryptedPassword.empty()) continue;
+
+        char gender = genderStr[0];
         int age = stoi(ageStr);
         string decryptedPassword = decryptPassword(encryptedPassword);
 
@@ -107,7 +105,6 @@ void loadUsersFromFile(Userlist* ls) {
     user.close();
 }
 
-// Search for user and match credentials
 bool authenticateUser(Userlist* ls, const string& username, const string& password) {
     User* current = ls->head;
     while (current) {
@@ -119,17 +116,16 @@ bool authenticateUser(Userlist* ls, const string& username, const string& passwo
     return false;
 }
 
-// Get password input as masked input
 string getMaskedPassword(const string& prompt) {
     string password;
     char ch;
     cout << prompt;
     while (true) {
         ch = _getch();
-        if (ch == 13) {  
+        if (ch == 13) {
             cout << endl;
             break;
-        } else if (ch == 8) {  // Backspace
+        } else if (ch == 8) {
             if (!password.empty()) {
                 password.pop_back();
                 cout << "\b \b";
@@ -141,16 +137,13 @@ string getMaskedPassword(const string& prompt) {
     }
     return password;
 }
-string toUpperCase(string str) {
-    transform(str.begin(), str.end(), str.begin(), ::toupper);
-    return str;
-}
-// Main program
+
 int main() {
     Userlist* users = createList();
     loadUsersFromFile(users);
 
-    string username, gender, pw1, pw2;
+    string username, pw1, pw2;
+    char gender;
     int age;
     bool running = true;
     int choice;
@@ -176,6 +169,8 @@ int main() {
                 if (username == AdminPassword && pw1 == AdminPassword) {
                     cout << "\n Admin Login successful!\n";
                     DisplayUsername(users);
+
+                    viewTableMenu();
                 } else {
                     cout << "\n Invalid admin credentials.\n";
                 }
@@ -192,25 +187,47 @@ int main() {
                 }
                 break;
 
-            case 3:
+            case 3: {
                 cout << "Enter username: ";
                 getline(cin, username);
-                cout << "Enter gender: ";
-                getline(cin, gender);
+                cout << "Enter gender(M/F): ";
+                cin >> gender;
+                gender = toupper(gender);
                 cout << "Enter age: ";
                 cin >> age;
                 cin.ignore();
-                pw1 = getMaskedPassword("Create your password: ");
-                pw2 = getMaskedPassword("Confirm password: ");
-                if (pw1 == pw2 && age > 0 && age < 100) {
-                    AddEnd(users, username, toUpperCase(gender), age, pw1);
-                    addUserToFile(username, toUpperCase(gender), age, pw1);
+            
+                if (age <= 0 || age >= 100 || (gender != 'M' && gender != 'F')) {
+                    cout << "\nInvalid age or gender input. Please try again.\n";
+                    break;
+                }
+            
+                int pw_attempts = 3;
+                bool passwordMatched = false;
+            
+                while (pw_attempts-- > 0) {
+                    pw1 = getMaskedPassword("Create your password: ");
+                    pw2 = getMaskedPassword("Confirm password: ");
+                
+                    if (pw1 == pw2) {
+                        passwordMatched = true;
+                        break;
+                    } else {
+                        cout << "Passwords do not match. ";
+                        if (pw_attempts > 0)
+                            cout << "Try again (" << pw_attempts << " attempts left).\n";
+                        else
+                            cout << "No attempts left. Registration canceled.\n";
+                    }
+                }
+            
+                if (passwordMatched) {
+                    AddEnd(users, username, gender, age, pw1);
+                    addUserToFile(username, gender, age, pw1);
                     cout << "\n Registration successful!\n";
-                } else {
-                    cout << "\n Passwords or age do not match. Try again.\n";
                 }
                 break;
-
+            }
             case 0:
                 running = false;
                 cout << "\n Thank you for using our system. Goodbye!\n";
