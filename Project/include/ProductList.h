@@ -92,7 +92,6 @@ void updateProductById(ProductList *ls, int targetId){
 
     cout << "\nUpdating Product ID: " << targetId << "\n";
     cout << "Current model: " << temp->model << "\nNew model: ";
-    cin.ignore();
     getline(cin, temp->model);
 
     temp->inStock = getValidateIntInRange("Enter new quantity in stock (1-1000): ", MIN_STOCK, MAX_STOCK);
