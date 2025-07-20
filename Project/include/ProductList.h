@@ -46,6 +46,7 @@ ProductList *createList(){
     return ls;
 }
 
+// We're using Add End Algorithm
 void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice){
     ProductElement *p = new ProductElement;
     p -> id = ls -> i;
@@ -79,7 +80,7 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
 }
 
 // Update Product
-void updateProductById(ProductList *ls, int targetId){
+void updateProductById(ProductList *ls, int targetId) {
     ProductElement *temp = ls->head;
     while(temp != nullptr && temp->id != targetId) {
         temp = temp->next;
@@ -116,7 +117,7 @@ void updateProductById(ProductList *ls, int targetId){
 }
 
 // Search Product by ID
-ProductElement* searchProductByID(ProductList *ls, int ID){ // Sokleap
+ProductElement* searchProductByID(ProductList *ls, int ID) { // Sokleap
     ProductElement* temp = ls -> head;
     while(temp != nullptr){
         if(temp -> id == ID){
@@ -128,7 +129,7 @@ ProductElement* searchProductByID(ProductList *ls, int ID){ // Sokleap
 }
 
 // Delete Product by ID
-void deleteProductByID(ProductList* ls, int ID){ // Sokleap
+void deleteProductByID(ProductList* ls, int ID) { // Sokleap
     ProductElement* temp = searchProductByID(ls, ID);
     if(temp != nullptr){
         if(ls -> n == 1){
@@ -157,19 +158,6 @@ void deleteProductByID(ProductList* ls, int ID){ // Sokleap
         return;
     }
     cout << "Cannot delete!\n";
-}
-
-void displayProductByID(ProductList* ls, int ID){
-    ProductElement* temp = searchProductByID(ls, ID);
-    if(temp != nullptr){
-        cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
-        printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
-        cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
-        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
-        cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
-        return;
-    }
-    cout << "Product not found!\n";
 }
 
 // *** Sort Product using Merge Sort Algorithm ***
@@ -242,8 +230,22 @@ void mergeSort(ProductList *ls) {
     }
 }
 
-// Display Admin ProductList
-void displayAdminProductList(ProductList *ls){ // Sokleap
+// Display Product By ID
+void displayProductByID(ProductList* ls, int ID) {
+    ProductElement* temp = searchProductByID(ls, ID);
+    if(temp != nullptr){
+        cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+        printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
+        cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", temp -> id, temp -> model.c_str(), temp -> inStock, temp -> sold, temp -> description.c_str(), temp -> purchaseCost, temp -> salePrice, temp -> status.c_str());
+        cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+        return;
+    }
+    cout << "Product not found!\n";
+}
+
+// Display Admin Product List
+void displayAdminProductList(ProductList *ls) { // Sokleap
     ProductElement *temp = ls->head;
     cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
@@ -256,28 +258,17 @@ void displayAdminProductList(ProductList *ls){ // Sokleap
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
 }
 
-void displayUserProductList(ProductList *ls){ // Kheang Ann, Not include *** inStock and sold ***
+// Display User Product List
+void displayUserProductList(ProductList *ls) { // Kheang Ann, Not include *** inStock and sold ***
     ProductElement *temp = ls->head;
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
     printf("| %-5s | %-20s | %-35s | %-8s | %-12s |\n", "ID","MODEL", "DESCRIPTION", "PRICE($)", "STATUS");
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
     while(temp != nullptr){
-        // cout << temp->name << " ";
         printf("| %-5d | %-20s | %-35s | %8.2f | %-12s |\n", temp->id, temp->model.c_str(), temp->description.c_str(), temp-> salePrice, temp->status.c_str());
         temp = temp->next;
     }
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
-}
-
-
-void displayEnd(ProductList *ls) {
-    if(ls->n == 0) return;
-    ProductElement *p = ls->tail;
-    while(p != nullptr) {
-        // cout << p->name << " ";
-        p = p->prev;
-    }
-    cout << endl;
 }
 
 struct ReportElement { // Davin
@@ -300,16 +291,17 @@ struct ReportList {
 };
 
 ReportList *createReportList(){
-    ReportList *ls = new ReportList;
-    ls->n = 0;
-    ls->head = nullptr;
-    ls->tail = nullptr;
-    return ls;
+    ReportList *rl = new ReportList;
+    rl->n = 0;
+    rl->head = nullptr;
+    rl->tail = nullptr;
+    return rl;
 }
 
-void addReport(ReportList *ls, ProductElement *p){
+// We're using Add End Algorithm
+void addReport(ReportList *rl, ProductElement *p) {
     ReportElement *re = new ReportElement;
-    re -> id = 1000 + ls -> n;
+    re -> id = 1000 + rl -> n;
     re -> model = p -> model;
     
     int totalStock = p->inStock;
@@ -327,25 +319,26 @@ void addReport(ReportList *ls, ProductElement *p){
     re -> estimatProfit = estimatProfit;
 
     re -> next = nullptr;
-    re -> prev = ls -> tail;
+    re -> prev = rl -> tail;
 
-    if(ls -> n == 0){
-        ls -> head = re;
+    if(rl -> n == 0){
+        rl -> head = re;
     }
     else{
-        ls -> tail -> next = re; 
+        rl -> tail -> next = re; 
     }
-    ls -> tail = re;
-    ls -> n++;
+    rl -> tail = re;
+    rl -> n++;
 }
 
-// Update Report
-void updateReport(ReportList *rl){
+void displayOverallReport(ReportList *rl) { 
+    if(rl == nullptr || rl->head == nullptr) {
+        cout << "\nNo report data available.\n";
+        return;
+    }
 
-}
+    ReportElement *temp = rl->head;
 
-void displayOverallReport(ReportList *ls) { 
-    ReportElement *temp = ls->head;
     cout << "\n+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
     printf("| %-5s | %-20s | %-12s | %-5s | %-20s | %-11s | %-11s | %-16s |\n",
            "ID", "MODEL", "TOTAL STOCK", "SOLD", "TOTAL PURCHASE COST", "TOTAL EARN", "PROFIT", "ESTIMATE PROFIT");
@@ -357,89 +350,6 @@ void displayOverallReport(ReportList *ls) {
         temp = temp->next;
     }
     cout << "+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
-}
-
-struct TransactionElement { // Davin
-    int id;
-    string model;
-    string category;
-    int quantity;
-    string type;
-    double unitPrice;
-    double totalPrice;
-    string transactionTime;
-
-    TransactionElement *next;
-};
-
-struct Stack {
-    int size;
-    TransactionElement *top;
-};
-
-Stack *createStack() {
-    Stack *s = new Stack();
-    s->size = 0;
-    s->top = nullptr;
-    return s;
-}
-
-void push (Stack *s, ProductElement *p, string category, int quantity, string type, string transactionTime){
-    TransactionElement *t = new TransactionElement;
-    t->id = p->id;
-    t->model = p->model;
-    t->category = category;
-    t->quantity = quantity;
-    t->type = type;
-    t->transactionTime = transactionTime;
-
-    if (type == "IN") {
-        t->unitPrice = p->purchaseCost;
-        p->inStock += quantity;
-    } else if (type == "OUT"){
-        t->unitPrice = p->salePrice;
-        p->inStock -= quantity;
-        p->sold += quantity;
-    } else {
-        t->unitPrice = 0.0; // Fallback in case of invalid type
-    }
-
-    t->totalPrice = t->unitPrice * quantity;
-
-    t->next = s->top;
-    s->top = t;
-    s->size++;
-}
-
-void pop(Stack *s){
-    if(s->top == nullptr){
-        cout << "Stack is empty!\n";
-        return;
-    } 
-    TransactionElement *temp = s->top;
-    s->top = s->top->next;
-    delete temp;
-    s->size--;
-}
-
-// Update Stack
-void updateTransaction(Stack *s){
-    
-}
-
-void displayStack(Stack* s) {
-    TransactionElement *temp = s->top;
-    cout << "\n+-------+----------------------+-----------+----------+--------+----------------+----------------+---------------------+\n";
-    printf("| %-5s | %-20s | %-9s | %-8s | %-6s | %-14s | %-14s | %-19s |\n", 
-           "ID", "MODEL", "CATEGORY", "QTY", "TYPE", "UNIT PRICE($)", "TOTAL PRICE($)", "TIME");
-    cout << "+-------+----------------------+-----------+----------+--------+----------------+----------------+---------------------+\n";
-    while (temp != nullptr) {
-        printf("| %-5d | %-20s | %-9s | %-8d | %-6s | %-14.2f | %-14.2f | %-19s |\n",
-               temp->id, temp->model.c_str(), temp->category.c_str(), temp->quantity,
-               temp->type.c_str(), temp->unitPrice, temp->totalPrice, temp->transactionTime.c_str());
-        temp = temp->next;
-    }
-    cout << "+-------+----------------------+-----------+----------+--------+----------------+----------------+---------------------+\n";
 }
 
 struct AdminHistory { // Sokleap
@@ -485,7 +395,7 @@ string getCambodiaTime(chrono::system_clock::time_point utcTimePoint){
     return string(timeBuffer);
 }
 
-void push (AdminHistoryStack *s, int adminID, string adminName, string commandType, string description, chrono::system_clock::time_point utcTime){
+void push(AdminHistoryStack *s, int adminID, string adminName, string commandType, string description, chrono::system_clock::time_point utcTime) {
     AdminHistory* history = new AdminHistory;
 
     history -> adminID = adminID;
@@ -510,15 +420,13 @@ void pop(AdminHistoryStack *s){
     s->size--;
 }
 
-void displayHistory(int i, AdminHistory *temp)
-{
+void displayHistory(int i, AdminHistory *temp) {
     string formattedTime = getCambodiaTime(temp->utcTime);
     printf("| %4d | %-5d | %-20s | %-10s | %-50s | %-20s |\n",
            i, temp->adminID, temp->adminName.c_str(), temp->commandType.c_str(), temp->description.c_str(), formattedTime.c_str());
 }
 
-void displayAllAdminHistory(AdminHistoryStack *s)
-{
+void displayAllAdminHistory(AdminHistoryStack *s) {
     AdminHistory *temp = s->top;
     int i = 1;
     cout << "\n--- All Admin History ---\n";
@@ -535,8 +443,7 @@ void displayAllAdminHistory(AdminHistoryStack *s)
     cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
 }
 
-void displayLastDay(AdminHistoryStack *s)
-{
+void displayLastDay(AdminHistoryStack *s) {
     auto twentyFourHoursAgo = getCurrentUTCTime() - chrono::hours(24);
     AdminHistory *temp = s->top;
     int i = 1;
@@ -563,8 +470,7 @@ void displayLastDay(AdminHistoryStack *s)
     }
 }
 
-void displayLastMonth(AdminHistoryStack *s)
-{
+void displayLastMonth(AdminHistoryStack *s) {
     auto thirtyDaysAgo = getCurrentUTCTime() - chrono::hours(24 * 30);
     AdminHistory *temp = s->top;
     int i = 1;
