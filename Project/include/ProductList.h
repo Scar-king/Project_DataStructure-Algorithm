@@ -47,9 +47,15 @@ ProductList *createList(){
 }
 
 // We're using Add End Algorithm
-void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice){
+void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice, bool isLoadData, int id) {
     ProductElement *p = new ProductElement;
-    p -> id = ls -> i;
+
+    if(isLoadData) {
+        p->id = id;
+    } else {
+        p->id = ls->i;
+    }
+
     p -> model = model;
     p -> inStock = inStock;
     p -> sold = sold;
@@ -132,29 +138,29 @@ ProductElement* searchProductByID(ProductList *ls, int ID) { // Sokleap
 void deleteProductByID(ProductList* ls, int ID) { // Sokleap
     ProductElement* temp = searchProductByID(ls, ID);
     if(temp != nullptr){
-        if(ls -> n == 1){
+        if(ls->n == 1){
             delete temp;
-            ls -> head = nullptr;
-            ls -> tail = nullptr;
+            ls->head = nullptr;
+            ls->tail = nullptr;
         }
         else{
             // 1 2 3 4
             // delete 1 -> temp = 1, prev of temp = nullptr;
-            if(temp -> prev == nullptr){
-                temp -> next -> prev = nullptr;
-                ls -> head = temp -> next;
+            if(temp->prev == nullptr){
+                temp->next->prev = nullptr;
+                ls->head = temp->next;
                 delete temp;
             }
             else{
                 // 1 2 3 4
                 // delete 4 -> temp = 4, next of temp = nullptr;
-                temp -> prev -> next = temp -> next; 
-                ls -> tail = temp -> prev;
+                temp->prev->next = temp->next; 
+                ls->tail = temp->prev;
                 delete temp;
             }
             cout << "Successfully deleted product!\n";
         }
-        ls -> n--;
+        ls->n--;
         return;
     }
     cout << "Cannot delete!\n";
@@ -269,6 +275,49 @@ void displayUserProductList(ProductList *ls) { // Kheang Ann, Not include *** in
         temp = temp->next;
     }
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
+}
+
+void storeProduct(ProductList *ls) { // Sokleap
+    ofstream productFile("ProductList.csv");
+    ProductElement *temp = ls->head;
+    while(temp != nullptr) {
+        productFile << temp->id << "|" << temp->model << "|" << temp->inStock << "|" << temp->sold << "|" 
+                    << temp->description << "|" << temp->purchaseCost << "|" << temp->salePrice << "|" << temp->status << endl;
+        temp = temp -> next;
+    }
+
+    productFile.close();
+}
+
+void loadProductList(ProductList *ls) { // Sokleap
+    ifstream productFile("ProductList.csv");
+    string history;
+    string arrayString[8];
+    int index;
+    string token;
+
+    while(getline(productFile, history)) {
+        index = 0;
+        stringstream ss(history);
+        int index = 0;
+
+        while(getline(ss, token, '|')) {
+            arrayString[index++] = token;
+        }
+
+        int id = stoi(arrayString[0]);
+        string model = arrayString[1];
+        int inStock = stoi(arrayString[2]);
+        int sold = stoi(arrayString[3]);
+        string description = arrayString[4];
+        double purchaseCost = stod(arrayString[5]);
+        double salePrice = stod(arrayString[6]);
+        string status = arrayString[7];
+
+        addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, true, id);
+    }
+
+    productFile.close();
 }
 
 struct ReportElement { // Davin
