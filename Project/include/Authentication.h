@@ -5,6 +5,9 @@
 #include <conio.h>
 #include <algorithm>
 #include "../include/Design_Structure.h"
+#include "../include/ProductList.h"
+
+#include "Constants.h"
 
 using namespace std;
 
@@ -26,15 +29,15 @@ struct Userlist {
     User* tail;
 };
 
-Userlist* createList() {
-    Userlist* ul = new Userlist;
-    ul->n = 0;
-    ul->head = nullptr;
-    ul->tail = nullptr;
-    return ul;
+Userlist* createUserList() {
+    Userlist* ls = new Userlist;
+    ls->n = 0;
+    ls->head = nullptr;
+    ls->tail = nullptr;
+    return ls;
 }
 
-void AddEnd(Userlist* ul, string username, char gender, int age, string password) {
+void AddEnd(Userlist* ls, string username, char gender, int age, string password) {
     User* user = new User{username, gender, age, password, ls->tail, nullptr};
     if (ls->n == 0) {
         ls->head = user;
@@ -80,7 +83,7 @@ void addUserToFile(string username, char gender, int age, string password) {
 void loadUsersFromFile(Userlist* ls) {
     ifstream user("../data/userdata.csv");
     if (!user) {
-        cout << "Error loading file.\n";
+        cerr << "Error loading file.\n";
         return;
     }
 
@@ -138,8 +141,80 @@ string getMaskedPassword(const string& prompt) {
     return password;
 }
 
-int main() {
-    Userlist* users = createList();
+// Submenus of Admin Menu
+void handleViewTableMenu() {
+    bool backToAdminMenu = false;
+
+    while(!backToAdminMenu) {
+        system("cls");
+        viewTableMenu();
+
+        int tableOption;
+        cin >> tableOption;
+
+        switch(tableOption) {
+            case 1: {
+                ProductList *ls = createList();
+                displayAdminProductList(ls);
+                system("pause");
+                break;
+            }
+
+            case 2: {
+                ReportList *rl = createReportList();
+                displayOverallReport(rl);
+                system("pause");
+                break;
+            }
+
+            case 3: {
+                AdminHistoryStack *s = createEmptyStack();
+                displayAllAdminHistory(s);
+                system("pause");
+                break;
+            }
+
+            case 0:
+                backToAdminMenu = true;
+                break;
+
+            default:
+                cout << "\n" << INDENT << " Invalid option. Please try again.\n";
+                Sleep(1000);
+                break;
+        }
+    }
+}
+
+void handleAdminMenu() {
+    bool logout = false;
+
+    while (!logout) {
+        system("cls");
+        menuForAdmin();
+
+        int adminOption;
+        cin >> adminOption;
+
+        switch (adminOption) {
+            case 2:  
+                handleViewTableMenu();  
+                break;
+
+            case 0:
+                logout = true;  
+                system("cls");
+                break;
+
+            default:
+                cout << "\n" << INDENT << " Invalid option. Please try again.\n";
+                break;
+        }
+    }
+}
+
+void Authentication() {
+    Userlist* users = createUserList();
     loadUsersFromFile(users);
 
     string username, pw1, pw2;
@@ -149,56 +224,63 @@ int main() {
     int choice;
 
     do {
-        cout << "\n+-----------------------------+\n";
-        cout << "|     User Management System  |\n";
-        cout << "+-----------------------------+\n";
-        cout << "| 1. Administrator Login      |\n";
-        cout << "| 2. User Login               |\n";
-        cout << "| 3. Register New User        |\n";
-        cout << "| 0. Exit Application         |\n";
-        cout << "+-----------------------------+\n";
-        cout << "Please select an option: ";
+        loginPageMenu();
         cin >> choice;
         cin.ignore();
 
         switch (choice) {
             case 1:
-                cout << "Enter admin name: ";
+                cout << INDENT << "Enter admin name: ";
                 getline(cin, username);
-                pw1 = getMaskedPassword("Enter password: ");
-                if (username == AdminPassword && pw1 == AdminPassword) {
-                    cout << "\n Admin Login successful!\n";
-                    DisplayUsername(users);
+                pw1 = getMaskedPassword(INDENT + "Enter password: ");
 
-                    viewTableMenu();
+                if (username == AdminPassword && pw1 == AdminPassword) {
+                    cout << "\n" << INDENT << " Admin Login successful!\n";
+                    loading();
+                    handleAdminMenu();
+
                 } else {
-                    cout << "\n Invalid admin credentials.\n";
+                    cout << "\n" << INDENT << "Invalid admin credentials.\n";
                 }
                 break;
 
             case 2:
-                cout << "Enter username: ";
+                cout << INDENT << "Enter username: ";
                 getline(cin, username);
-                pw1 = getMaskedPassword("Enter your password: ");
+
+                if (username.empty() || any_of(username.begin(), username.end(), ::isdigit)) {
+                    cout << "\n" << INDENT << "Invalid username. It should not be empty or contain numbers.\n";
+                    break;
+                }
+            
+                pw1 = getMaskedPassword(INDENT + "Enter your password: ");
                 if (authenticateUser(users, username, pw1)) {
-                    cout << "\n Login successful. Welcome, " << username << "!\n";
+                    cout << "\n" << INDENT << " Login successful. Welcome, " << username << "!\n";
                 } else {
-                    cout << "\n Login failed. Username or password incorrect.\n";
+                    cout << "\n" << INDENT << " Login failed. Username or password incorrect.\n";
                 }
                 break;
 
             case 3: {
-                cout << "Enter username: ";
+                cout << INDENT << "Enter username: ";
                 getline(cin, username);
-                cout << "Enter gender(M/F): ";
+
+                // Check username validity
+                if (username.empty() || any_of(username.begin(), username.end(), ::isdigit)) {
+                    cout << "\n" << INDENT << "Invalid username. It should not be empty or contain numbers.\n";
+                    break;
+                }
+            
+                cout << INDENT << "Enter gender(M/F): ";
                 cin >> gender;
                 gender = toupper(gender);
-                cout << "Enter age: ";
+            
+                cout << INDENT << "Enter age: ";
                 cin >> age;
                 cin.ignore();
             
                 if (age <= 0 || age >= 100 || (gender != 'M' && gender != 'F')) {
-                    cout << "\nInvalid age or gender input. Please try again.\n";
+                    cout << "\n" << INDENT << "Invalid age or gender input. Please try again.\n";
                     break;
                 }
             
@@ -206,38 +288,43 @@ int main() {
                 bool passwordMatched = false;
             
                 while (pw_attempts-- > 0) {
-                    pw1 = getMaskedPassword("Create your password: ");
-                    pw2 = getMaskedPassword("Confirm password: ");
+                    pw1 = getMaskedPassword(INDENT + "Create your password: ");
+                    pw2 = getMaskedPassword(INDENT + "Confirm password: ");
+                
+                    // Password strength check
+                    if (pw1.length() < 4) {
+                        cout << INDENT << "Password too short (min 4 characters). Try again.\n";
+                        continue;
+                    }
                 
                     if (pw1 == pw2) {
                         passwordMatched = true;
                         break;
                     } else {
-                        cout << "Passwords do not match. ";
+                        cout << INDENT << "Passwords do not match. ";
                         if (pw_attempts > 0)
-                            cout << "Try again (" << pw_attempts << " attempts left).\n";
+                            cout << INDENT << "Try again (" << pw_attempts << " attempts left).\n";
                         else
-                            cout << "No attempts left. Registration canceled.\n";
+                            cout << INDENT << "No attempts left. Registration canceled.\n";
                     }
                 }
             
                 if (passwordMatched) {
                     AddEnd(users, username, gender, age, pw1);
                     addUserToFile(username, gender, age, pw1);
-                    cout << "\n Registration successful!\n";
+                    cout << "\n" << INDENT << " Registration successful!\n";
                 }
                 break;
             }
+
             case 0:
                 running = false;
-                cout << "\n Thank you for using our system. Goodbye!\n";
+                cout << "\n" << INDENT << " Thank you for using our system. Goodbye!\n";
                 break;
 
             default:
-                cout << "\n Invalid option. Please try again.\n";
+                cout << "\n" << INDENT << " Invalid option. Please try again.\n";
                 break;
         }
     } while (running);
-
-    return 0;
 }
