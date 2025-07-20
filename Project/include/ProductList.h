@@ -501,19 +501,82 @@ void pop(AdminHistoryStack *s){
     s->size--;
 }
 
-void displayAllAdminHistory(AdminHistoryStack *s) {
+void displayHistory(int i, AdminHistory *temp)
+{
+    string formattedTime = getCambodiaTime(temp->utcTime);
+    printf("| %4d | %-5d | %-20s | %-10s | %-50s | %-20s |\n",
+           i, temp->adminID, temp->adminName.c_str(), temp->commandType.c_str(), temp->description.c_str(), formattedTime.c_str());
+}
+
+void displayAllAdminHistory(AdminHistoryStack *s)
+{
     AdminHistory *temp = s->top;
     int i = 1;
+    cout << "\n--- All Admin History ---\n";
     cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-    printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n", 
-          "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+    printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
+           "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
     cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-    while (temp != nullptr) {
-        string formattedTime = getCambodiaTime(temp -> utcTime);
-        printf("| %4d | %-5d | %-20s | %-10s | %-50s | %-20s |\n",
-        i, temp -> adminID, temp -> adminName.c_str(), temp -> commandType.c_str(), temp -> description.c_str(), formattedTime.c_str());
+    while (temp != nullptr)
+    {
+        displayHistory(i, temp);
         temp = temp->next;
         i++;
     }
     cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+}
+
+void displayLastDay(AdminHistoryStack *s)
+{
+    auto twentyFourHoursAgo = getCurrentUTCTime() - chrono::hours(24);
+    AdminHistory *temp = s->top;
+    int i = 1;
+    bool found = false;
+    cout << "\n--- Admin History within the last 24 hours ---\n";
+    cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
+           "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    while (temp != nullptr)
+    {
+        if (temp->utcTime >= twentyFourHoursAgo)
+        {
+            displayHistory(i, temp);
+            found = true;
+            i++;
+        }
+        temp = temp->next;
+    }
+    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    if (!found)
+    {
+        cout << "No admin history found within the last 24 hours.\n";
+    }
+}
+
+void displayLastMonth(AdminHistoryStack *s)
+{
+    auto thirtyDaysAgo = getCurrentUTCTime() - chrono::hours(24 * 30);
+    AdminHistory *temp = s->top;
+    int i = 1;
+    bool found = false;
+    cout << "\n--- Admin History within the last 30 days ---\n";
+    cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
+           "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    while (temp != nullptr){
+        if (temp->utcTime >= thirtyDaysAgo)
+        {
+            displayHistory(i, temp);
+            found = true;
+            i++;
+        }
+        temp = temp->next;
+    }
+    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    if (!found)
+    {
+        cout << "No admin history found within the last 30 days.\n";
+    }
 }
