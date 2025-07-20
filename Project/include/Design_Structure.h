@@ -105,7 +105,7 @@ void viewTableMenu(){
     Sleep(50);
     printf("\n\t\t\t\t\t\t\t%-20s", "2. View Overall Report");
     Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "3. View Transaction Report");
+    printf("\n\t\t\t\t\t\t\t%-20s", "3. View Admin History");
     Sleep(50);
     printf("\n\t\t\t\t\t\t\t%-20s", "0. Back");
     Sleep(50);
@@ -120,7 +120,7 @@ void viewTableMenu(){
 }
 
 // Click login as User
-void loginAsUser(){
+void userMenu(){
         cout << YELLOW << "\n\t\t\t\t\t";
     for(int i = 0; i <= 50; i++){
         cout << "-";
