@@ -1,6 +1,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <windows.h>
+#include <vector>
+
+#include "Constants.h"
+
 using namespace std;
 
 #define RESET   "\033[0m"
@@ -12,139 +16,111 @@ using namespace std;
 
 void welcome(){
     cout << GREEN << R"(
-                       ___              __         __    __  ___                                       __    
-                      / _ \_______  ___/ /_ ______/ /_  /  |/  /__ ____  ___ ____ ____ __ _  ___ ___  / /_   
-                     / ___/ __/ _ \/ _  / // / __/ __/ / /|_/ / _ `/ _ \/ _ `/ _ `/ -_)  ' \/ -_) _ \/ __/   
-                    /_/  /_/  \___/\_,_/\_,_/\__/\__/ /_/  /_/\_,_/_//_/\_,_/\_, /\__/_/_/_/\__/_//_/\__/    
-                                                                            /___/                            
+        ____                 __           __     __  ___                                                  __     _____            __               
+       / __ \_________  ____/ /_  _______/ /_   /  |/  /___ _____  ____ _____ ____  ____ ___  ___  ____  / /_   / ___/__  _______/ /____  ____ ___ 
+      / /_/ / ___/ __ \/ __  / / / / ___/ __/  / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \/ __ `__ \/ _ \/ __ \/ __/   \__ \/ / / / ___/ __/ _ \/ __ `__ \
+     / ____/ /  / /_/ / /_/ / /_/ / /__/ /_   / /  / / /_/ / / / / /_/ / /_/ /  __/ / / / / /  __/ / / / /_    ___/ / /_/ (__  ) /_/  __/ / / / / /
+    /_/   /_/   \____/\__,_/\__,_/\___/\__/  /_/  /_/\__,_/_/ /_/\__,_/\__, /\___/_/ /_/ /_/\___/_/ /_/\__/   /____/\__, /____/\__/\___/_/ /_/ /_/ 
+                                                                      /____/                                       /____/                          
+                            
     )" << RESET << endl;
 }
 
-void loginPage(){
-    cout << YELLOW << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
+void printDashedLine() {
+    cout << TAB << "\t";
+    for (int i = 0; i < 60; i++) cout << "-";
+    cout << "\n";
+}
+
+void loading(){
+    cout << GREEN;
+    system("cls");
+    //printf("\e[?251");
+
+    // We use ASCII to print special character
+    SetConsoleCP(437);
+    SetConsoleOutputCP(437);
+    int bar1 = 177, bar2 = 219;
+
+    cout << "\n\n\n" << INDENT << "Loading...";
+    cout << "\n\n" << INDENT;
+
+    for (int i = 0; i < 60; i++){
+        cout << (char)bar1;
     }
-    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
-    Sleep(500);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
+    cout << "\r";
+    cout << INDENT;
+    for (int i = 0; i < 60; i++){
+        cout << (char)bar2;
+        Sleep(20);
     }
-    printf("\n\t\t\t\t\t\t\t%-20s", "1. Login as Administrator");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "2. Login as User");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "3. Register");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "0. Quit");
-    Sleep(50);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
+    cout << "\n\n" << INDENT << (char)1;
+    system("Pause");
+}
+
+// Reusable menu drawer
+void drawMenu(const string& title, const vector<string>& items, const string& prompt = "Please select an option: ") {
+    cout << YELLOW;
+    printDashedLine();
+
+    cout << INDENT << "\tMENU\n";
+
+    printDashedLine();
+
+    // Menu items
+    for (const auto& item : items) {
+        cout << INDENT << item << "\n";
+        Sleep(50);
     }
-    printf("\n\n\t\t\t\t\t%s", "Choice: ");
-    Sleep(50);
+
+    printDashedLine();
+    cout << "\n" << INDENT << prompt;
+    cout << RESET;
+}
+
+void loginPageMenu(){
+    cout << YELLOW;
+
+    cout << "\n" << INDENT << "+-----------------------------+\n";
+    cout << INDENT << "|     User Management System  |\n";
+    cout << INDENT << "+-----------------------------+\n";
+    cout << INDENT << "| 1. Administrator Login      |\n";
+    cout << INDENT << "| 2. User Login               |\n";
+    cout << INDENT << "| 3. Register New User        |\n";
+    cout << INDENT << "| 0. Exit Application         |\n";
+    cout << INDENT << "+-----------------------------+\n";
+    cout << INDENT << "Please select an option: ";
+
     cout << RESET;
 }
 
 // When Click Login as Administrator
-void menu(){
-    cout << YELLOW << "\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
-    Sleep(500);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\t\t\t\t\t\t\t%-20s", "1. Add New Product");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "2. View Table");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "3. Update Product");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "4. Delete Product");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "5. Search Product");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "0. Back");
-    Sleep(50);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\n\t\t\t\t\t%s", "Choice: ");
-    Sleep(50);
-    cout << RESET;
+void menuForAdmin() {
+    drawMenu("Menu", {
+        "1. Add New Product",
+        "2. View Table",
+        "3. Update Product",
+        "4. Delete Product",
+        "5. Search Product",
+        "0. Log out"
+    });
 }
 
 // When Admin click on View All Product
 void viewTableMenu(){
-    cout << YELLOW << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
-    Sleep(500);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\t\t\t\t\t\t\t%-20s", "1. View Product List");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "2. View Overall Report");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "3. View Admin History");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "0. Back");
-    Sleep(50);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\n\t\t\t\t\t%s", "Choice: ");
-    Sleep(50);
-    cout << RESET;
+    drawMenu("Menu", {
+        "1. View Product List",
+        "2. View Overall Report",
+        "3. View Admin History",
+        "0. Back"
+    }, "Choice: ");
 }
 
 // Click login as User
 void userMenu(){
-        cout << YELLOW << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\t\t\t\t\t\t\t\t%s", "Menu");
-    Sleep(500);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\t\t\t\t\t\t\t%-20s", "1. View Product List");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "2. Search Product");
-    Sleep(50);
-    printf("\n\t\t\t\t\t\t\t%-20s", "0. Back");
-    Sleep(50);
-    cout << "\n\t\t\t\t\t";
-    for(int i = 0; i <= 50; i++){
-        cout << "-";
-        Sleep(10);
-    }
-    printf("\n\n\t\t\t\t\t%s", "Choice: ");
-    Sleep(50);
-    cout << RESET;
+    drawMenu("Menu", {
+        "1. View Product List",
+        "2. Search Product",
+        "0. Back"
+    }, "Choice: ");
 }
