@@ -179,6 +179,12 @@ int main() {
             case 2:
                 cout << "Enter username: ";
                 getline(cin, username);
+
+                if (username.empty() || any_of(username.begin(), username.end(), ::isdigit)) {
+                    cout << "\nInvalid username. It should not be empty or contain numbers.\n";
+                    break;
+                }
+            
                 pw1 = getMaskedPassword("Enter your password: ");
                 if (authenticateUser(users, username, pw1)) {
                     cout << "\n Login successful. Welcome, " << username << "!\n";
@@ -190,9 +196,17 @@ int main() {
             case 3: {
                 cout << "Enter username: ";
                 getline(cin, username);
+
+                // Check username validity
+                if (username.empty() || any_of(username.begin(), username.end(), ::isdigit)) {
+                    cout << "\nInvalid username. It should not be empty or contain numbers.\n";
+                    break;
+                }
+            
                 cout << "Enter gender(M/F): ";
                 cin >> gender;
                 gender = toupper(gender);
+            
                 cout << "Enter age: ";
                 cin >> age;
                 cin.ignore();
@@ -208,6 +222,12 @@ int main() {
                 while (pw_attempts-- > 0) {
                     pw1 = getMaskedPassword("Create your password: ");
                     pw2 = getMaskedPassword("Confirm password: ");
+                
+                    // Password strength check
+                    if (pw1.length() < 4) {
+                        cout << "Password too short (min 4 characters). Try again.\n";
+                        continue;
+                    }
                 
                     if (pw1 == pw2) {
                         passwordMatched = true;
@@ -228,6 +248,7 @@ int main() {
                 }
                 break;
             }
+
             case 0:
                 running = false;
                 cout << "\n Thank you for using our system. Goodbye!\n";
