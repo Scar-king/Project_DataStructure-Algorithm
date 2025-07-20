@@ -64,83 +64,73 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
     ls -> i++;
 }
 
-ProductElement *split(ProductElement *head) {
-    // Both fast and slow are starting from head
-    ProductElement *fast = head;
-    ProductElement *slow = head;
-
-    // This technique helps you find the middle node efficiently.
-    while(fast->next && fast->next->next) { // Finding the middle node
-        fast = fast->next->next;
-        slow = slow->next;
+ProductElement *getNodeAt(ProductList *ls, int index) {
+    ProductElement *current = ls->head;
+    int i = 0;
+    while(current != nullptr && i < index) {
+        current = current->next;
+        i++;
     }
 
-    ProductElement *second = slow->next; // the node after the midpoint become the head of the second half
-    slow->next = nullptr; // cuts the list at midpoint, ending the first half
-    if(second) second->prev = nullptr; // avoid second node point back to the first half
-
-    return second; // second half
+    return current;
 }
 
-ProductElement *merge(ProductElement *first, ProductElement *second) {
-    // Base cases to handle null inputs
-    if(!first) return second;
-    if(!second) return first;
+void Merge(ProductList *ls, int lb, int mid, int ub) {
+    int i = lb;
+    int j = mid + 1;
+    int k = 0;
+    int n = ub - lb + 1;
+    int *b = new int[n];
 
-    if(first->salePrice >= second->salePrice) { // >= for descending order
-        first->next = merge(first->next, second);
-        if(first->next) first->next->prev = first;
-        first->prev = nullptr;
-        return first;
-    } else {
-        second->next = merge(first, second->next);
-        if(second->next) second->next->prev = second;
-        second->prev = nullptr;
-        return second;
+    ProductElement *left = getNodeAt(ls, i);
+    ProductElement *right = getNodeAt(ls, j);
+
+    while(i <= mid && j <= ub) {
+        if(left->salePrice > right->salePrice) {
+            b[k++] = left->salePrice;
+            left = left->next;
+            i++;
+        } else {
+            b[k++] = right->salePrice;
+            right = right->next;
+            j++;
+        }
+    }
+
+    while(i <= mid) {
+        b[k++] = left->salePrice;
+        left = left->next;
+        i++;
+    }
+
+    while(j <= ub) {
+        b[k++] = right->salePrice;
+        right = right->next;
+        j++;
+    }
+
+    ProductElement *current = getNodeAt(ls, lb);
+    for(k = 0; k < n; k++) {
+        current->salePrice = b[k];
+        current = current->next;
+    }
+
+    delete[] b;
+}
+
+void MergeSort(ProductList *ls, int lb, int ub) {
+    if(lb < ub) {
+        int mid = (lb + ub) / 2;
+        MergeSort(ls, lb, mid);
+        MergeSort(ls, mid + 1, ub);
+        Merge(ls, lb, mid, ub);
     }
 }
 
-ProductElement *mergeSort(ProductElement *head) {
-    // prevents null or only one element
-    if(!head || !head->next) return head;
-
-    ProductElement *second = split(head);
-    // Both head and second keep splitting until each part has 1 node
-    head = mergeSort(head);
-    second = mergeSort(second); 
-
-    // Now it take 2 sorted halves, and combine them into one sorted list
-    return merge(head, second);
-}
-
-/*
-
-    This is how ProductElement *mergeSort(ProductElement *head) work: 
-
-    mergeSort([899, 999, 699, 799])
-    ├── mergeSort([899, 999])
-    │   ├── mergeSort([899]) → [899]
-    │   └── mergeSort([999]) → [999]
-    │   → merge([899], [999]) → [999 ⇄ 899]
-    ├── mergeSort([699, 799])
-    │   ├── mergeSort([699]) → [699]
-    │   └── mergeSort([799]) → [799]
-    │   → merge([699], [799]) → [799 ⇄ 699]
-    → merge([999 ⇄ 899], [799 ⇄ 699])
-    → [999 ⇄ 899 ⇄ 799 ⇄ 699]
-
-
-*/
-
-void sortProductList(ProductList *plist){
-    plist->head = mergeSort(plist->head);
-
-    ProductElement *temp = plist->head;
-    plist->tail = nullptr;
-    while(temp && temp->next){
-        temp = temp->next;
+void mergeSort(ProductList *ls) {
+    if(ls->n > 1) {
+        MergeSort(ls, 0, ls->n - 1);
     }
-    plist->tail = temp;
 }
 
 void displayAdminProductList(ProductList *ls){ 
@@ -168,7 +158,7 @@ int main(){
     cout << "\nBefore Sorting by Sale Price: \n";
     displayAdminProductList(productList);
 
-    sortProductList(productList);
+    mergeSort(productList);
 
     cout << "\nAfter Sorting by Sale Price: \n";
     displayAdminProductList(productList);

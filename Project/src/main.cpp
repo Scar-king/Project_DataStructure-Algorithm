@@ -26,7 +26,7 @@ int main() {
 
     updateProductById(myList, 1000);
 
-    sortProductList(myList);
+    mergeSort(myList);
 
     cout << "\nAfter sorting by sale price:\n";
     displayAdminProductList(myList); 
