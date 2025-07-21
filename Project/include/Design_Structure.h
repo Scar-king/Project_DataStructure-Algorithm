@@ -98,7 +98,7 @@ void loginPageMenu(){
 void menuForAdmin() {
     drawMenu("Menu", {
         "1. Add New Product",
-        "2. View Table",
+        "2. View & Manage Product Tables",
         "3. Update Product",
         "4. Delete Product",
         "5. Search Product",
@@ -110,8 +110,10 @@ void menuForAdmin() {
 void viewTableMenu(){
     drawMenu("Menu", {
         "1. View Product List",
-        "2. View Overall Report",
-        "3. View Admin History",
+        "2. Sort Product List by Sale Price (Descending)",
+        "3. Sort Product List by Sale Price (Ascending)",
+        "4. View Overall Report (Profit & Sales)",
+        "5. View Admin History",
         "0. Back"
     }, "Choice: ");
 }
