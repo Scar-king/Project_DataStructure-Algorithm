@@ -4,8 +4,11 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
+#include <windows.h>
 
 #include "validation.h"
+
 using namespace std;
 
 constexpr int MIN_STOCK = 0;
@@ -52,6 +55,7 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
 
     if(isLoadData) {
         p->id = id;
+        ls->i = id;
     } else {
         p->id = ls->i;
     }
@@ -85,6 +89,18 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
     ls -> i++;
 }
 
+void storeProduct(ProductList *ls) { // Sokleap
+    ofstream productFile("../data/ProductList.csv");
+    ProductElement *temp = ls->head;
+    while(temp != nullptr) {
+        productFile << temp->id << "|" << temp->model << "|" << temp->inStock << "|" << temp->sold << "|" 
+                    << temp->description << "|" << temp->purchaseCost << "|" << temp->salePrice << endl;
+        temp = temp -> next;
+    }
+
+    productFile.close();
+}
+
 // Update Product
 void updateProductById(ProductList *ls, int targetId) {
     ProductElement *temp = ls->head;
@@ -93,22 +109,23 @@ void updateProductById(ProductList *ls, int targetId) {
     }
 
     if(temp == nullptr) {
-        cout << "Product with ID " << targetId << " not found.\n";
+        cout << INDENT << "Product with ID " << targetId << " not found.\n";
         return;
     }
 
-    cout << "\nUpdating Product ID: " << targetId << "\n";
-    cout << "Current model: " << temp->model << "\nNew model: ";
+    cout << "\n" << INDENT << "Updating Product ID: " << targetId << "\n";
+    cout << INDENT << "Current model: " << temp->model << "\n" << INDENT << "New model: ";
+    cin.ignore();
     getline(cin, temp->model);
 
-    temp->inStock = getValidateIntInRange("Enter new quantity in stock (1-1000): ", MIN_STOCK, MAX_STOCK);
-    temp->sold = getValidateIntInRange("Enter new quantity sold (1-1000): ", MIN_STOCK, MAX_STOCK);
+    temp->inStock = getValidateIntInRange(INDENT + "Enter new quantity in stock (1-1000): ", MIN_STOCK, MAX_STOCK);
+    temp->sold = getValidateIntInRange(INDENT + "Enter new quantity sold (1-1000): ", MIN_STOCK, MAX_STOCK);
     
-    cout << "New description: ";
+    cout << INDENT << "New description: ";
     getline(cin, temp->description);
 
-    temp->purchaseCost = getValidateDoubleInRange("New purchase cost($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
-    temp->salePrice = getValidateDoubleInRange("New sale price($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
+    temp->purchaseCost = getValidateDoubleInRange(INDENT + "New purchase cost($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
+    temp->salePrice = getValidateDoubleInRange(INDENT + "New sale price($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
 
     // Update status
     if(temp->inStock == 0) {
@@ -119,7 +136,9 @@ void updateProductById(ProductList *ls, int targetId) {
         temp->status = "\033[32mAvailable\033[0m   ";
     }
 
-    cout << "Product updated successfully.\n";
+    storeProduct(ls);
+
+    cout << GREEN << INDENT << "Product updated successfully.\n" << RESET;
 }
 
 // Search Product by ID
@@ -158,82 +177,63 @@ void deleteProductByID(ProductList* ls, int ID) { // Sokleap
                 ls->tail = temp->prev;
                 delete temp;
             }
-            cout << "Successfully deleted product!\n";
+            storeProduct(ls);
+            cout << GREEN << INDENT << "Successfully deleted product!\n" << RESET;
         }
         ls->n--;
         return;
     }
-    cout << "Cannot delete!\n";
+    cout << "\n" << RED << INDENT << "Entered ID not found, Please try again...\n" << RESET;
 }
 
-// *** Sort Product using Merge Sort Algorithm ***
-ProductElement *getNodeAt(ProductList *ls, int index) {
-    ProductElement *current = ls->head;
-    int i = 0;
-    while(current != nullptr && i < index) {
-        current = current->next;
-        i++;
-    }
-
-    return current;
+// *** Sort Product using Quick Sort Algorithm ***
+void swapProduct(ProductElement *a, ProductElement *b) {
+    swap(a->id, b->id);
+    swap(a->model, b->model);
+    swap(a->inStock, b->inStock);
+    swap(a->sold, b->sold);
+    swap(a->description, b->description);
+    swap(a->purchaseCost, b->purchaseCost);
+    swap(a->salePrice, b->salePrice);
+    swap(a->status, b->status);
 }
 
-void Merge(ProductList *ls, int lb, int mid, int ub) {
-    int i = lb;
-    int j = mid + 1;
-    int k = 0;
-    int n = ub - lb + 1;
-    int *b = new int[n];
+ProductElement *Partition(ProductElement *low, ProductElement *high, bool ascending) {
+    double pivot = low->salePrice;
+    ProductElement *start = low;
+    ProductElement *end = high;
 
-    ProductElement *left = getNodeAt(ls, i);
-    ProductElement *right = getNodeAt(ls, j);
+    while(start != end) {
+        // Adjust comparisons based on ascending flag
+        while(end != start && (ascending ? end->salePrice > pivot : end->salePrice < pivot)) {
+            end = end->prev;
+        }
 
-    while(i <= mid && j <= ub) {
-        if(left->salePrice > right->salePrice) {
-            b[k++] = left->salePrice;
-            left = left->next;
-            i++;
-        } else {
-            b[k++] = right->salePrice;
-            right = right->next;
-            j++;
+        while(start != end && (ascending ? start->salePrice <= pivot : start->salePrice >= pivot)) {
+            start = start->next;
+        }
+
+        if(start != end) {
+            swapProduct(start, end);
         }
     }
 
-    while(i <= mid) {
-        b[k++] = left->salePrice;
-        left = left->next;
-        i++;
-    }
-
-    while(j <= ub) {
-        b[k++] = right->salePrice;
-        right = right->next;
-        j++;
-    }
-
-    ProductElement *current = getNodeAt(ls, lb);
-    for(k = 0; k < n; k++) {
-        current->salePrice = b[k];
-        current = current->next;
-    }
-
-    delete[] b;
+    swapProduct(low, end);
+    return end;
 }
 
-void MergeSort(ProductList *ls, int lb, int ub) {
-    if(lb < ub) {
-        int mid = (lb + ub) / 2;
-        MergeSort(ls, lb, mid);
-        MergeSort(ls, mid + 1, ub);
-        Merge(ls, lb, mid, ub);
+void QuickSort(ProductElement *low, ProductElement *high, bool ascending) {
+    if(low && high && low != high && low != high->next) {
+        ProductElement *pivotNode = Partition(low, high, ascending);
+        QuickSort(low, pivotNode->prev, ascending);
+        QuickSort(pivotNode->next, high, ascending);
     }
 }
 
-void mergeSort(ProductList *ls) {
-    if(ls->n > 1) {
-        MergeSort(ls, 0, ls->n - 1);
-    }
+void quickSort(ProductList *ls, bool ascending = false) {
+
+    QuickSort(ls->head, ls->tail, ascending);
+
 }
 
 // Display Product By ID
@@ -277,27 +277,31 @@ void displayUserProductList(ProductList *ls) { // Kheang Ann, Not include *** in
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
 }
 
-void storeProduct(ProductList *ls) { // Sokleap
-    ofstream productFile("ProductList.csv");
-    ProductElement *temp = ls->head;
-    while(temp != nullptr) {
-        productFile << temp->id << "|" << temp->model << "|" << temp->inStock << "|" << temp->sold << "|" 
-                    << temp->description << "|" << temp->purchaseCost << "|" << temp->salePrice << "|" << temp->status << endl;
-        temp = temp -> next;
+void clearProductList(ProductList *ls) {
+    ProductElement *temp;
+    while (ls->head != nullptr) {
+        temp = ls->head;
+        ls->head = ls->head->next;
+        delete temp;
     }
-
-    productFile.close();
+    ls->tail = nullptr;
 }
 
 void loadProductList(ProductList *ls) { // Sokleap
-    ifstream productFile("ProductList.csv");
+    ifstream productFile("../data/ProductList.csv");
+
+    if (!productFile){
+        cerr << "File doesn't exsit!\n"; 
+        return; // File doesn't exist yet
+    }
+
+    clearProductList(ls); // Reset before 
+
     string history;
-    string arrayString[8];
-    int index;
+    string arrayString[7];
     string token;
 
     while(getline(productFile, history)) {
-        index = 0;
         stringstream ss(history);
         int index = 0;
 
@@ -312,7 +316,6 @@ void loadProductList(ProductList *ls) { // Sokleap
         string description = arrayString[4];
         double purchaseCost = stod(arrayString[5]);
         double salePrice = stod(arrayString[6]);
-        string status = arrayString[7];
 
         addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, true, id);
     }
@@ -322,7 +325,7 @@ void loadProductList(ProductList *ls) { // Sokleap
 
 struct ReportElement { // Davin
     int id;
-    string model;
+    ProductElement *product;
     int totalStock;
     int totalSold;
     double totalPurchaseCost;
@@ -350,8 +353,8 @@ ReportList *createReportList(){
 // We're using Add End Algorithm
 void addReport(ReportList *rl, ProductElement *p) {
     ReportElement *re = new ReportElement;
-    re -> id = 1000 + rl -> n;
-    re -> model = p -> model;
+    re->product = p;
+    re->id = p->id;
     
     int totalStock = p->inStock;
     int totalSold = p->sold;
@@ -360,24 +363,24 @@ void addReport(ReportList *rl, ProductElement *p) {
     double profit = totalEarn - totalPurchaseCost;
     double estimatProfit = profit + (totalStock * (p->salePrice - p->purchaseCost));
 
-    re -> totalStock = totalStock;
-    re -> totalSold = totalSold;
-    re -> totalPurchaseCost = totalPurchaseCost;
-    re -> totalEarn = totalEarn;
-    re -> profit = profit;
-    re -> estimatProfit = estimatProfit;
+    re->totalStock = totalStock;
+    re->totalSold = totalSold;
+    re->totalPurchaseCost = totalPurchaseCost;
+    re->totalEarn = totalEarn;
+    re->profit = profit;
+    re->estimatProfit = estimatProfit;
 
-    re -> next = nullptr;
-    re -> prev = rl -> tail;
+    re->next = nullptr;
+    re->prev = rl -> tail;
 
-    if(rl -> n == 0){
-        rl -> head = re;
+    if(rl->n == 0){
+        rl->head = re;
     }
     else{
-        rl -> tail -> next = re; 
+        rl->tail->next = re; 
     }
-    rl -> tail = re;
-    rl -> n++;
+    rl->tail = re;
+    rl->n++;
 }
 
 void displayOverallReport(ReportList *rl) { 
@@ -386,19 +389,80 @@ void displayOverallReport(ReportList *rl) {
         return;
     }
 
+    ofstream reportFile("../data/OverallReport.csv");
     ReportElement *temp = rl->head;
 
     cout << "\n+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
     printf("| %-5s | %-20s | %-12s | %-5s | %-20s | %-11s | %-11s | %-16s |\n",
            "ID", "MODEL", "TOTAL STOCK", "SOLD", "TOTAL PURCHASE COST", "TOTAL EARN", "PROFIT", "ESTIMATE PROFIT");
     cout << "+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
+
     while (temp != nullptr) {
         printf("| %-5d | %-20s | %-12d | %-5d | %-20.2f | %-11.2f | %-11.2f | %-16.2f |\n",
-               temp->id, temp->model.c_str(), temp->totalStock, temp->totalSold,
+               temp->id, temp->product->model.c_str(), temp->totalStock, temp->totalSold,
                temp->totalPurchaseCost, temp->totalEarn, temp->profit, temp->estimatProfit);
+
+        // Save clean | separated data
+        reportFile << temp->id << "|"
+             << temp->product->model << "|"
+             << temp->totalStock << "|"
+             << temp->totalSold << "|"
+             << temp->totalPurchaseCost << "|"
+             << temp->totalEarn << "|"
+             << temp->profit << "|"
+             << temp->estimatProfit << "\n";
+        
         temp = temp->next;
     }
     cout << "+-------+----------------------+--------------+-------+----------------------+-------------+-------------+------------------+\n";
+
+    reportFile.close();
+}
+
+void printBar(int blocks, char symbol, const string &color) {
+    cout << color;
+    for (int i = 0; i < blocks; i++) {
+        cout << symbol;
+    }
+    cout << RESET;
+}
+
+// Draw a bar chart using the data from ReportList
+void graphVisualization(ReportList *rl) {
+    if(rl == nullptr || rl->head == nullptr) {
+        cout << "\n" << INDENT << "No report data to visualize.\n";
+        return;
+    }
+
+    // Set console to CP437 for ASCII block charaters
+    SetConsoleCP(437);
+    SetConsoleOutputCP(437);
+
+    char block = 178;     // Solid block (ASCII)
+    double scale = 500.0; // 1 block = $500
+
+    cout << "\nProfit Visualization (Green = Profit, Red = Estimate Profit)\n";
+    cout << "===================================================================\n";
+
+    ReportElement *temp = rl->head;
+    while(temp != nullptr) {
+        // Calculate blocks for profit and estimated profit
+        int profitBlocks = temp->profit / 500;
+        int estimateBlocks = (temp->estimatProfit - temp->profit) / 500; // only the difference
+
+
+        // Display product name and bars
+        cout << setw(20) << left << temp->product->model << " | ";
+        printBar(profitBlocks, block, GREEN);
+        printBar(estimateBlocks, block, BLUE);
+        cout << "\n";
+
+        temp = temp->next;
+    }
+
+    cout << "\nLegend: ";
+    printBar(2, block, GREEN); cout << " = Profit, ";
+    printBar(2, block, BLUE); cout << " = Estimated Profit (1 block approximately $500)\n";
 }
 
 struct AdminHistory { // Sokleap
@@ -406,7 +470,7 @@ struct AdminHistory { // Sokleap
     string adminName;
     string commandType;
     string description;
-    chrono::system_clock::time_point utcTime;
+    string cambodiaStringTime;
 
     AdminHistory *next;
 };
@@ -418,17 +482,17 @@ struct AdminHistoryStack {
 
 AdminHistoryStack *createEmptyStack() {
     AdminHistoryStack *s = new AdminHistoryStack();
-    s -> size = 0;
-    s -> top = nullptr;
+    s->size = 0;
+    s->top = nullptr;
     return s;
 }
 
-chrono::system_clock::time_point getCurrentUTCTime(){
+chrono::system_clock::time_point getCurrentUTCTime() {
     chrono::system_clock::time_point utc_time_point = std::chrono::system_clock::now();
     return utc_time_point;
 }
 
-string getCambodiaTime(chrono::system_clock::time_point utcTimePoint){
+string getCambodiaTime(chrono::system_clock::time_point utcTimePoint) {
 
     const std::chrono::hours CAMBODIA_OFFSET = std::chrono::hours(7); // ICT is UTC+07:00
 
@@ -436,33 +500,33 @@ string getCambodiaTime(chrono::system_clock::time_point utcTimePoint){
 
     std::time_t cambodiaTimeT = std::chrono::system_clock::to_time_t(cambodia_time_point);
 
-    std::tm* cambodiaTime = std::gmtime(&cambodiaTimeT);
+    std::tm *cambodiaTime = std::gmtime(&cambodiaTimeT);
 
     char timeBuffer[30];
     strftime(timeBuffer, sizeof(timeBuffer), "%d/%m/%Y %H:%M:%S", cambodiaTime);
-    
+
     return string(timeBuffer);
 }
 
-void push(AdminHistoryStack *s, int adminID, string adminName, string commandType, string description, chrono::system_clock::time_point utcTime) {
-    AdminHistory* history = new AdminHistory;
+void push(AdminHistoryStack *s, int adminID, string adminName, string commandType, string description, string cambodiaStringTime) {
+    AdminHistory *history = new AdminHistory;
 
-    history -> adminID = adminID;
-    history -> adminName = adminName;
-    history -> commandType = commandType;
-    history -> description = description;
-    history -> utcTime = utcTime; 
-    history -> next = s -> top;
-    s -> top = history;
-    s -> size++;
-    
+    history->adminID = adminID;
+    history->adminName = adminName;
+    history->commandType = commandType;
+    history->description = description;
+    history->cambodiaStringTime = cambodiaStringTime;
+    history->next = s->top;
+    s->top = history;
+    s->size++;
 }
 
-void pop(AdminHistoryStack *s){
-    if(s->top == nullptr){
+void pop(AdminHistoryStack *s) {
+    if (s->top == nullptr)
+    {
         cout << "Stack is empty!\n";
         return;
-    } 
+    }
     AdminHistory *temp = s->top;
     s->top = s->top->next;
     delete temp;
@@ -470,21 +534,26 @@ void pop(AdminHistoryStack *s){
 }
 
 void displayHistory(int i, AdminHistory *temp) {
-    string formattedTime = getCambodiaTime(temp->utcTime);
     printf("| %4d | %-5d | %-20s | %-10s | %-50s | %-20s |\n",
-           i, temp->adminID, temp->adminName.c_str(), temp->commandType.c_str(), temp->description.c_str(), formattedTime.c_str());
+           i, temp->adminID, temp->adminName.c_str(), temp->commandType.c_str(), temp->description.c_str(), temp->cambodiaStringTime.c_str());
 }
 
 void displayAllAdminHistory(AdminHistoryStack *s) {
+    if(s -> size == 0){
+        cout << "\nNo admin history found.\n";
+    }
     AdminHistory *temp = s->top;
     int i = 1;
-    cout << "\n--- All Admin History ---\n";
-    cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-    printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
-           "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
-    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     while (temp != nullptr)
     {
+        if (i == 1)
+        {
+            cout << "\n--- All Admin History ---\n";
+            cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+            printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
+                   "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+            cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+        }
         displayHistory(i, temp);
         temp = temp->next;
         i++;
@@ -492,20 +561,32 @@ void displayAllAdminHistory(AdminHistoryStack *s) {
     cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
 }
 
+time_t stringToTimeT(const string &datetimeStr) {
+    tm tm{};
+    stringstream ss(datetimeStr);
+    ss >> get_time(&tm, "%d/%m/%Y %H:%M:%S");
+    return mktime(&tm);
+}
+
 void displayLastDay(AdminHistoryStack *s) {
     auto twentyFourHoursAgo = getCurrentUTCTime() - chrono::hours(24);
+    time_t twentyFourHoursAgo_t = chrono::system_clock::to_time_t(twentyFourHoursAgo);
     AdminHistory *temp = s->top;
     int i = 1;
     bool found = false;
-    cout << "\n--- Admin History within the last 24 hours ---\n";
-    cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-    printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
-           "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
-    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     while (temp != nullptr)
     {
-        if (temp->utcTime >= twentyFourHoursAgo)
+        time_t recordTime = stringToTimeT(temp->cambodiaStringTime);
+        if (recordTime >= twentyFourHoursAgo_t)
         {
+            if (i == 1)
+            {
+                cout << "\n--- Admin History within the last 24 hours ---\n";
+                cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+                printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
+                       "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+                cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+            }
             displayHistory(i, temp);
             found = true;
             i++;
@@ -515,32 +596,83 @@ void displayLastDay(AdminHistoryStack *s) {
     cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     if (!found)
     {
-        cout << "No admin history found within the last 24 hours.\n";
+        cout << "\nNo admin history found within the last 24 hours.\n";
     }
 }
 
+time_t getOneMonthAgoTime() {
+    time_t now = time(nullptr);
+    struct tm *tmNow = localtime(&now);
+    tmNow->tm_mon -= 1;
+    if (tmNow->tm_mon < 0)
+    {
+        tmNow->tm_mon += 12;
+        tmNow->tm_year -= 1;
+    }
+    return mktime(tmNow);
+}
+
 void displayLastMonth(AdminHistoryStack *s) {
-    auto thirtyDaysAgo = getCurrentUTCTime() - chrono::hours(24 * 30);
     AdminHistory *temp = s->top;
     int i = 1;
     bool found = false;
-    cout << "\n--- Admin History within the last 30 days ---\n";
-    cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-    printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
-           "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
-    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-    while (temp != nullptr){
-        if (temp->utcTime >= thirtyDaysAgo)
+    time_t oneMonthAgo = getOneMonthAgoTime();
+    while (temp != nullptr)
+    {
+        time_t recordTime = stringToTimeT(temp->cambodiaStringTime);
+        if (recordTime >= oneMonthAgo)
         {
+            if (i == 1)
+            {
+                cout << "\n--- Admin History within the last 30 days ---\n";
+                cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+                printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
+                       "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+                cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+            }
             displayHistory(i, temp);
             found = true;
             i++;
         }
         temp = temp->next;
     }
+
     cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     if (!found)
     {
-        cout << "No admin history found within the last 30 days.\n";
+        cout << "\nNo admin history found within the last 30 days.\n";
     }
+}
+
+void storeHistory(AdminHistory *temp) {
+    ofstream historyFile("../data/History.csv", ios::app);
+    historyFile << temp->adminID << "|" << temp->adminName.c_str() << "|" << temp->commandType.c_str() << "|" << temp->description.c_str() << "|" << temp->cambodiaStringTime.c_str() << endl;
+    historyFile.close();
+}
+
+void loadAdminHistoryStack(AdminHistoryStack *s) {
+    ifstream historyFile("../data/History.csv");
+    string history;
+    string arrayString[5];
+    string token;
+    while (getline(historyFile, history))
+    {
+        stringstream ss(history);
+        int index = 0;
+
+        while (getline(ss, token, '|'))
+        {
+            arrayString[index] = token;
+            index++;
+        }
+
+        int adminID = stoi(arrayString[0]);
+        string adminName = arrayString[1];
+        string commandType = arrayString[2];
+        string description = arrayString[3];
+        string time = arrayString[4];
+
+        push(s, adminID, adminName, commandType, description, time);
+    }
+    historyFile.close();
 }
