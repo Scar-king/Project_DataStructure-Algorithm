@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cstdio>
+#include <iomanip>
 #include <conio.h>
 #include <algorithm>
 #include "../include/Design_Structure.h"
@@ -10,6 +12,12 @@
 #include "Constants.h"
 
 using namespace std;
+
+// GLOBAL VAR
+ProductList *ls = createList();
+
+// Forward declare so compiler knows this exists
+// void storeProduct(ProductList *ls);
 
 const char Encryption_key = 'K';
 const string AdminPassword = "admin";
@@ -154,22 +162,47 @@ void handleViewTableMenu() {
 
         switch(tableOption) {
             case 1: {
-                ProductList *ls = createList();
                 displayAdminProductList(ls);
                 system("pause");
                 break;
             }
 
             case 2: {
-                ReportList *rl = createReportList();
-                displayOverallReport(rl);
+                quickSort(ls);
+                displayAdminProductList(ls);
                 system("pause");
                 break;
             }
 
             case 3: {
+                quickSort(ls, true); // Sort by lowest to highest
+                displayAdminProductList(ls);
+                system("pause");
+                break;
+            }
+
+            case 4: {
+                ReportList *rl = createReportList();
+
+                ProductElement *temp = ls->head;
+                while(temp != nullptr) {
+                    addReport(rl, temp);
+                    temp = temp->next;
+                }
+
+                displayOverallReport(rl);
+                graphVisualization(rl);
+                system("pause");
+                break;
+            }
+
+            case 5: {
                 AdminHistoryStack *s = createEmptyStack();
+
+                loadAdminHistoryStack(s);
+
                 displayAllAdminHistory(s);
+
                 system("pause");
                 break;
             }
@@ -188,6 +221,7 @@ void handleViewTableMenu() {
 
 void handleAdminMenu() {
     bool logout = false;
+    loadProductList(ls);
 
     while (!logout) {
         system("cls");
@@ -197,9 +231,82 @@ void handleAdminMenu() {
         cin >> adminOption;
 
         switch (adminOption) {
+            case 1:{
+
+                system("cls");
+
+                string model;
+                int inStock;
+                int sold;
+                string description;
+                double purchaseCost;
+                double salePrice;
+
+                cin.ignore();
+                cout << INDENT << "Please enter a product Model: ";
+                getline(cin, model);
+                cout << INDENT << "Enter in Stock: ";
+                cin >> inStock;
+                cout << INDENT << "Enter Sold: ";
+                cin >> sold;
+
+                cin.ignore();
+                cout << INDENT << "Enter Description: ";
+                getline(cin, description);
+                cout << INDENT << "Enter Purchase Cost: ";
+                cin >> purchaseCost;
+                cout << INDENT << "Enter Sale Price: ";
+                cin >> salePrice;
+
+                addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, false, 0);
+                storeProduct(ls);
+
+                cout << "\n" << INDENT << "Product added to the List successfully!\n";
+                system("pause");
+
+                break;
+            }
+
             case 2:  
                 handleViewTableMenu();  
                 break;
+
+            case 3:{
+                system("cls");
+
+                int targetId;
+                cout << INDENT << "Enter ID to update: ";
+                cin >> targetId;
+                updateProductById(ls, targetId);
+
+                system("pause");
+                break;
+            }
+
+            case 4: {
+                system("cls");
+
+                int id;
+                cout << INDENT << "Enter ID to Delete: ";
+                cin >> id;
+                deleteProductByID(ls, id);
+
+                system("pause");
+                break;
+            }
+
+            case 5: {
+                system("cls");
+
+                int id;
+                cout << INDENT << "Search ID: ";
+                cin >> id;
+                searchProductByID(ls, id);
+                displayProductByID(ls, id);
+
+                system("pause");
+                break;
+            }
 
             case 0:
                 logout = true;  
@@ -236,7 +343,7 @@ void Authentication() {
 
                 if (username == AdminPassword && pw1 == AdminPassword) {
                     cout << "\n" << INDENT << " Admin Login successful!\n";
-                    loading();
+                    // loading();
                     handleAdminMenu();
 
                 } else {
