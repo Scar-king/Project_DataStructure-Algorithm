@@ -207,6 +207,15 @@ void handleViewTableMenu() {
                 break;
             }
 
+            case 6: {
+                system("cls");
+
+                displayBestSelling(ls);
+
+                system("pause");
+                break;
+            }
+
             case 0:
                 backToAdminMenu = true;
                 break;
@@ -217,6 +226,31 @@ void handleViewTableMenu() {
                 break;
         }
     }
+}
+
+void backupAndRestoreMenu(ProductList *ls) {
+    int choice;
+    do {
+        menuForBackupAndRestore();
+
+        cin >> choice;
+
+        switch(choice) {
+            case 1:
+                storeProduct(ls);
+                backupProductData(ls);
+                system("pause");
+                break;
+            case 2:
+                restoreProductData(ls);
+                system("pause");
+                break;
+            case 0:
+                break;
+            default:
+                cout << RED << INDENT << "Invalid choice. Try again...\n" << RESET;
+        }
+    } while(choice != 0);
 }
 
 void handleAdminMenu() {
@@ -308,6 +342,22 @@ void handleAdminMenu() {
                 break;
             }
 
+            case 6: {
+                system("cls");
+
+                displayLowStockProducts(ls);
+
+                system("pause");
+                break;
+            }
+
+            case 7: {
+                system("cls");
+
+                backupAndRestoreMenu(ls);
+                break;
+            }
+
             case 0:
                 logout = true;  
                 system("cls");
@@ -318,6 +368,10 @@ void handleAdminMenu() {
                 break;
         }
     }
+}
+
+void handleUserMenu() {
+
 }
 
 void Authentication() {
@@ -363,6 +417,8 @@ void Authentication() {
                 pw1 = getMaskedPassword(INDENT + "Enter your password: ");
                 if (authenticateUser(users, username, pw1)) {
                     cout << "\n" << INDENT << " Login successful. Welcome, " << username << "!\n";
+                    // loading();
+                    handleUserMenu();
                 } else {
                     cout << "\n" << INDENT << " Login failed. Username or password incorrect.\n";
                 }

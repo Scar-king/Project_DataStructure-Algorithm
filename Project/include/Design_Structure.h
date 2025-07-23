@@ -102,6 +102,8 @@ void menuForAdmin() {
         "3. Update Product",
         "4. Delete Product",
         "5. Search Product",
+        "6. View Low-Stock Products",
+        "7. Backup & Restore Product Data",
         "0. Log out"
     });
 }
@@ -114,6 +116,7 @@ void viewTableMenu(){
         "3. Sort Product List by Sale Price (Ascending)",
         "4. View Overall Report (Profit & Sales)",
         "5. View Admin History",
+        "6. View Top 5 Best-Selling Products",
         "0. Back"
     }, "Choice: ");
 }
@@ -123,6 +126,15 @@ void userMenu(){
     drawMenu("Menu", {
         "1. View Product List",
         "2. Search Product",
+        "0. Back"
+    }, "Choice: ");
+}
+
+// Backup Menu
+void menuForBackupAndRestore() {
+    drawMenu("Backup & Restore Menu", {
+        "1. Backup Current Product Data",
+        "2. Restore Product Data from Backup",
         "0. Back"
     }, "Choice: ");
 }

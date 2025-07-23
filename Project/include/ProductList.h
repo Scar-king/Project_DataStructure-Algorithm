@@ -187,7 +187,7 @@ void deleteProductByID(ProductList* ls, int ID) { // Sokleap
 }
 
 // *** Sort Product using Quick Sort Algorithm ***
-void swapProduct(ProductElement *a, ProductElement *b) {
+void swapProduct(ProductElement *a, ProductElement *b) { // Quick Sort property
     swap(a->id, b->id);
     swap(a->model, b->model);
     swap(a->inStock, b->inStock);
@@ -247,7 +247,77 @@ void displayProductByID(ProductList* ls, int ID) {
         cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
         return;
     }
-    cout << "Product not found!\n";
+    cout << INDENT << "Product not found!\n";
+}
+
+// Display Top 5 Best Selling Product
+void displayBestSelling(ProductList *ls) {
+
+    if(ls->n == 0) {
+        cout << RED << INDENT << "No products available.\n" << RESET;
+    }
+
+    // Copy products into an array for sorting
+    ProductElement *arr[ls->n];
+    ProductElement *temp = ls->head;
+    int index = 0;
+    while(temp != nullptr) {
+        arr[index++] = temp;
+        temp = temp->next;
+    }
+
+    // Sort by sold (Descending) using simple Bubble Sort
+    for(int i = 0; i < ls->n - 1; i++) {
+        for(int j = 0; j < ls->n - i - 1; j++) {
+            if(arr[j]->sold < arr[j + 1]->sold) {
+                swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+
+    cout << "\n" << INDENT << "=== Top 5 Best-Selling Products ===\n";
+    cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+    printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+
+    for(int i = 0; i < min(5, ls->n); i++) {
+        printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n", 
+        arr[i]->id, arr[i]->model.c_str(), arr[i]->inStock, arr[i]->sold, arr[i]->description.c_str(), arr[i]->purchaseCost, arr[i]->salePrice, arr[i]->status.c_str());
+    }
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+}
+
+// View Low-Stock Products
+void displayLowStockProducts(ProductList *ls) {
+    if(ls->n == 0) {
+        cout << RED << INDENT << "No products available.\n" << RESET;
+        return; 
+    }
+
+    bool found = false;
+    cout << "\n" << INDENT << "=== Low-Stock Products (<= 25% of total stock) ===\n";
+    cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
+    printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n",
+           "ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)", "SALE PRICE($)", "STATUS");
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n"; 
+
+    ProductElement *temp = ls->head;
+    while(temp != nullptr) {
+        int total = temp->inStock + temp->sold;
+        if(total > 0 && temp->inStock <= static_cast<int>(total * 0.25)) {
+            found = true;
+            printf("| %5d | %-20s | %5d | %5d | %-35s | %16.2f | %13.2f | %-12s |\n",
+                   temp->id, temp->model.c_str(), temp->inStock, temp->sold,
+                   temp->description.c_str(), temp->purchaseCost, temp->salePrice, temp->status.c_str());
+        }
+        temp = temp->next;
+    }
+
+    if(!found) {
+        cout << RED << INDENT << "No low-stock products found.\n";
+    }
+
+    cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
 }
 
 // Display Admin Product List
@@ -278,46 +348,62 @@ void displayUserProductList(ProductList *ls) { // Kheang Ann, Not include *** in
 }
 
 void clearProductList(ProductList *ls) {
-    ProductElement *temp;
-    while (ls->head != nullptr) {
-        temp = ls->head;
-        ls->head = ls->head->next;
-        delete temp;
+    ProductElement *current = ls->head;
+    while (current != nullptr) {
+        ProductElement *nextNode = current->next;
+        delete current;
+        current = nextNode;
     }
+    ls->head = nullptr;
     ls->tail = nullptr;
+    ls->n = 0;
+    ls->i = 1000;
 }
 
 void loadProductList(ProductList *ls) { // Sokleap
     ifstream productFile("../data/ProductList.csv");
 
     if (!productFile){
-        cerr << "File doesn't exsit!\n"; 
+        cout << RED << INDENT << "Error: ProductList.csv not found.\n" << RESET; 
         return; // File doesn't exist yet
     }
 
     clearProductList(ls); // Reset before 
 
     string history;
-    string arrayString[7];
+    string arrayString[8]; // Allow space for an optional 8th column (status)
     string token;
 
     while(getline(productFile, history)) {
+        if(history.empty()) continue; // Skip blank lines
+
         stringstream ss(history);
         int index = 0;
 
-        while(getline(ss, token, '|')) {
+        while(getline(ss, token, '|') && index < 8) {
             arrayString[index++] = token;
         }
 
-        int id = stoi(arrayString[0]);
-        string model = arrayString[1];
-        int inStock = stoi(arrayString[2]);
-        int sold = stoi(arrayString[3]);
-        string description = arrayString[4];
-        double purchaseCost = stod(arrayString[5]);
-        double salePrice = stod(arrayString[6]);
+        // Validate row (must have at least 7 fields for a product)
+        if(index < 7) {
+            cout << RED << INDENT << "Warning: Skipped invalid row in ProductList.csv\n" << RESET;
+            continue;
+        }
 
-        addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, true, id);
+        try {
+            int id = stoi(arrayString[0]);
+            string model = arrayString[1];
+            int inStock = stoi(arrayString[2]);
+            int sold = stoi(arrayString[3]);
+            string description = arrayString[4];
+            double purchaseCost = stod(arrayString[5]);
+            double salePrice = stod(arrayString[6]);
+    
+            addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, true, id);
+        }
+        catch(...) {
+            cout << RED << INDENT << "Warning: Skipped a corrupted row (conversion error)\n" << RESET;
+        }
     }
 
     productFile.close();
@@ -676,3 +762,54 @@ void loadAdminHistoryStack(AdminHistoryStack *s) {
     }
     historyFile.close();
 }
+
+void backupProductData(ProductList *ls) {
+    // Always save the latest data to ProductList.csv before backup
+    storeProduct(ls);
+
+    ifstream src("../data/ProductList.csv", ios::binary);
+    if (!src) {
+        cout << RED << INDENT << "Error: ProductList.csv not found. Backup aborted.\n" << RESET;
+        return;
+    }
+
+    // Check if ProductList.csv is empty
+    src.seekg(0, ios::end);
+    if (src.tellg() == 0) {
+        cout << RED << INDENT << "Error: ProductList.csv is empty. Backup not created (to avoid wiping a good backup).\n" << RESET;
+        return;
+    }
+    src.seekg(0, ios::beg);
+
+    ofstream dst("../data/Backup_ProductList.csv", ios::binary);
+    dst << src.rdbuf();
+
+    cout << GREEN << INDENT << "Backup completed successfully (" << ls->n << " product(s) saved).\n" << RESET;
+}
+
+
+void restoreProductData(ProductList *ls) {
+    ifstream src("../data/Backup_ProductList.csv", ios::binary);
+    if (!src) {
+        cout << RED << INDENT << "Error: Backup file not found. Cannot restore.\n" << RESET;
+        return;
+    }
+
+    // Check if backup file is empty
+    src.seekg(0, ios::end);
+    if (src.tellg() == 0) {
+        cout << RED << INDENT << "Error: Backup file is empty. Restore aborted (to protect your current data).\n" << RESET;
+        return;
+    }
+    src.seekg(0, ios::beg);
+
+    // Overwrite ProductList.csv with backup
+    ofstream dst("../data/ProductList.csv", ios::binary);
+    dst << src.rdbuf();
+
+    cout << GREEN << INDENT << "Restore completed successfully.\n" << RESET;
+
+    // Reload into memory and show debug info
+    loadProductList(ls);
+}
+
