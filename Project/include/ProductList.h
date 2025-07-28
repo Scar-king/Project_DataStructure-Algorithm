@@ -102,11 +102,7 @@ void storeProduct(ProductList *ls) { // Sokleap
 }
 
 // Update Product
-void updateProductById(ProductList *ls, int targetId) {
-    ProductElement *temp = ls->head;
-    while(temp != nullptr && temp->id != targetId) {
-        temp = temp->next;
-    }
+void updateProductById(ProductList *ls, ProductElement* temp, int targetId) {
 
     if(temp == nullptr) {
         cout << INDENT << "Product with ID " << targetId << " not found.\n";
@@ -154,11 +150,9 @@ ProductElement* searchProductByID(ProductList *ls, int ID) { // Sokleap
 }
 
 // Delete Product by ID
-void deleteProductByID(ProductList* ls, int ID) { // Sokleap
-    ProductElement* temp = searchProductByID(ls, ID);
+void deleteProductByID(ProductList* ls, ProductElement* temp) { // Sokleap
     if(temp != nullptr){
         if(ls->n == 1){
-            delete temp;
             ls->head = nullptr;
             ls->tail = nullptr;
         }
@@ -168,19 +162,18 @@ void deleteProductByID(ProductList* ls, int ID) { // Sokleap
             if(temp->prev == nullptr){
                 temp->next->prev = nullptr;
                 ls->head = temp->next;
-                delete temp;
             }
             else{
                 // 1 2 3 4
                 // delete 4 -> temp = 4, next of temp = nullptr;
                 temp->prev->next = temp->next; 
                 ls->tail = temp->prev;
-                delete temp;
             }
-            storeProduct(ls);
-            cout << GREEN << INDENT << "Successfully deleted product!\n" << RESET;
         }
+        delete temp;
         ls->n--;
+        storeProduct(ls);
+        cout << GREEN << INDENT << "Successfully deleted product!\n" << RESET;
         return;
     }
     cout << "\n" << RED << INDENT << "Entered ID not found, Please try again...\n" << RESET;
