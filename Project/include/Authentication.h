@@ -15,6 +15,8 @@ using namespace std;
 
 // GLOBAL VAR
 ProductList *ls = createList();
+ReportList *rl = createReportList();
+AdminHistoryStack *s = createEmptyStack();
 
 // Forward declare so compiler knows this exists
 // void storeProduct(ProductList *ls);
@@ -182,7 +184,6 @@ void handleViewTableMenu() {
             }
 
             case 4: {
-                ReportList *rl = createReportList();
 
                 ProductElement *temp = ls->head;
                 while(temp != nullptr) {
@@ -197,9 +198,6 @@ void handleViewTableMenu() {
             }
 
             case 5: {
-                AdminHistoryStack *s = createEmptyStack();
-
-                loadAdminHistoryStack(s);
 
                 displayAllAdminHistory(s);
 
@@ -216,6 +214,17 @@ void handleViewTableMenu() {
                 break;
             }
 
+            // case 7:
+
+            //     displayLastMonthHistory(s);
+            //     system("pause");
+            //     break;
+
+            // case 8: 
+            //     displayLastDayHistory(s);
+            //     system("pause");
+            //     break;
+            
             case 0:
                 backToAdminMenu = true;
                 break;
@@ -253,9 +262,10 @@ void backupAndRestoreMenu(ProductList *ls) {
     } while(choice != 0);
 }
 
-void handleAdminMenu() {
+void handleAdminMenu(string username) {
     bool logout = false;
     loadProductList(ls);
+    loadAdminHistoryStack(s);
 
     while (!logout) {
         system("cls");
@@ -294,6 +304,8 @@ void handleAdminMenu() {
 
                 addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, false, 0);
                 storeProduct(ls);
+                addHistory(s, username, "ADD", model, getCambodiaTime());
+                storeAdminHistory(s -> top);
 
                 cout << "\n" << INDENT << "Product added to the List successfully!\n";
                 system("pause");
@@ -311,7 +323,12 @@ void handleAdminMenu() {
                 int targetId;
                 cout << INDENT << "Enter ID to update: ";
                 cin >> targetId;
-                updateProductById(ls, targetId);
+                ProductElement* temp = searchProductByID(ls, targetId);
+                updateProductById(ls, temp, targetId);
+                if(temp != nullptr){
+                    addHistory(s, username, "UPDATE", ("Product id: " + to_string(targetId)), getCambodiaTime());
+                    storeAdminHistory(s -> top);
+                }
 
                 system("pause");
                 break;
@@ -323,8 +340,12 @@ void handleAdminMenu() {
                 int id;
                 cout << INDENT << "Enter ID to Delete: ";
                 cin >> id;
-                deleteProductByID(ls, id);
-
+                ProductElement* temp = searchProductByID(ls, id);
+                deleteProductByID(ls, temp);
+                if(temp != nullptr){
+                    addHistory(s, username, "DELETE", ("Product id: " + to_string(id)), getCambodiaTime());
+                    storeAdminHistory(s -> top);
+                }
                 system("pause");
                 break;
             }
@@ -398,7 +419,7 @@ void Authentication() {
                 if (username == AdminPassword && pw1 == AdminPassword) {
                     cout << "\n" << INDENT << " Admin Login successful!\n";
                     // loading();
-                    handleAdminMenu();
+                    handleAdminMenu(username);
 
                 } else {
                     cout << "\n" << INDENT << "Invalid admin credentials.\n";
