@@ -17,25 +17,16 @@ constexpr int MAX_STOCK = 1000;
 constexpr double MIN_PRICE = 1.0;
 constexpr double MAX_PRICE = 10000.0;
 
-// Each Record must has 5 to 9 columns/fields
-// We are using Doubly List
-struct ProductElement {
-    int id;
-    string model;
-    int inStock;
-    int sold;
-    string description;
-    double purchaseCost;
-    double salePrice;
-    string status;
+struct ProductElement { // We are using Doubly List.
+    int id, inStock, sold;
+    string model, description, status;
+    double purchaseCost, salePrice;
     ProductElement *next;
     ProductElement *prev;
 };
 
-// Define Linked List structure
 struct ProductList {
-    int n;
-    int i;
+    int n, i;
     ProductElement *head;
     ProductElement *tail;
 };
@@ -53,7 +44,7 @@ ProductList *createList(){
 void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice, bool isLoadData, int id) {
     ProductElement *p = new ProductElement;
 
-    if(isLoadData) {
+    if (isLoadData) {
         p->id = id;
         ls->i = id;
     } else {
@@ -68,28 +59,26 @@ void addProduct(ProductList *ls, string model, int inStock, int sold, string des
     p -> salePrice = salePrice;
     p -> next = nullptr;
     p -> prev = ls -> tail;
-    if(inStock == 0){
-        p -> status = "\033[31mOut of Stock\033[0m";   
-    }
-    else if(inStock <= static_cast<int>((inStock + sold) * 0.25)){
-        p -> status = "\033[33mLow Stock\033[0m   ";  
-    }
-    else{
-        p -> status = "\033[32mAvailable\033[0m   ";  
+
+    if (inStock == 0) {
+        p->status = "\033[31mOut of Stock\033[0m";   
+    } else if (inStock <= static_cast<int>((inStock + sold) * 0.25)){
+        p->status = "\033[33mLow Stock\033[0m   ";  
+    } else {
+        p->status = "\033[32mAvailable\033[0m   ";  
     }
 
-    if(ls -> n == 0){
-        ls -> head = p;
+    if(ls->n == 0){
+        ls->head = p;
+    } else {
+        ls->tail->next = p; 
     }
-    else{
-        ls -> tail -> next = p; 
-    }
-    ls -> tail = p;
-    ls -> n++;
-    ls -> i++;
+    ls->tail = p;
+    ls->n++;
+    ls->i++;
 }
 
-void storeProduct(ProductList *ls) { // Sokleap
+void storeProduct(ProductList *ls) { // Implemented by Sokleap
     ofstream productFile("../data/ProductList.csv");
     ProductElement *temp = ls->head;
     while(temp != nullptr) {
@@ -101,14 +90,14 @@ void storeProduct(ProductList *ls) { // Sokleap
     productFile.close();
 }
 
-// Update Product
-void updateProductById(ProductList *ls, ProductElement* temp, int targetId) {
+void updateProductById(ProductList *ls, ProductElement* temp, int targetId) { // Update Product by ID (Davin)
 
     if(temp == nullptr) {
-        cout << INDENT << "Product with ID " << targetId << " not found.\n";
+        cout << RED << INDENT << "Product with ID " << targetId << " not found.\n" << RESET;
         return;
     }
 
+    cout << YELLOW;
     cout << "\n" << INDENT << "Updating Product ID: " << targetId << "\n";
     cout << INDENT << "Current model: " << temp->model << "\n" << INDENT << "New model: ";
     cin.ignore();
@@ -122,9 +111,9 @@ void updateProductById(ProductList *ls, ProductElement* temp, int targetId) {
 
     temp->purchaseCost = getValidateDoubleInRange(INDENT + "New purchase cost($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
     temp->salePrice = getValidateDoubleInRange(INDENT + "New sale price($1.00 - $10000.00): ", MIN_PRICE, MAX_PRICE);
+    cout << RESET;
 
-    // Update status
-    if(temp->inStock == 0) {
+    if(temp->inStock == 0) { // Update status
         temp->status = "\033[31mOut of Stock\033[0m";
     } else if(temp->inStock <= static_cast<int>((temp->inStock + temp->sold) * 0.25)) {
         temp->status = "\033[33mLow Stock\033[0m   ";
@@ -137,20 +126,18 @@ void updateProductById(ProductList *ls, ProductElement* temp, int targetId) {
     cout << GREEN << INDENT << "Product updated successfully.\n" << RESET;
 }
 
-// Search Product by ID
-ProductElement* searchProductByID(ProductList *ls, int ID) { // Sokleap
-    ProductElement* temp = ls -> head;
+ProductElement* searchProductByID(ProductList *ls, int ID) { // Implemented by Sokleap (Search Product by ID)
+    ProductElement* temp = ls->head;
     while(temp != nullptr){
-        if(temp -> id == ID){
+        if(temp->id == ID){
             return temp;
         } 
-        temp = temp -> next;
+        temp = temp->next;
     }
     return nullptr;
 }
 
-// Delete Product by ID
-void deleteProductByID(ProductList* ls, ProductElement* temp) { // Sokleap
+void deleteProductByID(ProductList* ls, ProductElement* temp) { // Implemented by Sokleap (Delete Product by ID)
     if(temp != nullptr){
         if(ls->n == 1){
             ls->head = nullptr;
@@ -179,7 +166,7 @@ void deleteProductByID(ProductList* ls, ProductElement* temp) { // Sokleap
     cout << "\n" << RED << INDENT << "Entered ID not found, Please try again...\n" << RESET;
 }
 
-// *** Sort Product using Quick Sort Algorithm ***
+// *** Sort Product using Quick Sort Algorithm ***, Implemented by Davin
 void swapProduct(ProductElement *a, ProductElement *b) { // Quick Sort property
     swap(a->id, b->id);
     swap(a->model, b->model);
@@ -229,8 +216,7 @@ void quickSort(ProductList *ls, bool ascending = false) {
 
 }
 
-// Display Product By ID
-void displayProductByID(ProductList* ls, int ID) {
+void displayProductByID(ProductList* ls, int ID) { // Display Product By ID
     ProductElement* temp = searchProductByID(ls, ID);
     if(temp != nullptr){
         cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
@@ -240,11 +226,10 @@ void displayProductByID(ProductList* ls, int ID) {
         cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
         return;
     }
-    cout << INDENT << "Product not found!\n";
+    cout << RED << INDENT << "Product not found!\n" << RESET;
 }
 
-// Display Top 5 Best Selling Product
-void displayBestSelling(ProductList *ls) {
+void displayBestSelling(ProductList *ls) { // Display Top 5 Best Selling Product (Davin)
 
     if(ls->n == 0) {
         cout << RED << INDENT << "No products available.\n" << RESET;
@@ -268,7 +253,7 @@ void displayBestSelling(ProductList *ls) {
         }
     }
 
-    cout << "\n" << INDENT << "=== Top 5 Best-Selling Products ===\n";
+    cout << "\n" << YELLOW << INDENT << "=== Top 5 Best-Selling Products ===\n" << RESET;
     cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
@@ -280,15 +265,14 @@ void displayBestSelling(ProductList *ls) {
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
 }
 
-// View Low-Stock Products
-void displayLowStockProducts(ProductList *ls) {
+void displayLowStockProducts(ProductList *ls) { // View Low-Stock Products (Davin)
     if(ls->n == 0) {
         cout << RED << INDENT << "No products available.\n" << RESET;
         return; 
     }
 
     bool found = false;
-    cout << "\n" << INDENT << "=== Low-Stock Products (<= 25% of total stock) ===\n";
+    cout << "\n" << INDENT << YELLOW << "=== Low-Stock Products (<= 25% of total stock) ===\n" << RESET;
     cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n",
            "ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)", "SALE PRICE($)", "STATUS");
@@ -307,14 +291,13 @@ void displayLowStockProducts(ProductList *ls) {
     }
 
     if(!found) {
-        cout << RED << INDENT << "No low-stock products found.\n";
+        cout << RED << INDENT << "No low-stock products found.\n" << RESET;
     }
 
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
 }
 
-// Display Admin Product List
-void displayAdminProductList(ProductList *ls) { // Sokleap
+void displayAdminProductList(ProductList *ls) { // Display Admin Product List (Sokleap)
     ProductElement *temp = ls->head;
     cout << "\n+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
     printf("| %-5s | %-20s | %-5s | %-5s | %-35s | %-16s | %-13s | %-12s |\n","ID", "MODEL", "STOCK", "SOLD", "DESCRIPTION", "PURCHASE COST($)","SALE PRICE($)", "STATUS");
@@ -327,8 +310,7 @@ void displayAdminProductList(ProductList *ls) { // Sokleap
     cout << "+-------+----------------------+-------+-------+-------------------------------------+------------------+---------------+--------------+\n";
 }
 
-// Display User Product List
-void displayUserProductList(ProductList *ls) { // Kheang Ann, Not include *** inStock and sold ***
+void displayUserProductList(ProductList *ls) { // Display User Product List (Kheang Ann), Not include *** inStock and sold ***
     ProductElement *temp = ls->head;
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
     printf("| %-5s | %-20s | %-35s | %-8s | %-12s |\n", "ID","MODEL", "DESCRIPTION", "PRICE($)", "STATUS");
@@ -403,14 +385,9 @@ void loadProductList(ProductList *ls) { // Sokleap
 }
 
 struct ReportElement { // Davin
-    int id;
+    int id, totalStock, totalSold;
+    double totalPurchaseCost, totalEarn, profit, estimatProfit;
     ProductElement *product;
-    int totalStock;
-    int totalSold;
-    double totalPurchaseCost;
-    double totalEarn;
-    double profit;
-    double estimatProfit;
     ReportElement *next;
     ReportElement *prev;
 };
@@ -429,8 +406,7 @@ ReportList *createReportList(){
     return rl;
 }
 
-// We're using Add End Algorithm
-void addReport(ReportList *rl, ProductElement *p) {
+void addReport(ReportList *rl, ProductElement *p) { // We're using Add End Algorithm
     ReportElement *re = new ReportElement;
     re->product = p;
     re->id = p->id;
@@ -498,7 +474,7 @@ void displayOverallReport(ReportList *rl) {
     reportFile.close();
 }
 
-void printBar(int blocks, char symbol, const string &color) {
+void printBar(int blocks, char symbol, const string &color) { // Davin
     cout << color;
     for (int i = 0; i < blocks; i++) {
         cout << symbol;
@@ -545,11 +521,7 @@ void graphVisualization(ReportList *rl) {
 }
 
 struct AdminHistory { // Sokleap
-    string adminName;
-    string commandType;
-    string description;
-    string cambodiaStringTime;
-
+    string adminName, commandType, description, cambodiaStringTime;
     AdminHistory *next;
 };
 
@@ -604,16 +576,19 @@ void displayHistory(int i, AdminHistory *temp) {
 }
 
 void displayAllAdminHistory(AdminHistoryStack *s) {
+
     if(s -> size == 0){
-        cout << "\nNo admin history found.\n";
+        cout << RED << INDENT << "\nNo admin history found.\n" << RESET;
     }
+
     AdminHistory *temp = s->top;
     int i = 1;
+
     while (temp != nullptr)
     {
         if (i == 1)
         {
-            cout << "\n--- All Admin History ---\n";
+            cout << "\n" << YELLOW << INDENT << "--- All Admin History ---\n" << RESET;
             cout << "\n+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
             printf("| %4s | %-20s | %-10s | %-50s | %-20s |\n",
                    "N0","NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
@@ -646,7 +621,7 @@ void displayLastDayHistory(AdminHistoryStack *s) {
         {
             if (i == 1)
             {
-                cout << "\n--- Admin History within the last 24 hours ---\n";
+                cout << "\n" << YELLOW << INDENT << "--- Admin History within the last 24 hours ---\n" << RESET;
                 cout << "\n+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
                 printf("| %4s | %-20s | %-10s | %-50s | %-20s |\n",
                        "N0", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
@@ -661,7 +636,7 @@ void displayLastDayHistory(AdminHistoryStack *s) {
     cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     if (!found)
     {
-        cout << "\nNo admin history found within the last 24 hours.\n";
+        cout << "\n" << RED << INDENT << "No admin history found within the last 24 hours.\n" << RESET;
     }
 }
 
@@ -689,7 +664,7 @@ void displayLastMonthHistory(AdminHistoryStack *s) {
         {
             if (i == 1)
             {
-                cout << "\n--- Admin History within the last 30 days ---\n";
+                cout << "\n" << YELLOW << INDENT << "--- Admin History within the last 30 days ---\n" << RESET;
                 cout << "\n+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
                 printf("| %4s | %-20s | %-10s | %-50s | %-20s |\n",
                        "N0", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
@@ -705,7 +680,7 @@ void displayLastMonthHistory(AdminHistoryStack *s) {
     cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     if (!found)
     {
-        cout << "\nNo admin history found within the last 30 days.\n";
+        cout << "\n" << RED << INDENT << "No admin history found within the last 30 days.\n" << RESET;
     }
 }
 
@@ -790,4 +765,3 @@ void restoreProductData(ProductList *ls) {
     // Reload into memory and show debug info
     loadProductList(ls);
 }
-

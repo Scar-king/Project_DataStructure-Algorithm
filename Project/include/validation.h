@@ -16,7 +16,7 @@ int getValidateIntInRange(const string &text, int min, int max) {
             // cin.ignore(1000, '\n'); 
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-            cout << "Invalid input. Enter a number between " << min << " and " << max << ".\n";
+            cout << RED << INDENT << "Invalid input. Enter a number between " << min << " and " << max << ".\n" << RESET;
         } else {
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flush remaining input
             return value;
@@ -33,7 +33,7 @@ double getValidateDoubleInRange(const string &text, double min, double max) {
         if(cin.fail() || value <= 0 || value < min || value > max) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Enter a non-zero number between " << min << " and " << max << ".\n";
+            cout << RED << INDENT << "Invalid input. Enter a non-zero number between " << min << " and " << max << ".\n" << RESET;
         } else {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             return value;
