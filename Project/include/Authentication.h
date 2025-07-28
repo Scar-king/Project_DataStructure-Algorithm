@@ -326,7 +326,7 @@ void handleAdminMenu(string username) {
                 ProductElement* temp = searchProductByID(ls, targetId);
                 updateProductById(ls, temp, targetId);
                 if(temp != nullptr){
-                    addHistory(s, username, "UPDATE", ("Product id: " + to_string(targetId)), getCambodiaTime());
+                    addHistory(s, username, "UPDATE", ("Product id: " + to_string(targetId) + ", name: " + string(temp -> model)), getCambodiaTime());
                     storeAdminHistory(s -> top);
                 }
 
@@ -341,11 +341,11 @@ void handleAdminMenu(string username) {
                 cout << INDENT << "Enter ID to Delete: ";
                 cin >> id;
                 ProductElement* temp = searchProductByID(ls, id);
-                deleteProductByID(ls, temp);
                 if(temp != nullptr){
-                    addHistory(s, username, "DELETE", ("Product id: " + to_string(id)), getCambodiaTime());
+                    addHistory(s, username, "DELETE", ("Product id: " + to_string(id) + ", name: "+ string(temp -> model)), getCambodiaTime());
                     storeAdminHistory(s -> top);
                 }
+                deleteProductByID(ls, temp);
                 system("pause");
                 break;
             }
