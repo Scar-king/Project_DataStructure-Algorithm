@@ -151,6 +151,49 @@ string getMaskedPassword(const string& prompt) {
     return password;
 }
 
+void displayAdminProfile(const string& name, int age, char gender) {
+    cout << BLUE;
+    cout << INDENT << "+--------------------------------+\n";
+    cout << INDENT << "|         ADMIN PROFILE          |\n";
+    cout << INDENT << "+--------------------------------+\n";
+    cout << INDENT << "| " << YELLOW << "Name   : " << name 
+         << string(22 - name.length(), ' ') << BLUE << "|\n";
+    cout << INDENT << "| " << YELLOW << "Age    : " << age 
+         << string(22 - to_string(age).length(), ' ') << BLUE << "|\n";
+    cout << INDENT << "| " << YELLOW << "Gender : " << (gender == 'M' ? "Male" : "Female") 
+         << string(18, ' ') << BLUE << "|\n";
+    cout << INDENT << "+--------------------------------+\n" << RESET;
+}
+
+void displayUserProfile(const string& name, int age, char gender) {
+    cout << CYAN;
+    cout << INDENT << "+--------------------------------+\n";
+    cout << INDENT << "|           USER PROFILE         |\n";
+    cout << INDENT << "+--------------------------------+\n";
+    cout << INDENT << "| " << YELLOW << "Name   : " << name 
+         << string(22 - name.length(), ' ') << CYAN << "|\n";
+    cout << INDENT << "| " << YELLOW << "Age    : " << age 
+         << string(22 - to_string(age).length(), ' ') << CYAN << "|\n";
+    cout << INDENT << "| " << YELLOW << "Gender : " << (gender == 'M' ? "Male" : "Female") 
+         << string(18, ' ') << CYAN << "|\n";
+    cout << INDENT << "+--------------------------------+\n" << RESET;
+}
+
+void showDeveloperInfo() {
+    devInfo();
+    
+    cout << YELLOW;
+    cout << "=== Welcome to Developer Information ===\n\n";
+    cout << "Team Member            ID                    Task/Job Description\n";
+    cout << "======================================================================================================" << endl;
+    cout << "Do Davin               p20230018             Lead Developer, Code Integration, Program Design\n";
+    cout << "Sam Sok Leap           p202300**             Data Structures, File & History Manager\n";
+    cout << "Kheang Ann             p20230027             Authentication, Encryption, and Data Handling\n";
+    cout << RESET;
+}
+
+
+
 // Submenus of Admin Menu
 void handleViewTableMenu() {
     bool backToAdminMenu = false;
@@ -198,14 +241,6 @@ void handleViewTableMenu() {
             }
 
             case 5: {
-
-                displayAllAdminHistory(s);
-
-                system("pause");
-                break;
-            }
-
-            case 6: {
                 system("cls");
 
                 displayBestSelling(ls);
@@ -214,16 +249,24 @@ void handleViewTableMenu() {
                 break;
             }
 
-            // case 7:
+            case 6: {
 
-            //     displayLastMonthHistory(s);
-            //     system("pause");
-            //     break;
+                displayAllAdminHistory(s);
 
-            // case 8: 
-            //     displayLastDayHistory(s);
-            //     system("pause");
-            //     break;
+                system("pause");
+                break;
+            }
+
+            case 7:
+
+                displayLastMonthHistory(s);
+                system("pause");
+                break;
+
+            case 8: 
+                displayLastDayHistory(s);
+                system("pause");
+                break;
             
             case 0:
                 backToAdminMenu = true;
@@ -379,6 +422,13 @@ void handleAdminMenu(string username) {
                 break;
             }
 
+            case 8: {
+                system("cls");
+                displayAdminProfile(username, 20, 'M');
+                system("pause");
+                break;
+            }
+
             case 0:
                 logout = true;  
                 system("cls");
@@ -391,8 +441,54 @@ void handleAdminMenu(string username) {
     }
 }
 
-void handleUserMenu() {
+void handleUserMenu(string username, char gender, int age) {
+    
+    bool back = false;
+    loadProductList(ls);
 
+    while(!back) {
+        system("cls");
+        userMenu();
+
+        int userOption;
+        cin >> userOption;
+
+        switch(userOption) {
+            case 1: {
+                displayUserProductList(ls);
+                system("pause");
+                break;
+            }
+
+            case 2: {
+                system("cls");
+                int id;
+                cout << INDENT << "Search ID: ";
+                cin >> id;
+                searchProductByID(ls, id);
+                displayProductByID(ls, id);
+                system("pause");
+                break;
+            }
+
+            case 3: {
+                system("cls");
+                displayUserProfile(username, age, gender);
+                system("pause");
+                break;
+            }
+            
+            case 0:
+                back = true;
+                system("cls");
+                break;
+
+            default:
+                cout << "\n" << INDENT << " Invalid option. Please try again.\n";
+                Sleep(1000);
+                break;
+        }
+    }
 }
 
 void Authentication() {
@@ -437,9 +533,20 @@ void Authentication() {
             
                 pw1 = getMaskedPassword(INDENT + "Enter your password: ");
                 if (authenticateUser(users, username, pw1)) {
+
+                    User* u = users->head;
+                    while(u) {
+                        if (u->username == username) {
+                            gender = u->gender;
+                            age = u->age;
+                            break;
+                        }
+                        u = u->next;
+                    }
+
                     cout << "\n" << INDENT << " Login successful. Welcome, " << username << "!\n";
                     // loading();
-                    handleUserMenu();
+                    handleUserMenu(username, gender, age);
                 } else {
                     cout << "\n" << INDENT << " Login failed. Username or password incorrect.\n";
                 }
@@ -498,6 +605,14 @@ void Authentication() {
                     addUserToFile(username, gender, age, pw1);
                     cout << "\n" << INDENT << " Registration successful!\n";
                 }
+                break;
+            }
+
+            case 4: {
+                system("cls");
+                showDeveloperInfo();
+                system("pause");
+                system("cls");
                 break;
             }
 
