@@ -342,7 +342,7 @@ void handleAdminMenu(string username) {
                 cin >> id;
                 ProductElement* temp = searchProductByID(ls, id);
                 if(temp != nullptr){
-                    addHistory(s, username, "DELETE", ("Product id: " + to_string(id) + ", name: "+ string(temp -> model)), getCambodiaTime());
+                    addHistory(s, username, "DELETE", ("Product id: " + to_string(id) + ", name: " + string(temp -> model)), getCambodiaTime());
                     storeAdminHistory(s -> top);
                 }
                 deleteProductByID(ls, temp);
