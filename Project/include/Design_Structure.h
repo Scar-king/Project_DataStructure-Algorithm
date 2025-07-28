@@ -13,6 +13,8 @@ using namespace std;
 #define YELLOW  "\033[33m"
 #define BLUE    "\033[34m"
 #define WHITE   "\033[37m"
+#define CYAN    "\033[1;36m"
+#define GRAY    "\033[0;37m"
 
 void welcome(){
     cout << GREEN << R"(
@@ -24,6 +26,18 @@ void welcome(){
                                                                       /____/                                       /____/                          
                             
     )" << RESET << endl;
+}
+
+void devInfo() {
+    cout << YELLOW;  
+    cout << "\n";
+    cout << "     ____                 _                         ___        __       \n";
+    cout << "    |  _ \\  _____   _____| | ___  _ __   ___ _ __  |_ _|_ __  / _| ___  \n";
+    cout << "    | | | |/ _ \\ \\ / / _ \\ |/ _ \\| '_ \\ / _ \\ '__|  | || '_ \\| |_ / _ \\ \n";
+    cout << "    | |_| |  __/\\ V /  __/ | (_) | |_) |  __/ |     | || | | |  _| (_) | \n";
+    cout << "    |____/ \\___| \\_/ \\___|_|\\___/| .__/ \\___|_|    |___|_| |_|_|  \\___/  \n";
+    cout << "                                 |_|                                     \n";
+    cout << RESET << endl;
 }
 
 void printDashedLine() {
@@ -87,6 +101,7 @@ void loginPageMenu(){
     cout << INDENT << "| 1. Administrator Login      |\n";
     cout << INDENT << "| 2. User Login               |\n";
     cout << INDENT << "| 3. Register New User        |\n";
+    cout << INDENT << "| 4. About Developer (Group *)|\n";
     cout << INDENT << "| 0. Exit Application         |\n";
     cout << INDENT << "+-----------------------------+\n";
     cout << INDENT << "Please select an option: ";
@@ -104,6 +119,7 @@ void menuForAdmin() {
         "5. Search Product",
         "6. View Low-Stock Products",
         "7. Backup & Restore Product Data",
+        "8. Profile",
         "0. Log out"
     });
 }
@@ -115,8 +131,10 @@ void viewTableMenu(){
         "2. Sort Product List by Sale Price (Descending)",
         "3. Sort Product List by Sale Price (Ascending)",
         "4. View Overall Report (Profit & Sales)",
-        "5. View Admin History",
-        "6. View Top 5 Best-Selling Products",
+        "5. View Top 5 Best-Selling Products",
+        "6. View Admin History",
+        "7. View Last Month History",
+        "8. View Last Day History",
         "0. Back"
     }, "Choice: ");
 }
@@ -126,6 +144,7 @@ void userMenu(){
     drawMenu("Menu", {
         "1. View Product List",
         "2. Search Product",
+        "3. Profile",
         "0. Back"
     }, "Choice: ");
 }
