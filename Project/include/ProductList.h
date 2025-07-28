@@ -552,7 +552,6 @@ void graphVisualization(ReportList *rl) {
 }
 
 struct AdminHistory { // Sokleap
-    int adminID;
     string adminName;
     string commandType;
     string description;
@@ -578,11 +577,11 @@ chrono::system_clock::time_point getCurrentUTCTime() {
     return utc_time_point;
 }
 
-string getCambodiaTime(chrono::system_clock::time_point utcTimePoint) {
+string getCambodiaTime() {
 
     const std::chrono::hours CAMBODIA_OFFSET = std::chrono::hours(7); // ICT is UTC+07:00
 
-    chrono::system_clock::time_point cambodia_time_point = utcTimePoint + CAMBODIA_OFFSET;
+    chrono::system_clock::time_point cambodia_time_point = getCurrentUTCTime() + CAMBODIA_OFFSET;
 
     std::time_t cambodiaTimeT = std::chrono::system_clock::to_time_t(cambodia_time_point);
 
@@ -594,10 +593,9 @@ string getCambodiaTime(chrono::system_clock::time_point utcTimePoint) {
     return string(timeBuffer);
 }
 
-void push(AdminHistoryStack *s, int adminID, string adminName, string commandType, string description, string cambodiaStringTime) {
+void addHistory(AdminHistoryStack *s, string adminName, string commandType, string description, string cambodiaStringTime) {
     AdminHistory *history = new AdminHistory;
 
-    history->adminID = adminID;
     history->adminName = adminName;
     history->commandType = commandType;
     history->description = description;
@@ -607,21 +605,9 @@ void push(AdminHistoryStack *s, int adminID, string adminName, string commandTyp
     s->size++;
 }
 
-void pop(AdminHistoryStack *s) {
-    if (s->top == nullptr)
-    {
-        cout << "Stack is empty!\n";
-        return;
-    }
-    AdminHistory *temp = s->top;
-    s->top = s->top->next;
-    delete temp;
-    s->size--;
-}
-
 void displayHistory(int i, AdminHistory *temp) {
-    printf("| %4d | %-5d | %-20s | %-10s | %-50s | %-20s |\n",
-           i, temp->adminID, temp->adminName.c_str(), temp->commandType.c_str(), temp->description.c_str(), temp->cambodiaStringTime.c_str());
+    printf("| %4d | %-20s | %-10s | %-50s | %-20s |\n",
+           i, temp->adminName.c_str(), temp->commandType.c_str(), temp->description.c_str(), temp->cambodiaStringTime.c_str());
 }
 
 void displayAllAdminHistory(AdminHistoryStack *s) {
@@ -635,16 +621,16 @@ void displayAllAdminHistory(AdminHistoryStack *s) {
         if (i == 1)
         {
             cout << "\n--- All Admin History ---\n";
-            cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-            printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
-                   "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
-            cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+            cout << "\n+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+            printf("| %4s | %-20s | %-10s | %-50s | %-20s |\n",
+                   "N0","NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+            cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
         }
         displayHistory(i, temp);
         temp = temp->next;
         i++;
     }
-    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
 }
 
 time_t stringToTimeT(const string &datetimeStr) {
@@ -654,7 +640,7 @@ time_t stringToTimeT(const string &datetimeStr) {
     return mktime(&tm);
 }
 
-void displayLastDay(AdminHistoryStack *s) {
+void displayLastDayHistory(AdminHistoryStack *s) {
     auto twentyFourHoursAgo = getCurrentUTCTime() - chrono::hours(24);
     time_t twentyFourHoursAgo_t = chrono::system_clock::to_time_t(twentyFourHoursAgo);
     AdminHistory *temp = s->top;
@@ -668,10 +654,10 @@ void displayLastDay(AdminHistoryStack *s) {
             if (i == 1)
             {
                 cout << "\n--- Admin History within the last 24 hours ---\n";
-                cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-                printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
-                       "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
-                cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+                cout << "\n+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+                printf("| %4s | %-20s | %-10s | %-50s | %-20s |\n",
+                       "N0", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+                cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
             }
             displayHistory(i, temp);
             found = true;
@@ -679,7 +665,7 @@ void displayLastDay(AdminHistoryStack *s) {
         }
         temp = temp->next;
     }
-    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     if (!found)
     {
         cout << "\nNo admin history found within the last 24 hours.\n";
@@ -698,7 +684,7 @@ time_t getOneMonthAgoTime() {
     return mktime(tmNow);
 }
 
-void displayLastMonth(AdminHistoryStack *s) {
+void displayLastMonthHistory(AdminHistoryStack *s) {
     AdminHistory *temp = s->top;
     int i = 1;
     bool found = false;
@@ -711,10 +697,10 @@ void displayLastMonth(AdminHistoryStack *s) {
             if (i == 1)
             {
                 cout << "\n--- Admin History within the last 30 days ---\n";
-                cout << "\n+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-                printf("| %4s | %-5s | %-20s | %-10s | %-50s | %-20s |\n",
-                       "N0", "ID", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
-                cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+                cout << "\n+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+                printf("| %4s | %-20s | %-10s | %-50s | %-20s |\n",
+                       "N0", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
+                cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
             }
             displayHistory(i, temp);
             found = true;
@@ -723,23 +709,23 @@ void displayLastMonth(AdminHistoryStack *s) {
         temp = temp->next;
     }
 
-    cout << "+------+-------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
     if (!found)
     {
         cout << "\nNo admin history found within the last 30 days.\n";
     }
 }
 
-void storeHistory(AdminHistory *temp) {
+void storeAdminHistory(AdminHistory *temp) {
     ofstream historyFile("../data/History.csv", ios::app);
-    historyFile << temp->adminID << "|" << temp->adminName.c_str() << "|" << temp->commandType.c_str() << "|" << temp->description.c_str() << "|" << temp->cambodiaStringTime.c_str() << endl;
+    historyFile << temp->adminName << "|" << temp->commandType << "|" << temp->description << "|" << temp->cambodiaStringTime << endl;
     historyFile.close();
 }
 
 void loadAdminHistoryStack(AdminHistoryStack *s) {
     ifstream historyFile("../data/History.csv");
     string history;
-    string arrayString[5];
+    string arrayString[4];
     string token;
     while (getline(historyFile, history))
     {
@@ -752,13 +738,12 @@ void loadAdminHistoryStack(AdminHistoryStack *s) {
             index++;
         }
 
-        int adminID = stoi(arrayString[0]);
-        string adminName = arrayString[1];
-        string commandType = arrayString[2];
-        string description = arrayString[3];
-        string time = arrayString[4];
+        string adminName = arrayString[0];
+        string commandType = arrayString[1];
+        string description = arrayString[2];
+        string time = arrayString[3];
 
-        push(s, adminID, adminName, commandType, description, time);
+        addHistory(s, adminName, commandType, description, time);
     }
     historyFile.close();
 }
