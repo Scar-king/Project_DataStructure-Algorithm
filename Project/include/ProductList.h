@@ -6,16 +6,11 @@
 #include <sstream>
 #include <fstream>
 #include <windows.h>
+#include <regex>
 
 #include "validation.h"
 
 using namespace std;
-
-constexpr int MIN_STOCK = 0;
-constexpr int MAX_STOCK = 1000;
-
-constexpr double MIN_PRICE = 1.0;
-constexpr double MAX_PRICE = 10000.0;
 
 struct ProductElement { // We are using Doubly List.
     int id, inStock, sold;
@@ -482,10 +477,20 @@ void printBar(int blocks, char symbol, const string &color) { // Davin
     cout << RESET;
 }
 
+void clearReportList(ReportList *rl) {
+    ReportElement *current = rl->head;
+    while (current != nullptr) {
+        ReportElement *toDelete = current;
+        current = current->next;
+        delete toDelete;
+    }
+    rl->head = nullptr;
+}
+
 // Draw a bar chart using the data from ReportList
 void graphVisualization(ReportList *rl) {
     if(rl == nullptr || rl->head == nullptr) {
-        cout << "\n" << INDENT << "No report data to visualize.\n";
+        cout << "\n" << RED << INDENT << "No report data to visualize.\n" << RESET;
         return;
     }
 
@@ -496,8 +501,8 @@ void graphVisualization(ReportList *rl) {
     char block = 178;     // Solid block (ASCII)
     double scale = 500.0; // 1 block = $500
 
-    cout << "\nProfit Visualization (Green = Profit, Red = Estimate Profit)\n";
-    cout << "===================================================================\n";
+    cout << "\n" << YELLOW << "Profit Visualization (Green = Profit, Red = Estimate Profit)\n" << RESET;
+    cout << YELLOW << "===================================================================\n" << RESET;
 
     ReportElement *temp = rl->head;
     while(temp != nullptr) {
@@ -507,7 +512,7 @@ void graphVisualization(ReportList *rl) {
 
 
         // Display product name and bars
-        cout << setw(20) << left << temp->product->model << " | ";
+        cout << setw(20) << left << temp->product->model << YELLOW << " | " << RESET;
         printBar(profitBlocks, block, GREEN);
         printBar(estimateBlocks, block, BLUE);
         cout << "\n";
@@ -515,9 +520,9 @@ void graphVisualization(ReportList *rl) {
         temp = temp->next;
     }
 
-    cout << "\nLegend: ";
-    printBar(2, block, GREEN); cout << " = Profit, ";
-    printBar(2, block, BLUE); cout << " = Estimated Profit (1 block approximately $500)\n";
+    cout << "\n" << YELLOW << "Legend: " << RESET;
+    printBar(2, block, GREEN); cout << YELLOW << " = Profit, " << RESET;
+    printBar(2, block, BLUE); cout << YELLOW << " = Estimated Profit (1 block approximately $500)\n" << RESET;
 }
 
 struct AdminHistory { // Sokleap
@@ -570,15 +575,77 @@ void addHistory(AdminHistoryStack *s, string adminName, string commandType, stri
     s->size++;
 }
 
+void clearAdminHistory(AdminHistoryStack *s) {
+    while (s->top != nullptr) {
+        AdminHistory *temp = s->top;
+        s->top = s->top->next;
+        delete temp;
+    }
+    s->size = 0;
+}
+
+// Helper to apply color based on type
+string colorizeType (const string &type) {
+    if (type == "ADD") {
+        return string(ADD_COLOR) + type + RESET;
+    }
+
+    if (type == "UPDATE") {
+        return string(UPDATE_COLOR) + type + RESET;
+    }
+
+    if (type == "DELETE") {
+        return string(DELETE_COLOR) + type + RESET;
+    }
+
+    if (type == "BACKUP") {
+        return string(BACKUP_COLOR) + type + RESET;
+    }
+
+    if(type == "RESTORE") {
+        return string(RESTORE_COLOR) + type + RESET;
+    }
+
+    return type;
+}
+
+// Utility to remove ANSI escape codes (for correct width calculation)
+string stripColor(const string &str) {
+    static const regex ansiEscape("\033\\[[0-9;]*m");
+    return regex_replace(str, ansiEscape, "");
+}
+
 void displayHistory(int i, AdminHistory *temp) {
-    printf("| %4d | %-20s | %-10s | %-50s | %-20s |\n",
-           i, temp->adminName.c_str(), temp->commandType.c_str(), temp->description.c_str(), temp->cambodiaStringTime.c_str());
+    // Colorize TYPE
+    string typeColored = colorizeType(temp->commandType);
+
+    string descPlain = temp->description;
+
+    // Column widths
+    const int typeColWidth = 10;
+    const int descColWidth = 50;
+
+    // Calculate padding for TYPE (strip color codes for width)
+    int typeVisibleLen = stripColor(typeColored).length();
+    int typePad = max(0, typeColWidth - typeVisibleLen);
+
+    // Calculate padding for DESCRIPTION
+    int descVisibleLen = stripColor(descPlain).length();
+    int descPad = max(0, descColWidth - descVisibleLen);
+
+    // Now print each column manually with padding
+    cout << "| " << setw(4) << i
+         << " | " << setw(20) << temp->adminName
+         << " | " << typeColored << string(typePad, ' ')
+         << " | " << descPlain << string(descPad, ' ')
+         << " | " << setw(20) << temp->cambodiaStringTime
+         << " |" << endl;
 }
 
 void displayAllAdminHistory(AdminHistoryStack *s) {
-
     if(s -> size == 0){
         cout << RED << INDENT << "\nNo admin history found.\n" << RESET;
+        return;
     }
 
     AdminHistory *temp = s->top;
