@@ -2,19 +2,33 @@
 #include <cstdlib>
 #include <windows.h>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 #include "Constants.h"
 
 using namespace std;
 
-#define RESET   "\033[0m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define WHITE   "\033[37m"
-#define CYAN    "\033[1;36m"
-#define GRAY    "\033[0;37m"
+#define RESET          "\033[0m"
+#define RED            "\033[31m"
+#define GREEN          "\033[32m"
+#define YELLOW         "\033[33m"
+#define BLUE           "\033[34m"
+#define WHITE          "\033[37m"
+#define CYAN           "\033[1;36m"
+#define GRAY           "\033[0;37m"
+#define ORANGE         "\033[38;2;255;165;0m"
+#define ADD_COLOR      "\033[32m"  // Green
+#define UPDATE_COLOR   "\033[36m"  // Cyan
+#define DELETE_COLOR   "\033[31m"  // Red
+#define BACKUP_COLOR   "\033[34m"  // Blue
+#define RESTORE_COLOR  "\033[35m"  // Magenta
+#define BRIGHT_YELLOW "\033[1;33m"   // Bold Yellow
+#define NORMAL_YELLOW "\033[0;33m"   // Regular Yellow
+#define DIM_YELLOW    "\033[2;33m"   // Dim Yellow
+#define VERY_DIM      "\033[2;30m"   // Almost black (dim gray)
+
+
 
 void welcome(){
     cout << GREEN << R"(
@@ -38,6 +52,78 @@ void devInfo() {
     cout << "    |____/ \\___| \\_/ \\___|_|\\___/| .__/ \\___|_|    |___|_| |_|_|  \\___/  \n";
     cout << "                                 |_|                                     \n";
     cout << RESET << endl;
+}
+
+void thankyou() {
+    using namespace std::this_thread;
+    using namespace std::chrono;
+
+    string art = R"(
+    _____ _                 _       __                        _                                                _                       ___                _ _                  _ 
+   /__   \ |__   __ _ _ __ | | __  / _| ___  _ __   _   _ ___(_)_ __   __ _    ___  _   _ _ __   ___ _   _ ___| |_ ___ _ __ ___       / _ \___   ___   __| | |__  _   _  ___  / \
+     / /\/ '_ \ / _` | '_ \| |/ / | |_ / _ \| '__| | | | / __| | '_ \ / _` |  / _ \| | | | '__| / __| | | / __| __/ _ \ '_ ` _ \     / /_\/ _ \ / _ \ / _` | '_ \| | | |/ _ \/  /
+    / /  | | | | (_| | | | |   <  |  _| (_) | |    | |_| \__ \ | | | | (_| | | (_) | |_| | |    \__ \ |_| \__ \ ||  __/ | | | | |_  / /_\\ (_) | (_) | (_| | |_) | |_| |  __/\_/ 
+    \/   |_| |_|\__,_|_| |_|_|\_\ |_|  \___/|_|     \__,_|___/_|_| |_|\__, |  \___/ \__,_|_|    |___/\__, |___/\__\___|_| |_| |_(_) \____/\___/ \___/ \__,_|_.__/ \__, |\___\/   
+                                                                      |___/                          |___/                                                        |___/          
+    )";
+
+    // Cycle colors in a smooth breathing loop (2 full cycles)
+    for (int cycle = 0; cycle < 2; cycle++) {
+        // Fade out
+        system("cls");
+        cout << BRIGHT_YELLOW << art << RESET << endl; // Bright
+        sleep_for(milliseconds(150));
+
+        system("cls");
+        cout << NORMAL_YELLOW << art << RESET << endl; // Dim 
+        sleep_for(milliseconds(150));
+
+        system("cls");
+        cout << DIM_YELLOW << art << RESET << endl;
+        sleep_for(milliseconds(150));
+
+        system("cls");
+        cout << VERY_DIM << art << RESET << endl;
+        sleep_for(milliseconds(150));
+
+        // Fade in
+        system("cls");
+        cout << DIM_YELLOW << art << RESET << endl;
+        sleep_for(milliseconds(150));
+
+        system("cls");
+        cout << NORMAL_YELLOW << art << RESET << endl;
+        sleep_for(milliseconds(150));
+
+        system("cls");
+        cout << BRIGHT_YELLOW << art << RESET << endl;
+        sleep_for(milliseconds(200)); // Pause slightly longer at peak
+    }
+
+    // Hold the final bright version before exit
+    system("cls");
+    cout << BRIGHT_YELLOW << art << RESET << endl;
+    sleep_for(milliseconds(1000));
+}
+
+void productArt() {
+    cout << YELLOW << R"(
+    +--------------------+--------------------------+-----------------------------+-----------------------------+-----------------------------+
+    |                    |                          |                             |                             |                             |  
+    |      )" << ORANGE << "[PHONE]" << YELLOW << R"(       |        )" << ORANGE << "[LAPTOP]" << YELLOW << R"(          |          )" << ORANGE << "[TABLET]" << YELLOW << R"(           |         )" << ORANGE << "[MONITOR]" << YELLOW << R"(           |         )" << ORANGE << "[CONSOLE]" << YELLOW << R"(           |
+    |                    |                          |                             |                             |                             |    
+    +--------------------+--------------------------+-----------------------------+-----------------------------+-----------------------------+
+    |     __________     |                          |                             |                             |                             |
+    |    |          |    |       ____________       |     ___________________     |     ___________________     |      _________________      |
+    |    |  O       |    |      |            |      |    |                   |    |    |                   |    |     /                 \     |  
+    |    |  O       |    |      |            |      |    |                   |    |    |                   |    |    |      CONSOLE      |    |
+    |    |  O       |    |      |            |      |    |      TABLET       |    |    |      MONITOR      |    |    |                   |    |
+    |    |          |    |      |____________|      |    |                   |    |    |                   |    |     \_________________/     |  
+    |    |          |    |      / o o o o o  \      |    |___________________|    |    |___________________|    |           /     \           |  
+    |    |          |    |     / o o o o o o  \     |          |       |          |           ||   ||           |          (  O O  )          |  
+    |    |__________|    |    /________________\    |          |_______|          |           ||___||           |           \_____/           |  
+    +--------------------+--------------------------+-----------------------------+-----------------------------+-----------------------------+
+    )" << RESET << endl;
 }
 
 void printDashedLine() {
