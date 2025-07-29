@@ -1,5 +1,29 @@
-Sok Leap|Update|Iphone11 sales price from 1000 to 1100|20/06/2025 10:54:51
-Sok Leap|Add|Add Iphone11 20 units|20/06/2025 10:57:51
-Sok Leap|Update|Iphone11 sales price from 1000 to 1100|20/07/2025 11:05:06
-Sok Leap|Add|Add Iphone11 20 units|20/07/2025 11:05:06
 admin|ADD|iPhone 18 PRO|28/07/2025 23:25:27
+admin|ADD|me|29/07/2025 11:25:44
+admin|DELETE|Product id: 1013, name: me|29/07/2025 11:33:06
+admin|DELETE|Product id: 1013, name: me|29/07/2025 11:34:44
+admin|ADD|iPhone 1|29/07/2025 14:44:51
+admin|ADD|Product name: iPhone|29/07/2025 14:48:35
+admin|DELETE|Product id: 1012, name: iPhone 18 PRO|29/07/2025 14:55:14
+admin|DELETE|Product id: 1013, name: iPhone|29/07/2025 14:55:26
+admin|DELETE|Product id: 1012, name: iPhone 1|29/07/2025 14:55:56
+admin|DELETE|Product id: 1013, name: iPhone|29/07/2025 18:22:06
+admin|ADD|Product name: iPhone 1212|29/07/2025 18:23:48
+admin|ADD|Product name: iPhone New LV|29/07/2025 18:59:41
+admin|DELETE|Product id: 1014, name: iPhone 1212|29/07/2025 19:00:22
+admin|DELETE|Product id: 1012, name: iPhone 18 PRO|29/07/2025 19:00:31
+admin|DELETE|Product id: 1013, name: iPhone|29/07/2025 19:00:36
+admin|DELETE|Product id: 1000, name: iPhone SE|29/07/2025 19:00:44
+admin|DELETE|Product id: 1012, name: iPhone 1|29/07/2025 19:00:49
+admin|DELETE|Product id: 1012, name: iPhone 1|29/07/2025 19:00:56
+admin|DELETE|Product id: 1012, name: iPhone 1|29/07/2025 19:01:20
+admin|DELETE|Product id: 1015, name: iPhone New LV|29/07/2025 19:01:33
+admin|DELETE|Product id: 1015, name: iPhone New LV|29/07/2025 19:01:54
+admin|DELETE|Product id: 1015, name: iPhone New LV|29/07/2025 19:02:14
+admin|UPDATE|PRODUCT ID: 1007, NAME: Phone 14|29/07/2025 22:30:40
+admin|ADD|Product name: iPhone 17 SE|29/07/2025 23:55:26
+admin|BACKUP|BACKUP PRODUCT DATA|29/07/2025 23:56:35
+admin|BACKUP|BACKUP PRODUCT DATA|30/07/2025 00:08:26
+admin|DELETE|Product id: 1012, name: iPhone 17 SE|30/07/2025 00:09:02
+admin|RESTORE|RESTORE PRODUCT DATA|30/07/2025 00:09:32
+admin|BACKUP|BACKUP PRODUCT DATA|30/07/2025 00:16:34
