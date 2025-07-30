@@ -167,7 +167,11 @@ void loading(){
 }
 
 // Reusable menu drawer
-void drawMenu(const string& title, const vector<string>& items, const string& prompt = "Please select an option: ") {
+void drawMenu(
+    const string& title, 
+    const vector<string>& items, 
+    const string& prompt = "Please select an option: "
+) {
     cout << YELLOW;
     printDashedLine();
 
