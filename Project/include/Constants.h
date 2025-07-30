@@ -14,3 +14,8 @@ inline double MAX_PRICE = 10000.0;
 
 inline int MIN_ID = 1000;
 inline int MAX_ID = 10000;
+
+inline int MIN_OPTION = 0;
+inline int MAX_OPTION = 4;
+
+inline int MAX_SUBOPTION = 8;
