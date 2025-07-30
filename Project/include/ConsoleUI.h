@@ -30,8 +30,6 @@ using namespace std::chrono;
 #define DIM_YELLOW    "\033[2;33m"   // Dim Yellow
 #define VERY_DIM      "\033[2;30m"   // Almost black (dim gray)
 
-
-
 void welcome(){
     cout << GREEN << R"(
         ____                 __           __     __  ___                                                  __     _____            __               
@@ -104,6 +102,9 @@ void thankyou() {
     system("cls");
     cout << BRIGHT_YELLOW << art << RESET << endl;
     sleep_for(milliseconds(1000));
+    
+    // Exit the program
+    exit(0);
 }
 
 void productArt() {
@@ -199,7 +200,7 @@ void loginPageMenu(){
     cout << INDENT << "| 1. Administrator Login      |\n";
     cout << INDENT << "| 2. User Login               |\n";
     cout << INDENT << "| 3. Register New User        |\n";
-    cout << INDENT << "| 4. About Developer (Group *)|\n";
+    cout << INDENT << "| 4. About Developer (Group 1)|\n";
     cout << INDENT << "| 0. Exit Application         |\n";
     cout << INDENT << "+-----------------------------+\n";
 
