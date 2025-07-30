@@ -338,7 +338,24 @@ void handleAdminMenu(string username) {
         menuForAdmin();
 
         int adminOption;
-        cin >> adminOption;
+
+        while (true) {
+            cin >> adminOption;
+
+            if (cin.fail() || adminOption < MIN_OPTION || adminOption > MAX_SUBOPTION) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << RED << INDENT
+                     << "Invalid input. Enter a number between "
+                     << MIN_OPTION << " and " << MAX_SUBOPTION << ".\n" << RESET;
+                system("pause");
+                system("cls");
+                menuForAdmin();
+            } else {
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                break;
+            }
+        }
 
         switch (adminOption) {
             case 1:{
@@ -352,8 +369,6 @@ void handleAdminMenu(string username) {
                 double salePrice;
 
                 productArt();
-
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear any leftover input first
 
                 cout << YELLOW << INDENT << "Please enter a product Model: " << RESET;
                 getline(cin, model);
@@ -545,12 +560,14 @@ void Authentication() {
     char gender;
     int age;
     bool running = true;
-    int choice;
 
     do {
         loginPageMenu();
-        cin >> choice;
-        cin.ignore();
+
+        int choice = getValidateIntInRange(
+            INDENT + (string(YELLOW) + "Please select an option: ") + RESET,
+            MIN_OPTION, MAX_OPTION
+        );
 
         switch (choice) {
             case 1:
@@ -560,7 +577,7 @@ void Authentication() {
 
                 if (username == AdminPassword && pw1 == AdminPassword) {
                     cout << "\n" << GREEN << INDENT << " ADMIN Login successfully!\n" << RESET;
-                    // loading();
+                    loading();
                     handleAdminMenu(username);
 
                 } else {
