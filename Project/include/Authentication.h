@@ -193,8 +193,6 @@ void showDeveloperInfo() {
     cout << RESET;
 }
 
-
-
 // Submenus of Admin Menu
 void handleViewTableMenu() {
     bool backToAdminMenu = false;
@@ -204,7 +202,23 @@ void handleViewTableMenu() {
         viewTableMenu();
 
         int tableOption;
-        cin >> tableOption;
+        while (true) {
+            cin >> tableOption;
+
+            if(cin.fail() || tableOption < MIN_OPTION || tableOption > MAX_SUBOPTION) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << RED << INDENT
+                     << "Invalid input. Enter a number between "
+                     << MIN_OPTION << " and " << MAX_SUBOPTION << ".\n" << RESET;
+                system("pause");
+                system("cls");
+                viewTableMenu();
+            } else {
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                break;
+            }
+        }
 
         switch(tableOption) {
             case 1: {
@@ -298,7 +312,23 @@ void backupAndRestoreMenu(ProductList *ls, string username) {
     do {
         menuForBackupAndRestore();
 
-        cin >> choice;
+        while (true) {
+            cin >> choice;
+
+            if(cin.fail() || choice < MIN_OPTION || choice > MAX_BACKUP_OPTION) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << RED << INDENT
+                     << "Invalid input. Enter a number between "
+                     << MIN_OPTION << " and " << MAX_BACKUP_OPTION << ".\n" << RESET;
+                system("pause");
+                system("cls");
+                menuForBackupAndRestore();
+            } else {
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                break;
+            }
+        }
 
         switch(choice) {
             case 1:
