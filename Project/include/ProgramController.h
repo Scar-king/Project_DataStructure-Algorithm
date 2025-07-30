@@ -6,8 +6,8 @@
 #include <iomanip>
 #include <conio.h>
 #include <algorithm>
-#include "../include/Design_Structure.h"
-#include "../include/ProductList.h"
+#include "../include/ConsoleUI.h"
+#include "../include/InventorySystem.h"
 
 #include "Constants.h"
 
@@ -188,7 +188,7 @@ void showDeveloperInfo() {
     cout << "Team Member            ID                    Task/Job Description\n";
     cout << "======================================================================================================" << endl;
     cout << "Do Davin               p20230018             Lead Developer, Code Integration, Program Design\n";
-    cout << "Sam Sok Leap           p202300**             Data Structures, File & History Manager\n";
+    cout << "Sam Sok Leap           p20230031             Data Structures, File & History Manager\n";
     cout << "Kheang Ann             p20230027             Authentication, Encryption, and Data Handling\n";
     cout << RESET;
 }
