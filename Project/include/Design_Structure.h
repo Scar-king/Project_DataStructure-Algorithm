@@ -8,6 +8,8 @@
 #include "Constants.h"
 
 using namespace std;
+using namespace std::this_thread;
+using namespace std::chrono;
 
 #define RESET          "\033[0m"
 #define RED            "\033[31m"
@@ -55,8 +57,6 @@ void devInfo() {
 }
 
 void thankyou() {
-    using namespace std::this_thread;
-    using namespace std::chrono;
 
     string art = R"(
     _____ _                 _       __                        _                                                _                       ___                _ _                  _ 
@@ -110,7 +110,16 @@ void productArt() {
     cout << YELLOW << R"(
     +--------------------+--------------------------+-----------------------------+-----------------------------+-----------------------------+
     |                    |                          |                             |                             |                             |  
-    |      )" << ORANGE << "[PHONE]" << YELLOW << R"(       |        )" << ORANGE << "[LAPTOP]" << YELLOW << R"(          |          )" << ORANGE << "[TABLET]" << YELLOW << R"(           |         )" << ORANGE << "[MONITOR]" << YELLOW << R"(           |         )" << ORANGE << "[CONSOLE]" << YELLOW << R"(           |
+    |      )" << ORANGE << "[PHONE]" 
+              << YELLOW << R"(       |        )" 
+              << ORANGE << "[LAPTOP]" 
+              << YELLOW << R"(          |          )" 
+              << ORANGE << "[TABLET]" 
+              << YELLOW << R"(           |         )" 
+              << ORANGE << "[MONITOR]" 
+              << YELLOW << R"(           |         )" 
+              << ORANGE << "[CONSOLE]" 
+              << YELLOW << R"(           |
     |                    |                          |                             |                             |                             |    
     +--------------------+--------------------------+-----------------------------+-----------------------------+-----------------------------+
     |     __________     |                          |                             |                             |                             |
@@ -135,7 +144,6 @@ void printDashedLine() {
 void loading(){
     cout << GREEN;
     system("cls");
-    //printf("\e[?251");
 
     // We use ASCII to print special character
     SetConsoleCP(437);
@@ -152,7 +160,7 @@ void loading(){
     cout << INDENT;
     for (int i = 0; i < 60; i++){
         cout << (char)bar2;
-        Sleep(20);
+        Sleep(15);
     }
     cout << "\n\n" << INDENT << (char)1;
     system("Pause");
@@ -190,7 +198,6 @@ void loginPageMenu(){
     cout << INDENT << "| 4. About Developer (Group *)|\n";
     cout << INDENT << "| 0. Exit Application         |\n";
     cout << INDENT << "+-----------------------------+\n";
-    cout << INDENT << "Please select an option: ";
 
     cout << RESET;
 }
