@@ -19,3 +19,6 @@ bin/
 # Ignore test outputs folder (empty now, but in future)
 test/output/
 test/coverage/
+
+# Ignore test folder
+test/
