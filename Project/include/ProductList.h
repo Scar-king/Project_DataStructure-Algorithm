@@ -469,14 +469,6 @@ void displayOverallReport(ReportList *rl) {
     reportFile.close();
 }
 
-void printBar(int blocks, char symbol, const string &color) { // Davin
-    cout << color;
-    for (int i = 0; i < blocks; i++) {
-        cout << symbol;
-    }
-    cout << RESET;
-}
-
 void clearReportList(ReportList *rl) {
     ReportElement *current = rl->head;
     while (current != nullptr) {
@@ -485,6 +477,14 @@ void clearReportList(ReportList *rl) {
         delete toDelete;
     }
     rl->head = nullptr;
+}
+
+void printBar(int blocks, char symbol, const string &color) { // Davin
+    cout << color;
+    for (int i = 0; i < blocks; i++) {
+        cout << symbol;
+    }
+    cout << RESET;
 }
 
 // Draw a bar chart using the data from ReportList
@@ -502,20 +502,27 @@ void graphVisualization(ReportList *rl) {
     double scale = 500.0; // 1 block = $500
 
     cout << "\n" << YELLOW << "Profit Visualization (Green = Profit, Red = Estimate Profit)\n" << RESET;
-    cout << YELLOW << "===================================================================\n" << RESET;
+    for(int i = 0; i < 100; i++) {
+        cout << YELLOW << "=";
+    }
+    cout << RESET << endl;
 
     ReportElement *temp = rl->head;
     while(temp != nullptr) {
         // Calculate blocks for profit and estimated profit
-        int profitBlocks = temp->profit / 500;
-        int estimateBlocks = (temp->estimatProfit - temp->profit) / 500; // only the difference
-
+        int profitBlocks = temp->profit / scale;
+        int estimateBlocks = (temp->estimatProfit - temp->profit) / scale; // only the difference
 
         // Display product name and bars
         cout << setw(20) << left << temp->product->model << YELLOW << " | " << RESET;
         printBar(profitBlocks, block, GREEN);
         printBar(estimateBlocks, block, BLUE);
-        cout << "\n";
+
+        // Show numeric value after the bars
+        cout << " "
+             << ORANGE << "[" << RESET << GREEN << temp->profit << RESET << YELLOW << "$" << RESET << ORANGE << "]" << RESET << " "
+             << ORANGE << "[" << RESET << BLUE << temp->estimatProfit << RESET << YELLOW << "$" << RESET << ORANGE << "]" << RESET
+             << "\n";
 
         temp = temp->next;
     }
