@@ -19,3 +19,5 @@ inline int MIN_OPTION = 0;
 inline int MAX_OPTION = 4;
 
 inline int MAX_SUBOPTION = 8;
+
+inline int MAX_BACKUP_OPTION = 2;
