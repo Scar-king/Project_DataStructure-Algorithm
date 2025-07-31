@@ -180,19 +180,6 @@ void displayUserProfile(const string& name, int age, char gender) {
     cout << INDENT << "+--------------------------------+\n" << RESET;
 }
 
-void showDeveloperInfo() {
-    devInfo();
-    
-    cout << YELLOW;
-    cout << "=== Welcome to Developer Information ===\n\n";
-    cout << "Team Member            ID                    Task/Job Description\n";
-    cout << "======================================================================================================" << endl;
-    cout << "Do Davin               p20230018             Lead Developer, Code Integration, Program Design\n";
-    cout << "Sam Sok Leap           p20230031             Data Structures, File & History Manager\n";
-    cout << "Kheang Ann             p20230027             Authentication, Encryption, and Data Handling\n";
-    cout << RESET;
-}
-
 // Submenus of Admin Menu
 void handleViewTableMenu() {
     bool backToAdminMenu = false;
@@ -394,7 +381,6 @@ void handleAdminMenu(string username) {
                 string model;
                 int inStock;
                 int sold;
-                string description;
                 double purchaseCost;
                 double salePrice;
 
@@ -411,8 +397,14 @@ void handleAdminMenu(string username) {
                     INDENT + (string(YELLOW) + "Enter Sold (0-10000): " + RESET), MIN_STOCK, MAX_STOCK
                 );
 
-                cout << YELLOW << INDENT << "Enter Description: " << RESET;
-                getline(cin, description);
+                string description;
+                do {
+                    cout << YELLOW << INDENT << "Enter Description: " << RESET;
+                    getline(cin, description);
+                    if (description.empty()) {
+                        cout << RED << INDENT << "Description cannot be empty. Please enter a valid description.\n" << RESET;
+                    }
+                } while (description.empty());
 
                 purchaseCost = getValidateDoubleInRange(
                     INDENT + (string(YELLOW) + "Enter Purchase Cost ( > 0 ): " + RESET), MIN_PRICE, MAX_PRICE
