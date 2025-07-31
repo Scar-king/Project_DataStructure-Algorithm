@@ -117,7 +117,6 @@ void updateProductById(ProductList *productList, ProductElement* product, int ta
          << INDENT << "New model: ";
     
     // Clear leftover input and get new model name
-    cin.ignore();
     getline(cin, product->model);
 
     // Get new stock and sales value with validation

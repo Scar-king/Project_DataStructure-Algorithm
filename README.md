@@ -8,26 +8,22 @@
 - [Overview](#overview)
 - [Features](#features)
 - [Project Structure](#project-structure)
-- [Techology Used](#technology-used)
+- [Technology Used](#technology-used)
 - [Setup & Installation](#setup-&-installation)
 - [Systems Requirement](#systems-requirement)
 
 
 # 📌 Overview
 
-
+Product Inventory Management System is a console-based application designed to help administrators and users efficiently manage product inventories. It supports product addition, update, deletion, searching, reporting, backup and restore, and user authentication. The system uses C++ data structures and algorithms to ensure fast and reliable operations, and stores data in CSV files for easy access and backup.
 
 # 🚀 Features
 
-## 1. 
-
-## 2. 
-
-## 3.
-
-## 4. 
-
-## 5. 
+## 1. Add, update, delete, and search products
+## 2. User and admin authentication with password encryption
+## 3. View product lists and detailed product information
+## 4. Generate overall sales and profit reports with ASCII graph visualization
+## 5. Backup and restore product data to prevent data loss
 
 # 📂 Project Structure
 
@@ -92,4 +88,4 @@ g++ main.cpp -o main
 - **CPU:** Dual-core processor (Intel i3 or equivalent, 2.0 GHz or higher)  
 - **RAM:** 4GB minimum (8GB recommended for smooth performance)  
 - **Storage:** At least 200MB free space for program files and CSV data storage  
-- **C++ Version:** C++17 or later (requires g++, MinGW, or MSVC compiler)  
+- **C++ Version:** C++17 or later (requires g++, MinGW, or
