@@ -77,3 +77,17 @@ admin|DELETE|Product id: 1022, name: iPhone 17 PRO MAX|31/07/2025 19:16:21
 admin|DELETE|Product id: 1021, name: Test|31/07/2025 19:16:29
 admin|DELETE|Product id: 1020, name: Asus ROG Phone 8|31/07/2025 19:16:41
 admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 19:16:53
+admin|ADD|Product name: iPhone 16 PRO MAX|31/07/2025 20:50:36
+admin|ADD|Product name: 0|31/07/2025 20:51:39
+admin|ADD|Product name: iPhone TS|31/07/2025 20:52:20
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 21:11:34
+admin|ADD|Product name: iPhone 17|31/07/2025 21:46:29
+admin|UPDATE|PRODUCT ID: 1021, NAME: Phone 18|31/07/2025 21:47:38
+admin|DELETE|Product id: 1021, name: Phone 18|31/07/2025 21:48:00
+admin|ADD|Product name: iPhone 17|31/07/2025 21:48:47
+admin|ADD|Product name: iPhone 17|31/07/2025 21:49:27
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 21:50:39
+admin|ADD|Product name: iPhone 18|31/07/2025 21:51:17
+admin|BACKUP|BACKUP PRODUCT DATA|31/07/2025 21:51:25
+admin|DELETE|Product id: 1021, name: iPhone 18|31/07/2025 21:51:46
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 21:52:03

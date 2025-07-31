@@ -625,7 +625,7 @@ void graphVisualization(ReportList *reportList) {
     const int separatorLength = 100; // Number of '=' line
 
     // Chart header
-    cout << "\n" << YELLOW << "Profit Visualization (Green = Profit, Red = Estimate Profit)\n" << RESET;
+    cout << "\n" << YELLOW << "Profit Visualization (Green = Profit, Blue = Estimate Profit)\n" << RESET;
 
     // Draw '=' line
     for(int i = 0; i < separatorLength; i++) {

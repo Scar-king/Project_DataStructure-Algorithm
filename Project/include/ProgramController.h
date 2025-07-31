@@ -763,6 +763,8 @@ void Authentication() {
                     AddUser(users, username, gender, age, pw1);
                     addUserToFile(username, gender, age, pw1);
                     cout << "\n" << GREEN << INDENT << " Registration successfully!\n" << RESET;
+                    system("pause");
+                    system("cls");
                 }
 
                 break;
