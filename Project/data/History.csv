@@ -40,3 +40,27 @@ admin|BACKUP|BACKUP PRODUCT DATA|30/07/2025 20:42:52
 admin|RESTORE|RESTORE PRODUCT DATA|30/07/2025 20:45:49
 admin|BACKUP|BACKUP PRODUCT DATA|30/07/2025 20:50:13
 admin|ADD|Product name: iPhone New Test|30/07/2025 23:52:38
+admin|BACKUP|BACKUP PRODUCT DATA|31/07/2025 08:19:01
+admin|ADD|Product name: iPhone 12 PRO MAX|31/07/2025 08:20:32
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 08:21:16
+admin|DELETE|Product id: 1013, name: iPhone New Test|31/07/2025 08:42:09
+admin|ADD|Product name: iPhone HAHA|31/07/2025 08:42:34
+admin|ADD|Product name: iPhone 13|31/07/2025 08:43:08
+admin|DELETE|Product id: 1009, name: Surface Laptop 5|31/07/2025 08:43:47
+admin|DELETE|Product id: 1008, name: ThinkPad X1 Carbon|31/07/2025 08:58:45
+admin|DELETE|Product id: 1008, name: iPhone HAHA|31/07/2025 08:58:51
+admin|ADD|Product name: iPhone NewT|31/07/2025 08:59:17
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 08:59:39
+admin|DELETE|Product id: 1012, name: iPhone 17 SE|31/07/2025 09:03:00
+admin|ADD|Product name: iPhone 1212|31/07/2025 09:03:19
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 09:03:50
+admin|DELETE|Product id: 1012, name: iPhone 17 SE|31/07/2025 09:14:22
+admin|ADD|Product name: iPhone 1212|31/07/2025 09:14:39
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 09:16:10
+admin|DELETE|Product id: 1012, name: iPhone 17 SE|31/07/2025 09:20:46
+admin|ADD|Product name: iPhone 12|31/07/2025 09:21:02
+admin|DELETE|Product id: 1014, name: iPhone 12|31/07/2025 09:21:39
+admin|ADD|Product name: iPhone 15|31/07/2025 09:21:56
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 09:22:29
+admin|ADD|Product name: iPhone|31/07/2025 09:29:52
+admin|RESTORE|RESTORE PRODUCT DATA|31/07/2025 09:30:10
