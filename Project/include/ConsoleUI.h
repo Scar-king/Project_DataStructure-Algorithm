@@ -30,22 +30,6 @@ using namespace std::chrono;
 #define DIM_YELLOW    "\033[2;33m"   // Dim Yellow
 #define VERY_DIM      "\033[2;30m"   // Almost black (dim gray)
 
-void loginPageMenu(){
-    cout << YELLOW;
-
-    cout << "\n" << INDENT << "+-----------------------------+\n";
-    cout << INDENT << "|     User Management System  |\n";
-    cout << INDENT << "+-----------------------------+\n";
-    cout << INDENT << "| 1. Administrator Login      |\n";
-    cout << INDENT << "| 2. User Login               |\n";
-    cout << INDENT << "| 3. Register New User        |\n";
-    cout << INDENT << "| 4. About Developer (Group 1)|\n";
-    cout << INDENT << "| 0. Exit Application         |\n";
-    cout << INDENT << "+-----------------------------+\n";
-
-    cout << RESET;
-}
-
 void welcome() {
     string art = R"(
         ____                 __           __     __  ___                                                  __     _____            __               
@@ -226,6 +210,16 @@ void drawMenu(
     printDashedLine();
     cout << "\n" << INDENT << prompt;
     cout << RESET;
+}
+
+void loginPageMenu(){
+    drawMenu("Product Inventory Management", {
+        "1. Login as Administrator",
+        "2. Login as User",
+        "3. Register New User",
+        "4. About Developer (Group 1)",
+        "0. Exit Application"
+    }, "Please select an option: ");
 }
 
 // When Click Login as Administrator

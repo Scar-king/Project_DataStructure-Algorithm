@@ -534,9 +534,25 @@ void handleUserMenu(string username, char gender, int age) {
         userMenu();
 
         int userOption;
-        cin >> userOption;
+        while (true) {
+            cin >> userOption;
 
-        switch(userOption) {
+            if(cin.fail() || userOption < MIN_OPTION || userOption > MAX_CHOICE) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << RED << INDENT
+                     << "Invalid input. Enter a number between "
+                     << MIN_OPTION << " and " << MAX_CHOICE << ".\n" << RESET;
+                system("pause");
+                system("cls");
+                userMenu();
+            } else {
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                break;
+            }
+        }
+
+        switch (userOption) {
             case 1: {
                 displayUserProductList(ls);
                 system("pause");
@@ -545,9 +561,10 @@ void handleUserMenu(string username, char gender, int age) {
 
             case 2: {
                 system("cls");
-                int id;
-                cout << INDENT << "Search ID: ";
-                cin >> id;
+                int id = getValidateIntInRange(
+                    INDENT + (string(YELLOW) + "Enter the product ID to search: ") + RESET,
+                    MIN_ID, MAX_ID  
+                );
                 searchProductByID(ls, id);
                 displayProductByID(ls, id);
                 system("pause");
@@ -586,10 +603,24 @@ void Authentication() {
     do {
         loginPageMenu();
 
-        int choice = getValidateIntInRange(
-            INDENT + (string(YELLOW) + "Please select an option: ") + RESET,
-            MIN_OPTION, MAX_OPTION
-        );
+        int choice;
+
+        while (true) {
+            cin >> choice;
+
+            if(cin.fail() || choice < MIN_OPTION || choice > MAX_OPTION) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << RED << INDENT
+                     << "Invalid input. Enter a number between "
+                     << MIN_OPTION << " and " << MAX_OPTION << ".\n" << RESET;
+                system("pause");
+                system("cls");
+            } else {
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                break;
+            }
+        }
 
         switch (choice) {
             case 1:
@@ -607,7 +638,7 @@ void Authentication() {
                 }
                 break;
 
-            case 2:
+            case 2: {
                 cout << YELLOW << INDENT << "Input USERNAME: " << RESET;
                 getline(cin, username);
 
@@ -615,27 +646,37 @@ void Authentication() {
                     cout << "\n" << RED << INDENT << "Invalid username. It should not be empty or contain numbers.\n" << RESET;
                     break;
                 }
-            
-                pw1 = getMaskedPassword(YELLOW + INDENT + "Input your PASSWORD: " + RESET);
-                if (authenticateUser(users, username, pw1)) {
 
-                    User* u = users->head;
-                    while(u) {
-                        if (u->username == username) {
-                            gender = u->gender;
-                            age = u->age;
-                            break;
+                bool loginSuccess = false;
+                int attempts = 3;
+                while (attempts-- > 0 && !loginSuccess) {
+                    pw1 = getMaskedPassword(YELLOW + INDENT + "Input your PASSWORD: " + RESET);
+                    if (authenticateUser(users, username, pw1)) {
+                        User* u = users->head;
+                        while(u) {
+                            if (u->username == username) {
+                                gender = u->gender;
+                                age = u->age;
+                                break;
+                            }
+                            u = u->next;
                         }
-                        u = u->next;
+                        cout << "\n" << GREEN << INDENT << " Login successfully. Welcome, " << username << "!\n" << RESET;
+                        loading();
+                        handleUserMenu(username, gender, age);
+                        loginSuccess = true;
+                    } else {
+                        cout << "\n" << RED << INDENT << "Login failed. Username or password incorrect.\n" << RESET;
+                        if (attempts > 0)
+                            cout << RED << INDENT << "Try again (" << attempts << " attempts left).\n" << RESET;
+                        else
+                            cout << RED << INDENT << "No attempts left. Returning to menu.\n" << RESET;
+                        system("pause");
+                        system("cls");
                     }
-
-                    cout << "\n" << GREEN << INDENT << " Login successfully. Welcome, " << username << "!\n" << RESET;
-                    loading();
-                    handleUserMenu(username, gender, age);
-                } else {
-                    cout << "\n" << RED << INDENT << " Login failed. Username or password incorrect.\n" << RESET;
                 }
                 break;
+            }
 
             case 3: {
                 while (true) {
