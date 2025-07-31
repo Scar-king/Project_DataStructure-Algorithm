@@ -37,60 +37,41 @@ ProductList *createList() {
 }
 
 // Add End
-void addProduct(
-    ProductList *productList, 
-    const string &model, 
-    int inStock, 
-    int sold, 
-    string description, 
-    double purchaseCost, 
-    double salePrice, 
-    bool isLoadData, 
-    int id
-) {
-    // Create new product node
-    ProductElement *newProduct = new ProductElement;
+void addProduct(ProductList *ls, string model, int inStock, int sold, string description, double purchaseCost, double salePrice, bool isLoadData, int id) {
+    ProductElement *p = new ProductElement;
 
-    // Assign ID (for new loaded product)
     if (isLoadData) {
-        newProduct->id = id;
-        productList->i = id; // Keep list index synced when loading
+        p->id = id;
+        ls->i = id;
     } else {
-        newProduct->id = productList->i;
+        p->id = ls->i;
     }
 
-    // Assign basic details
-    newProduct->model = model;
-    newProduct->inStock = inStock;
-    newProduct->sold = sold;
-    newProduct->description = description;
-    newProduct->purchaseCost = purchaseCost;
-    newProduct->salePrice = salePrice;
+    p -> model = model;
+    p -> inStock = inStock;
+    p -> sold = sold;
+    p -> description = description;
+    p -> purchaseCost = purchaseCost;
+    p -> salePrice = salePrice;
+    p -> next = nullptr;
+    p -> prev = ls -> tail;
 
-    // Link to list (set prev to last node)
-    newProduct->next = nullptr;
-    newProduct->prev = productList->tail;
-
-    // Set product status with color (based on stock level)
     if (inStock == 0) {
-        newProduct->status = "\033[31mOut of Stock\033[0m"; // Red   
+        p->status = "\033[31mOut of Stock\033[0m";   
     } else if (inStock <= static_cast<int>((inStock + sold) * 0.25)){
-        newProduct->status = "\033[33mLow Stock\033[0m   ";  // Yellow 
+        p->status = "\033[33mLow Stock\033[0m   ";  
     } else {
-        newProduct->status = "\033[32mAvailable\033[0m   "; // Green  
+        p->status = "\033[32mAvailable\033[0m   ";  
     }
 
-    // Insert into doubly linked list
-    if (productList->n == 0) {
-        productList->head = newProduct;
+    if(ls->n == 0){
+        ls->head = p;
     } else {
-        productList->tail->next = newProduct; 
+        ls->tail->next = p; 
     }
-    productList->tail = newProduct;
-
-    // Update counters
-    productList->n++;
-    productList->i++;
+    ls->tail = p;
+    ls->n++;
+    ls->i++;
 }
 
 // Saves the current product list to a CSV file (ProductList.csv)
@@ -119,7 +100,6 @@ void storeProduct(ProductList *productList) { // Implemented by (Sokleap)
 
     productFile.close(); // Close the file when done
 }
-
 
 // Update a product's details by it's ID.
 // Automatically updates the product's stock status and saves the list to file.
@@ -151,8 +131,15 @@ void updateProductById(ProductList *productList, ProductElement* product, int ta
     );
     
     // Get updated description
-    cout << INDENT << "New description: ";
-    getline(cin, product->description);
+    string newDescription;
+    do {
+        cout << YELLOW << INDENT << "Enter new description: " << RESET;
+        getline(cin, newDescription);
+        if (newDescription.empty()) {
+            cout << RED << INDENT << "Description cannot be empty. Please enter a valid description.\n" << RESET;
+        }
+    } while (newDescription.empty());
+    product->description = newDescription;
 
     // Get updated purchase cost and sale price
     product->purchaseCost = getValidateDoubleInRange(
@@ -195,46 +182,33 @@ ProductElement* searchProductByID(ProductList *productList, int searchID) {
     return nullptr; // Not found
 }
 
-// Deletes a product from the list by its pointer (ProductElement*).
-// If the product is found and removed, the updated product list is saved to file.
-// Displays a confirmation or an error message accordingly.
-void deleteProductByID(ProductList* productList, ProductElement* target) { 
-    // Handle case where the product was not found
-    if(target == nullptr){
-        cout << "\n" << RED << INDENT
-             << "Entered ID not found. Please try again...\n" << RESET;
+void deleteProductByID(ProductList* ls, ProductElement* temp) { 
+    if(temp != nullptr){
+        if(ls->n == 1){
+            ls->head = nullptr;
+            ls->tail = nullptr;
+        }
+        else{
+            // 1 2 3 4
+            // delete 1 -> temp = 1, prev of temp = nullptr;
+            if(temp->prev == nullptr){
+                temp->next->prev = nullptr;
+                ls->head = temp->next;
+            }
+            else{
+                // 1 2 3 4
+                // delete 4 -> temp = 4, next of temp = nullptr;
+                temp->prev->next = temp->next; 
+                ls->tail = temp->prev;
+            }
+        }
+        delete temp;
+        ls->n--;
+        storeProduct(ls);
+        cout << GREEN << INDENT << "Successfully deleted product!\n" << RESET;
         return;
     }
-
-    // Case 1: List contains only one element
-    if(productList->n == 1){
-        productList->head = nullptr;
-        productList->tail = nullptr;
-    }
-    // Case 2 : Target is the first element (head)
-    else if (target->prev == nullptr) {
-        productList->head = target->next;
-        target->next->prev = nullptr;
-    }
-    // Case 3: Target is the last element (tail)
-    else if (target->next == nullptr) {
-        productList->tail = target->prev;
-        target->prev->next = nullptr;
-    }
-    // Case 4: Target is in the middle
-    else {
-        target->prev->next = target->next;
-        target->next->prev = target->prev;
-    }
-    
-    // Delete the target node
-    delete target;
-
-    // Update product count and save changes
-    productList->n--;
-    storeProduct(productList);
-
-    cout << GREEN << INDENT << "Successfully deleted product!\n" << RESET;
+    cout << "\n" << RED << INDENT << "Entered ID not found, Please try again...\n" << RESET;
 }
 
 // *** Sort Product using Quick Sort Algorithm ***
@@ -446,83 +420,59 @@ void displayUserProductList(ProductList *productList) {
     cout << "+-------+----------------------+-------------------------------------+----------+--------------+" << endl;
 }
 
-// Clears all products from the list and resets the list state.
-// Frees the memory for each ProductElement, sets head and tail to nullptr.
-// resets the product count, and resets the next product ID counter to 1000.
 void clearProductList(ProductList *productList) {
     ProductElement *current = productList->head;
-
-    // Delete each product node one by one
     while (current != nullptr) {
-        ProductElement *nextNode = current->next; // Keep the next node
-        delete current;                           // Free the current node
-        current = nextNode;                       // Move to the next node
+        ProductElement *nextNode = current->next; 
+        delete current;                         
+        current = nextNode;                       
     }
-
-    // Reset the product list to an empty state
     productList->head = nullptr;
     productList->tail = nullptr;
     productList->n = 0;
-
-    // Reset the ID counter so new products start from 1000 again
-    productList->i = 1000;
 }
 
-// Loads all products from ProductList.csv into the given product list.
-// Clears the current list first, parses each row, validates fields,
-// and adds valid products to the list. Skips blank or corrupted rows.
-void loadProductList(ProductList *productList) { 
+void loadProductList(ProductList *ls) { 
     ifstream productFile("../data/ProductList.csv");
-
     if (!productFile){
         cout << RED << INDENT << "Error: ProductList.csv not found.\n" << RESET; 
-        return; // File doesn't exist yet
+        return;
     }
+    clearProductList(ls);
 
-    // Clear existing list before loading new data
-    clearProductList(productList);  
-
-    string line;
-    string fields[8]; // CSV fields (expecting 7, 8 if "status" exists)
+    string history;
+    string arrayString[8];
     string token;
+    int maxId = 999; // Start below minimum
 
-    while (getline(productFile, line)) {
-        // Skip empty lines
-        if(line.empty()) continue; 
-
-        stringstream ss(line);
+    while(getline(productFile, history)) {
+        if(history.empty()) continue;
+        stringstream ss(history);
         int index = 0;
-
-        // Split the line by '|' delimiter
         while(getline(ss, token, '|') && index < 8) {
-            fields[index++] = token;
+            arrayString[index++] = token;
         }
-
-        // Validate row: must have at least 7 fields (status is optional)
         if(index < 7) {
             cout << RED << INDENT << "Warning: Skipped invalid row in ProductList.csv\n" << RESET;
             continue;
         }
-
         try {
-            // Convert fields to proper data types
-            int id = stoi(fields[0]);
-            string model = fields[1];
-            int inStock = stoi(fields[2]);
-            int sold = stoi(fields[3]);
-            string description = fields[4];
-            double purchaseCost = stod(fields[5]);
-            double salePrice = stod(fields[6]);
-    
-            // Add product to the list (status will be recalculated)
-            addProduct(productList, model, inStock, sold, description, purchaseCost, salePrice, true, id);
+            int id = stoi(arrayString[0]);
+            maxId = max(maxId, id); // Track highest ID
+            string model = arrayString[1];
+            int inStock = stoi(arrayString[2]);
+            int sold = stoi(arrayString[3]);
+            string description = arrayString[4];
+            double purchaseCost = stod(arrayString[5]);
+            double salePrice = stod(arrayString[6]);
+            addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, true, id);
         }
         catch(...) {
             cout << RED << INDENT << "Warning: Skipped a corrupted row (conversion error)\n" << RESET;
         }
     }
-
     productFile.close();
+    ls->i = maxId + 1; // Set next ID to max existing + 1
 }
 
 // Doubly Linked List
@@ -640,7 +590,7 @@ void clearReportList(ReportList *reportList) {
     while (current != nullptr) {
         ReportElement *toDelete = current;
         current = current->next;
-        delete toDelete; // Free memory
+        delete toDelete;
     }
 
     // Reset the list state
@@ -740,7 +690,7 @@ AdminHistoryStack *createEmptyStack() {
 // Gets the current UTC time as a system_clock::time_point.
 // Easy for time calculations and converting to local time later.
 chrono::system_clock::time_point getCurrentUTCTime() {
-    chrono::system_clock::time_point now = chrono::system_clock::now(); // Current time in UTC
+    chrono::system_clock::time_point now = chrono::system_clock::now();
     return now;
 }
 
@@ -748,18 +698,14 @@ chrono::system_clock::time_point getCurrentUTCTime() {
 string getCambodiaTime() {
 
     const chrono::hours CAMBODIA_OFFSET = chrono::hours(7); // Cambodia time zone offset (ICT = UTC+7)
-
-    // Get current UTC time and add the offset for Cambodia.
+    
     chrono::system_clock::time_point cambodia_time_point = getCurrentUTCTime() + CAMBODIA_OFFSET;
 
-    // Convert to time_t (needed for formatting).
+    // Convert UTC time to Cambodia local time string (DD/MM/YYYY HH:MM:SS)
     time_t rawTime = chrono::system_clock::to_time_t(cambodia_time_point);
-
-    // Convert to a tm structure (in GMT, adjusted by offset already).
     tm *cambodiaTime = gmtime(&rawTime);
-
-    // Format the time as a string (DD/MM/YYYY HH:MM:SS).
     char timeBuffer[30];
+
     strftime(timeBuffer, sizeof(timeBuffer), "%d/%m/%Y %H:%M:%S", cambodiaTime);
 
     return string(timeBuffer);
@@ -821,7 +767,6 @@ string colorizeType (const string &type) {
         return string(RESTORE_COLOR) + type + RESET;
     }
 
-    // Return without color if the type is unknown
     return type;
 }
 
@@ -964,115 +909,150 @@ time_t getOneMonthAgoTime() {
 }
 
 void displayLastMonthHistory(AdminHistoryStack *s) {
+    if (s == nullptr || s->top == nullptr) {
+        cout << "\n" << RED << INDENT << "No admin history stack available.\n" << RESET;
+        return; 
+    }
+
     AdminHistory *temp = s->top;
-    int i = 1;
+    int index = 1;
     bool found = false;
+
     time_t oneMonthAgo = getOneMonthAgoTime();
-    while (temp != nullptr)
-    {
+
+    while (temp != nullptr) {
+        // Convert string time into time_t
         time_t recordTime = stringToTimeT(temp->cambodiaStringTime);
-        if (recordTime >= oneMonthAgo)
-        {
-            if (i == 1)
-            {
+
+        if (recordTime >= oneMonthAgo) {
+            if (!found) {
+                // Only print header once
                 cout << "\n" << YELLOW << INDENT << "--- Admin History within the last 30 days ---\n" << RESET;
                 cout << "\n+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
                 printf("| %4s | %-20s | %-10s | %-50s | %-20s |\n",
                        "N0", "NAME", "TYPE", "DESCRIPTION", "HISTORY TIME");
                 cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+                found = true;
             }
-            displayHistory(i, temp);
-            found = true;
-            i++;
+            
+            // Show this history record
+            displayHistory(index, temp);
+            index++;
         }
+
         temp = temp->next;
     }
 
-    cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
-    if (!found)
-    {
+    if (found) {
+        cout << "+------+----------------------+------------+----------------------------------------------------+----------------------+\n";
+    } else {
         cout << "\n" << RED << INDENT << "No admin history found within the last 30 days.\n" << RESET;
     }
 }
 
 void storeAdminHistory(AdminHistory *temp) {
+    if (temp == nullptr) return;
+
     ofstream historyFile("../data/History.csv", ios::app);
-    historyFile << temp->adminName << "|" << temp->commandType << "|" << temp->description << "|" << temp->cambodiaStringTime << endl;
+
+    // write record in '|' separeated format
+    historyFile << temp->adminName << "|" 
+                << temp->commandType << "|" 
+                << temp->description << "|" 
+                << temp->cambodiaStringTime << "\n";
+
     historyFile.close();
 }
 
-void loadAdminHistoryStack(AdminHistoryStack *s) {
+void loadAdminHistoryStack(AdminHistoryStack *stack) {
     ifstream historyFile("../data/History.csv");
-    string history;
-    string arrayString[4];
-    string token;
-    while (getline(historyFile, history))
-    {
-        stringstream ss(history);
+    if (!historyFile) {
+        cerr << RED << "Failed to open History.csv!\n" << RESET;
+        return;
+    }
+
+    string line;
+    string fields[4];
+
+    while (getline(historyFile, line)) {
+        stringstream ss(line);
+        string token;
         int index = 0;
 
-        while (getline(ss, token, '|'))
-        {
-            arrayString[index] = token;
-            index++;
+        while (getline(ss, token, '|')) { // Split by '|'
+            fields[index++] = token;
         }
 
-        string adminName = arrayString[0];
-        string commandType = arrayString[1];
-        string description = arrayString[2];
-        string time = arrayString[3];
+        if (index == 4) {
+            const string &adminName = fields[0];
+            const string &commandType = fields[1];
+            const string &description = fields[2];
+            const string &time = fields[3];
 
-        addHistory(s, adminName, commandType, description, time);
+            addHistory(stack, adminName, commandType, description, time);
+        }
     }
+
     historyFile.close();
 }
 
-void backupProductData(ProductList *ls) {
-    // Always save the latest data to ProductList.csv before backup
-    storeProduct(ls);
+void backupProductData(ProductList *productList) {
+    // Always save the latest product list before backup
+    storeProduct(productList);
 
-    ifstream src("../data/ProductList.csv", ios::binary);
-    if (!src) {
+    ifstream productFile("../data/ProductList.csv", ios::binary);
+    if (!productFile) {
         cout << RED << INDENT << "Error: ProductList.csv not found. Backup aborted.\n" << RESET;
         return;
     }
 
     // Check if ProductList.csv is empty
-    src.seekg(0, ios::end);
-    if (src.tellg() == 0) {
+    productFile.seekg(0, ios::end);
+    if (productFile.tellg() == 0) {
         cout << RED << INDENT << "Error: ProductList.csv is empty. Backup not created (to avoid wiping a good backup).\n" << RESET;
         return;
     }
-    src.seekg(0, ios::beg);
+    productFile.seekg(0, ios::beg); // Reset to beginning
 
-    ofstream dst("../data/Backup_ProductList.csv", ios::binary);
-    dst << src.rdbuf();
+    // Create backup file
+    ofstream backupFile("../data/Backup_ProductList.csv", ios::binary);
+    if (!backupFile) {
+        cout << RED << INDENT << "Error: Failed to create backup file.\n" << RESET;
+    }
 
-    cout << GREEN << INDENT << "Backup completed successfully (" << ls->n << " product(s) saved).\n" << RESET;
+    // Copy content
+    backupFile << productFile.rdbuf();
+
+    cout << GREEN << INDENT << "Backup completed successfully (" << productList->n << " product(s) saved).\n" << RESET;
 }
 
 
-void restoreProductData(ProductList *ls) {
-    ifstream src("../data/Backup_ProductList.csv", ios::binary);
-    if (!src) {
+void restoreProductData(ProductList *productList) {
+    ifstream backupFile("../data/Backup_ProductList.csv", ios::binary);
+    if (!backupFile) {
         cout << RED << INDENT << "Error: Backup file not found. Cannot restore.\n" << RESET;
         return;
     }
 
     // Check if backup file is empty
-    src.seekg(0, ios::end);
-    if (src.tellg() == 0) {
+    backupFile.seekg(0, ios::end);
+    if (backupFile.tellg() == 0) {
         cout << RED << INDENT << "Error: Backup file is empty. Restore aborted (to protect your current data).\n" << RESET;
         return;
     }
-    src.seekg(0, ios::beg);
+    backupFile.seekg(0, ios::beg);
 
     // Overwrite ProductList.csv with backup
-    ofstream dst("../data/ProductList.csv", ios::binary);
-    dst << src.rdbuf();
+    ofstream productFile("../data/ProductList.csv", ios::binary);
+    if (!productFile) {
+        cout << RED << INDENT << "Error: Failed to write to ProductList.csv.\n" << RESET;
+        return;
+    }
+
+    productFile << backupFile.rdbuf();
 
     cout << GREEN << INDENT << "Restore completed successfully.\n" << RESET;
 
-    // Reload into memory and show debug info
-    loadProductList(ls);
+    // Reload the updated file into memory
+    loadProductList(productList);
 }
