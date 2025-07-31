@@ -20,18 +20,34 @@ using namespace std::chrono;
 #define CYAN           "\033[1;36m"
 #define GRAY           "\033[0;37m"
 #define ORANGE         "\033[38;2;255;165;0m"
-#define ADD_COLOR      "\033[32m"  // Green
-#define UPDATE_COLOR   "\033[36m"  // Cyan
-#define DELETE_COLOR   "\033[31m"  // Red
-#define BACKUP_COLOR   "\033[34m"  // Blue
-#define RESTORE_COLOR  "\033[35m"  // Magenta
+#define ADD_COLOR      "\033[32m"    // Green
+#define UPDATE_COLOR   "\033[36m"    // Cyan
+#define DELETE_COLOR   "\033[31m"    // Red
+#define BACKUP_COLOR   "\033[34m"    // Blue
+#define RESTORE_COLOR  "\033[35m"    // Magenta
 #define BRIGHT_YELLOW "\033[1;33m"   // Bold Yellow
 #define NORMAL_YELLOW "\033[0;33m"   // Regular Yellow
 #define DIM_YELLOW    "\033[2;33m"   // Dim Yellow
 #define VERY_DIM      "\033[2;30m"   // Almost black (dim gray)
 
-void welcome(){
-    cout << GREEN << R"(
+void loginPageMenu(){
+    cout << YELLOW;
+
+    cout << "\n" << INDENT << "+-----------------------------+\n";
+    cout << INDENT << "|     User Management System  |\n";
+    cout << INDENT << "+-----------------------------+\n";
+    cout << INDENT << "| 1. Administrator Login      |\n";
+    cout << INDENT << "| 2. User Login               |\n";
+    cout << INDENT << "| 3. Register New User        |\n";
+    cout << INDENT << "| 4. About Developer (Group 1)|\n";
+    cout << INDENT << "| 0. Exit Application         |\n";
+    cout << INDENT << "+-----------------------------+\n";
+
+    cout << RESET;
+}
+
+void welcome() {
+    string art = R"(
         ____                 __           __     __  ___                                                  __     _____            __               
        / __ \_________  ____/ /_  _______/ /_   /  |/  /___ _____  ____ _____ ____  ____ ___  ___  ____  / /_   / ___/__  _______/ /____  ____ ___ 
       / /_/ / ___/ __ \/ __  / / / / ___/ __/  / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \/ __ `__ \/ _ \/ __ \/ __/   \__ \/ / / / ___/ __/ _ \/ __ `__ \
@@ -39,7 +55,28 @@ void welcome(){
     /_/   /_/   \____/\__,_/\__,_/\___/\__/  /_/  /_/\__,_/_/ /_/\__,_/\__, /\___/_/ /_/ /_/\___/_/ /_/\__/   /____/\__, /____/\__/\___/_/ /_/ /_/ 
                                                                       /____/                                       /____/                          
                             
-    )" << RESET << endl;
+    )";
+
+    // Fade out: bright to dim
+    system("cls");
+    cout << BRIGHT_YELLOW << art << RESET << endl;
+    sleep_for(milliseconds(400));
+
+    system("cls");
+    cout << NORMAL_YELLOW << art << RESET << endl;
+    sleep_for(milliseconds(400));
+
+    system("cls");
+    cout << DIM_YELLOW << art << RESET << endl;
+    sleep_for(milliseconds(400));
+
+    system("cls");
+    cout << VERY_DIM << art << RESET << endl;
+    sleep_for(milliseconds(400));
+
+    // Fully disappear
+    system("cls");
+    sleep_for(milliseconds(400));
 }
 
 void devInfo() {
@@ -191,22 +228,6 @@ void drawMenu(
     cout << RESET;
 }
 
-void loginPageMenu(){
-    cout << YELLOW;
-
-    cout << "\n" << INDENT << "+-----------------------------+\n";
-    cout << INDENT << "|     User Management System  |\n";
-    cout << INDENT << "+-----------------------------+\n";
-    cout << INDENT << "| 1. Administrator Login      |\n";
-    cout << INDENT << "| 2. User Login               |\n";
-    cout << INDENT << "| 3. Register New User        |\n";
-    cout << INDENT << "| 4. About Developer (Group 1)|\n";
-    cout << INDENT << "| 0. Exit Application         |\n";
-    cout << INDENT << "+-----------------------------+\n";
-
-    cout << RESET;
-}
-
 // When Click Login as Administrator
 void menuForAdmin() {
     drawMenu("Menu", {
@@ -254,4 +275,17 @@ void menuForBackupAndRestore() {
         "2. Restore Product Data from Backup",
         "0. Back"
     }, "Choice: ");
+}
+
+void showDeveloperInfo() {
+    devInfo();
+    
+    cout << YELLOW;
+    cout << "=== Welcome to Developer Information ===\n\n";
+    cout << "Team Member            ID                    Task/Job Description\n";
+    cout << "===========================================================================================================" << endl;
+    cout << "Do Davin               p20230018             Data Structures, Code Integration, Program Design, clean code\n";
+    cout << "Sam Sok Leap           p20230031             Data Structures, File & History Manager\n";
+    cout << "Kheang Ann             p20230027             Data Structures, Authentication, Encryption, and Data Handling\n";
+    cout << RESET;
 }
