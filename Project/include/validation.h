@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <limits> // For using numeric_limits<streamsize>
+#include <cctype>
 
 // Detect invalid inStock & sold input
 int getValidateIntInRange(const string &text, int min, int max) {
@@ -39,4 +40,11 @@ double getValidateDoubleInRange(const string &text, double min, double max) {
             return value;
         }
     }
+}
+
+bool isNumber(const string& s) {
+    for (char c : s) {
+        if (!isdigit(c)) return false;
+    }
+    return !s.empty();
 }
