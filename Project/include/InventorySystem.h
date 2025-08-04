@@ -188,17 +188,24 @@ void deleteProductByID(ProductList* ls, ProductElement* temp) {
             ls->tail = nullptr;
         }
         else{
-            // 1 2 3 4
-            // delete 1 -> temp = 1, prev of temp = nullptr;
+            //head
             if(temp->prev == nullptr){
                 temp->next->prev = nullptr;
                 ls->head = temp->next;
             }
             else{
-                // 1 2 3 4
-                // delete 4 -> temp = 4, next of temp = nullptr;
-                temp->prev->next = temp->next; 
-                ls->tail = temp->prev;
+                if(temp -> next == nullptr){
+                    //tail
+                    temp -> prev -> next = nullptr;
+                    ls->tail = temp->prev; 
+                    cout << ls -> tail -> id << endl;
+                }
+                //pos
+                else{
+                    temp -> prev-> next = temp-> next;
+                    temp -> next -> prev = temp -> prev;
+                }
+               
             }
         }
         delete temp;
