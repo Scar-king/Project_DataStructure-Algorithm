@@ -19,9 +19,6 @@ ReportList *rl = createReportList();
 AdminHistoryStack *s = createEmptyStack();
 void Authentication();
 
-// Forward declare so compiler knows this exists
-// void storeProduct(ProductList *ls);
-
 const char Encryption_key = 'K';
 const string AdminPassword = "admin";
 
@@ -188,24 +185,7 @@ void handleViewTableMenu() {
         system("cls");
         viewTableMenu();
 
-        int tableOption;
-        while (true) {
-            cin >> tableOption;
-
-            if(cin.fail() || tableOption < MIN_OPTION || tableOption > MAX_SUBOPTION) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << RED << INDENT
-                     << "Invalid input. Enter a number between "
-                     << MIN_OPTION << " and " << MAX_SUBOPTION << ".\n" << RESET;
-                system("pause");
-                system("cls");
-                viewTableMenu();
-            } else {
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-        }
+        int tableOption = validateMenu(MIN_OPTION, MAX_SUBOPTION, viewTableMenu);
 
         switch(tableOption) {
             case 1: {
@@ -294,48 +274,39 @@ void handleViewTableMenu() {
 
 void backupAndRestoreMenu(ProductList *ls, string username) {
 
-    string input;
-    int choice;
-
-    do {
+    bool back = false;
+ 
+    while (!back) {
         menuForBackupAndRestore();
 
-        cin >> input;
+        int choice = validateMenu(MIN_OPTION, MAX_BACKUP_OPTION, menuForBackupAndRestore);
 
-        if (isNumber(input)) {
-            choice = stoi(input);
-
-            switch(choice) {
-                case 1:
-                    storeProduct(ls);
-                    backupProductData(ls);
-                    addHistory(s, username, "BACKUP", "BACKUP PRODUCT DATA", getCambodiaTime());
-                    storeAdminHistory(s -> top);
-                    system("pause");
-                    system("cls");
-                    Authentication();
-                    return;
-                case 2:
-                    restoreProductData(ls);
-                    addHistory(s, username, "RESTORE", "RESTORE PRODUCT DATA", getCambodiaTime());
-                    storeAdminHistory(s -> top);
-                    system("pause");
-                    system("cls");
-                    Authentication();
-                    return;
-                case 0:
-                    break;
-                default:
-                    cout << RED << INDENT << "Invalid choice. Try again...\n" << RESET;
-            }
-
-        } else {
-            cout << RED << INDENT << "Invalid input. Please enter a number.\n" << RESET;
-            system("pause");
-            system("cls");
-        }
-
-    } while(choice != 0);
+        switch(choice) {
+            case 1:
+                storeProduct(ls);
+                backupProductData(ls);
+                addHistory(s, username, "BACKUP", "BACKUP PRODUCT DATA", getCambodiaTime());
+                storeAdminHistory(s -> top);
+                system("pause");
+                system("cls");
+                Authentication();
+                return;
+            case 2:
+                restoreProductData(ls);
+                addHistory(s, username, "RESTORE", "RESTORE PRODUCT DATA", getCambodiaTime());
+                storeAdminHistory(s -> top);
+                system("pause");
+                system("cls");
+                Authentication();
+                return;
+            case 0:
+                back = true;
+                system("cls");
+                break;
+            default:
+                cout << RED << INDENT << "Invalid choice. Try again...\n" << RESET;
+        }    
+    }
 }
 
 void handleAdminMenu(string username) {
@@ -349,165 +320,159 @@ void handleAdminMenu(string username) {
         system("cls");
         menuForAdmin();
 
-        string input;
-        int adminOption;
+        int adminOption = validateMenu(MIN_OPTION, MAX_SUBOPTION, menuForAdmin); 
 
-        cin >> input;
-        
-        if(isNumber(input)) {
-            adminOption = stoi(input);
+        switch (adminOption) {
+            case 1:{
+                system("cls");
 
-            switch (adminOption) {
-                case 1:{
-                    system("cls");
-    
-                    string model;
-                    int inStock;
-                    int sold;
-                    double purchaseCost;
-                    double salePrice;
-    
-                    productArt();
-    
+                string model;
+                int inStock;
+                int sold;
+                string description;
+                double purchaseCost;
+                double salePrice;
+
+                productArt();
+
+                do {
                     cout << YELLOW << INDENT << "Please enter a product Model: " << RESET;
                     getline(cin, model);
-    
-                    inStock = getValidateIntInRange(
-                        INDENT + (string(YELLOW) + "Enter in Stock (0-10000): " + RESET), MIN_STOCK, MAX_STOCK
-                    );
-                    
-                    sold = getValidateIntInRange(
-                        INDENT + (string(YELLOW) + "Enter Sold (0-10000): " + RESET), MIN_STOCK, MAX_STOCK
-                    );
-    
-                    string description;
-                    do {
-                        cout << YELLOW << INDENT << "Enter Description: " << RESET;
-                        getline(cin, description);
-                        if (description.empty()) {
-                            cout << RED << INDENT << "Description cannot be empty. Please enter a valid description.\n" << RESET;
-                        }
-                    } while (description.empty());
-    
-                    purchaseCost = getValidateDoubleInRange(
-                        INDENT + (string(YELLOW) + "Enter Purchase Cost ( > 0 ): " + RESET), MIN_PRICE, MAX_PRICE
-                    );
-    
-                    salePrice = getValidateDoubleInRange(
-                        INDENT + (string(YELLOW) + "Enter Sale Price ( > 0 ): " + RESET), MIN_PRICE, MAX_PRICE
-                    );
-    
-                    addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, false, 0);
-                    storeProduct(ls);
-                    addHistory(s, username, "ADD", ("Product name: " + model), getCambodiaTime());
-                    storeAdminHistory(s -> top);
-    
-                    cout << "\n" << GREEN << INDENT << "Product added to the List successfully!\n" << RESET;
-                    system("pause");
-    
-                    break;
-                }
-    
-                case 2:  
-                    handleViewTableMenu();  
-                    break;
-    
-                case 3:{
-                    system("cls");
-    
-                    displayAdminProductList(ls);
-    
-                    int targetId = getValidateIntInRange(
-                        INDENT + (string(YELLOW) + "Enter the (ID) of the product to modify: ") + RESET,
-                        MIN_ID, MAX_ID  
-                    );
-    
-                    ProductElement* temp = searchProductByID(ls, targetId);
-                    updateProductById(ls, temp, targetId);
-    
-                    if(temp != nullptr){
-                        addHistory(s, username, "UPDATE", ("PRODUCT ID: " + to_string(targetId) + ", NAME: " + string(temp -> model)), getCambodiaTime());
-                        storeAdminHistory(s -> top);
+                    if(model.empty()) {
+                        cout << RED << INDENT << "MODEL cannot be empty. Please enter a valid MODEL.\n" << RESET;
                     }
-    
-                    system("pause");
-                    break;
-                }
-    
-                case 4: {
-                    system("cls");
-    
-                    displayAdminProductList(ls);
-    
-                    int id = getValidateIntInRange(
-                        INDENT + (string(YELLOW) + "Please enter the product ID you want to delete: ") + RESET,
-                        MIN_ID, MAX_ID  
-                    );
-    
-                    ProductElement* temp = searchProductByID(ls, id);
-                    if(temp != nullptr){
-                        addHistory(s, username, "DELETE", ("Product id: " + to_string(id) + ", name: " + string(temp -> model)), getCambodiaTime());
-                        storeAdminHistory(s -> top);
+                } while(model.empty());
+
+                inStock = getValidateIntInRange(
+                    INDENT + (string(YELLOW) + "Enter in Stock (0-10000): " + RESET), MIN_STOCK, MAX_STOCK
+                );
+                
+                sold = getValidateIntInRange(
+                    INDENT + (string(YELLOW) + "Enter Sold (0-10000): " + RESET), MIN_STOCK, MAX_STOCK
+                );
+
+                do {
+                    cout << YELLOW << INDENT << "Enter Description: " << RESET;
+                    getline(cin, description);
+                    if (description.empty()) {
+                        cout << RED << INDENT << "Description cannot be empty. Please enter a valid description.\n" << RESET;
                     }
-                    deleteProductByID(ls, temp);
-                    system("pause");
-                    break;
-                }
-    
-                case 5: {
-                    system("cls");
-    
-                    displayAdminProductList(ls);
-    
-                    int id = getValidateIntInRange(
-                        INDENT + (string(YELLOW) + "Enter the product ID to search: ") + RESET,
-                        MIN_ID, MAX_ID  
-                    );
-    
-                    searchProductByID(ls, id);
-                    displayProductByID(ls, id);
-    
-                    system("pause");
-                    break;
-                }
-    
-                case 6: {
-                    system("cls");
-    
-                    displayLowStockProducts(ls);
-    
-                    system("pause");
-                    break;
-                }
-    
-                case 7: {
-                    system("cls");
-    
-                    backupAndRestoreMenu(ls, username);
-    
-                    break;
-                }
-    
-                case 8: {
-                    system("cls");
-                    displayAdminProfile(username, 20, 'M');
-                    system("pause");
-                    break;
-                }
-    
-                case 0:
-                    logout = true;  
-                    system("cls");
-                    break;
-    
-                default:
-                    cout << "\n" << RED << INDENT << " Invalid option. Please try again.\n" << RESET;
-                    break;
+                } while (description.empty());
+
+                purchaseCost = getValidateDoubleInRange(
+                    INDENT + (string(YELLOW) + "Enter Purchase Cost ( price > 0 ): " + RESET), MIN_PRICE, MAX_PRICE
+                );
+
+                salePrice = getValidateDoubleInRange(
+                    INDENT + (string(YELLOW) + "Enter Sale Price ( price > 0 ): " + RESET), MIN_PRICE, MAX_PRICE
+                );
+
+                addProduct(ls, model, inStock, sold, description, purchaseCost, salePrice, false, 0);
+                storeProduct(ls);
+                addHistory(s, username, "ADD", ("Product name: " + model), getCambodiaTime());
+                storeAdminHistory(s -> top);
+
+                cout << "\n" << GREEN << INDENT << "Product added to the List successfully!\n" << RESET;
+                system("pause");
+
+                break;
             }
-        } else {
-            cout << RED << INDENT << "Invalid input. Please enter a number.\n" << RESET;
-            system("pause");
-            system("cls");
+
+            case 2:  
+                handleViewTableMenu();  
+                break;
+
+            case 3:{
+                system("cls");
+
+                displayAdminProductList(ls);
+
+                int targetId = getValidateIntInRange(
+                    INDENT + (string(YELLOW) + "Enter the (ID) of the product to modify: ") + RESET,
+                    MIN_ID, MAX_ID  
+                );
+
+                ProductElement* temp = searchProductByID(ls, targetId);
+                updateProductById(ls, temp, targetId);
+
+                if(temp != nullptr){
+                    addHistory(s, username, "UPDATE", ("PRODUCT ID: " + to_string(targetId) + ", NAME: " + string(temp -> model)), getCambodiaTime());
+                    storeAdminHistory(s -> top);
+                }
+
+                system("pause");
+                break;
+            }
+
+            case 4: {
+                system("cls");
+
+                displayAdminProductList(ls);
+
+                int id = getValidateIntInRange(
+                    INDENT + (string(YELLOW) + "Please enter the product ID you want to delete: ") + RESET,
+                    MIN_ID, MAX_ID  
+                );
+
+                ProductElement* temp = searchProductByID(ls, id);
+                if(temp != nullptr){
+                    addHistory(s, username, "DELETE", ("Product id: " + to_string(id) + ", name: " + string(temp -> model)), getCambodiaTime());
+                    storeAdminHistory(s -> top);
+                }
+                deleteProductByID(ls, temp);
+                system("pause");
+                break;
+            }
+
+            case 5: {
+                system("cls");
+
+                displayAdminProductList(ls);
+
+                int id = getValidateIntInRange(
+                    INDENT + (string(YELLOW) + "Enter the product ID to search: ") + RESET,
+                    MIN_ID, MAX_ID  
+                );
+
+                searchProductByID(ls, id);
+                displayProductByID(ls, id);
+
+                system("pause");
+                break;
+            }
+
+            case 6: {
+                system("cls");
+
+                displayLowStockProducts(ls);
+
+                system("pause");
+                break;
+            }
+
+            case 7: {
+                system("cls");
+
+                backupAndRestoreMenu(ls, username);
+
+                break;
+            }
+
+            case 8: {
+                system("cls");
+                displayAdminProfile(username, 20, 'M');
+                system("pause");
+                break;
+            }
+
+            case 0:
+                logout = true;  
+                system("cls");
+                break;
+
+            default:
+                cout << "\n" << RED << INDENT << " Invalid option. Please try again.\n" << RESET;
+                break;
         }
     }
 }
@@ -521,24 +486,7 @@ void handleUserMenu(string username, char gender, int age) {
         system("cls");
         userMenu();
 
-        int userOption;
-        while (true) {
-            cin >> userOption;
-
-            if(cin.fail() || userOption < MIN_OPTION || userOption > MAX_CHOICE) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << RED << INDENT
-                     << "Invalid input. Enter a number between "
-                     << MIN_OPTION << " and " << MAX_CHOICE << ".\n" << RESET;
-                system("pause");
-                system("cls");
-                userMenu();
-            } else {
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-        }
+        int userOption = validateMenu(MIN_OPTION, MAX_CHOICE, userMenu);
 
         switch (userOption) {
             case 1: {
@@ -591,24 +539,7 @@ void Authentication() {
     do {
         loginPageMenu();
 
-        int choice;
-
-        while (true) {
-            cin >> choice;
-
-            if(cin.fail() || choice < MIN_OPTION || choice > MAX_OPTION) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << RED << INDENT
-                     << "Invalid input. Enter a number between "
-                     << MIN_OPTION << " and " << MAX_OPTION << ".\n" << RESET;
-                system("pause");
-                system("cls");
-            } else {
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-        }
+        int choice = validateMenu(MIN_OPTION, MAX_OPTION, loginPageMenu);
 
         switch (choice) {
             case 1:
@@ -623,6 +554,8 @@ void Authentication() {
 
                 } else {
                     cout << "\n" << RED << INDENT << "Invalid admin credentials.\n" << RESET;
+                    system("pause");
+                    system("cls");
                 }
                 break;
 
@@ -697,60 +630,40 @@ void Authentication() {
                     break;
                 }
 
-                while (true) {
-                    cout << YELLOW << INDENT << "Input AGE: " << RESET;
-                    cin >> age;
-
-                    // Handle invalid (non-numeric) age input
-                    if (cin.fail()) {
-                        cin.clear();  // Clear error flag
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Discard invalid input
-                        cout << "\n" << RED << INDENT
-                            << "Invalid AGE. Please input a number!\n"
-                            << RESET;
-                        continue;  // Restart the loop
-                    }
-
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear leftover newline
-
-                    if (age <= 0 || age >= 100) {
-                        cout << "\n" << RED << INDENT
-                            << "Invalid AGE. Please input a number between 1 and 99.\n"
-                            << RESET;
-                        continue;
-                    }
-
-                    break;
-                }
+                int age = getValidateIntInRange(INDENT + (string(YELLOW) + "Input AGE: ") + RESET, MIN_OPTION, MAX_AGE);
 
                 int pw_attempts = 3;
                 bool passwordMatched = false;
             
+                pw1 = getMaskedPassword(YELLOW + INDENT + "Create your PASSWORD: " + RESET);
+
+                if (pw1.length() < 4) {  // Password strength check
+                    cout << RED << INDENT << "PASSWORD too short (min 4 characters), Please try again...\n" << RESET;
+                    return;
+                }
+
                 while (pw_attempts-- > 0) {
-                    pw1 = getMaskedPassword(YELLOW + INDENT + "Create your PASSWORD: " + RESET);
                     pw2 = getMaskedPassword(YELLOW + INDENT + "Confirm PASSWORD: " + RESET);
-                
-                    if (pw1.length() < 4) {  // Password strength check
-                        cout << RED << INDENT << "PASSWORD too short (min 4 characters), Please try again...\n" << RESET;
-                        continue;
-                    }
                 
                     if (pw1 == pw2) {
                         passwordMatched = true;
                         break;
                     } else {
-                        cout << RED << INDENT << "PASSWORD do not matched." << RESET;
+                        cout << RED << INDENT << "PASSWORD do not matched.\n" << RESET;
                         if (pw_attempts > 0)
                             cout << RED << INDENT << "Try again (" << pw_attempts << " attempts left).\n" << RESET;
-                        else
-                            cout << RED << INDENT << "No attempts left. Registration canceled.\n" << RESET;
+                        else {
+                            cout << "\n" << RED << INDENT << "No attempts left. Registration canceled.\n" << RESET;
+                            system("pause");
+                            system("cls");
+                        }
                     }
                 }
             
                 if (passwordMatched) {
                     AddUser(users, username, gender, age, pw1);
                     addUserToFile(username, gender, age, pw1);
-                    cout << "\n" << GREEN << INDENT << " Registration successfully!\n" << RESET;
+                    cout << "\n" << GREEN << INDENT << "Registration successfully!\n" << RESET;
                     system("pause");
                     system("cls");
                 }
