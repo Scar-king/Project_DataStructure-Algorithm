@@ -23,3 +23,5 @@ inline int MAX_SUBOPTION = 8;
 inline int MAX_BACKUP_OPTION = 2;
 
 inline int MAX_CHOICE = 3;
+
+inline int MAX_AGE = 100;
