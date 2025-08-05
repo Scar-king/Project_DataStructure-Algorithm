@@ -248,7 +248,6 @@ ProductElement *Partition(ProductElement *low, ProductElement *high, bool ascend
             swapProduct(start, end);
         }
     }
-s
     swapProduct(low, end);
     return end;
 }
