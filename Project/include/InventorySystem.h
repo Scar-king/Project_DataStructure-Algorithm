@@ -248,7 +248,7 @@ ProductElement *Partition(ProductElement *low, ProductElement *high, bool ascend
             swapProduct(start, end);
         }
     }
-
+s
     swapProduct(low, end);
     return end;
 }
@@ -261,7 +261,7 @@ void QuickSort(ProductElement *low, ProductElement *high, bool ascending) {
     }
 }
 
-// We called this function to use Quick Sort
+// ==================== MAIN QUICK SORT FUNCTION ====================
 void quickSort(ProductList *productList, bool ascending = false) {
 
     QuickSort(productList->head, productList->tail, ascending);
