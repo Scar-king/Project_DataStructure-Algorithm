@@ -110,46 +110,32 @@ void updateProductById(ProductList *productList, ProductElement* product, int ta
         return;
     }
 
-    // Show current product info
-    cout << YELLOW;
-    cout << "\n" << INDENT << "Updating Product ID: " << targetId << "\n";
-    cout << INDENT << "Current model: " << product->model << "\n" 
-         << INDENT << "New model: ";
-    
-    // Clear leftover input and get new model name
-    getline(cin, product->model);
+    modelUpdateLenValidation(product->model, targetId);
 
     // Get new stock and sales value with validation
     product->inStock = getValidateIntInRange(
-        INDENT + "Enter new quantity in stock (1-1000): ", 
+        INDENT + string(YELLOW) + "Enter new quantity in stock (1-1000): " + RESET, 
         MIN_STOCK, MAX_STOCK
     );
     product->sold = getValidateIntInRange(
-        INDENT + "Enter new quantity sold (1-1000): ", 
+        INDENT + string(YELLOW) + "Enter new quantity sold (1-1000): " + RESET, 
         MIN_STOCK, MAX_STOCK
     );
     
     // Get updated description
     string newDescription;
-    do {
-        cout << YELLOW << INDENT << "Enter new description: " << RESET;
-        getline(cin, newDescription);
-        if (newDescription.empty()) {
-            cout << RED << INDENT << "Description cannot be empty. Please enter a valid description.\n" << RESET;
-        }
-    } while (newDescription.empty());
+    descUpdateLenValidation(newDescription);
     product->description = newDescription;
 
     // Get updated purchase cost and sale price
     product->purchaseCost = getValidateDoubleInRange(
-        INDENT + "New purchase cost($1.00 - $10000.00): ", 
+        INDENT + string(YELLOW) + "New purchase cost($1.00 - $10000.00): " + RESET, 
         MIN_PRICE, MAX_PRICE
     );
     product->salePrice = getValidateDoubleInRange(
-        INDENT + "New sale price($1.00 - $10000.00): ", 
+        INDENT + string(YELLOW) + "New sale price($1.00 - $10000.00): " + RESET, 
         MIN_PRICE, MAX_PRICE
     );
-    cout << RESET;
 
     // Update stock status based on new values
     if(product->inStock == 0) { 
