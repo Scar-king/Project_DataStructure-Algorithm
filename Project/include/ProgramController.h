@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "../include/ConsoleUI.h"
 #include "../include/InventorySystem.h"
+#include <cctype> // for isalpha
 
 #include "Constants.h"
 
@@ -287,7 +288,7 @@ void backupAndRestoreMenu(ProductList *ls, string username) {
                 backupProductData(ls);
                 addHistory(s, username, "BACKUP", "BACKUP PRODUCT DATA", getCambodiaTime());
                 storeAdminHistory(s -> top);
-                system("pause");
+                loading();
                 system("cls");
                 Authentication();
                 return;
@@ -295,7 +296,7 @@ void backupAndRestoreMenu(ProductList *ls, string username) {
                 restoreProductData(ls);
                 addHistory(s, username, "RESTORE", "RESTORE PRODUCT DATA", getCambodiaTime());
                 storeAdminHistory(s -> top);
-                system("pause");
+                loading();
                 system("cls");
                 Authentication();
                 return;
@@ -335,13 +336,7 @@ void handleAdminMenu(string username) {
 
                 productArt();
 
-                do {
-                    cout << YELLOW << INDENT << "Please enter a product Model: " << RESET;
-                    getline(cin, model);
-                    if(model.empty()) {
-                        cout << RED << INDENT << "MODEL cannot be empty. Please enter a valid MODEL.\n" << RESET;
-                    }
-                } while(model.empty());
+                modelLenValidation(model);
 
                 inStock = getValidateIntInRange(
                     INDENT + (string(YELLOW) + "Enter in Stock (0-10000): " + RESET), MIN_STOCK, MAX_STOCK
@@ -351,13 +346,7 @@ void handleAdminMenu(string username) {
                     INDENT + (string(YELLOW) + "Enter Sold (0-10000): " + RESET), MIN_STOCK, MAX_STOCK
                 );
 
-                do {
-                    cout << YELLOW << INDENT << "Enter Description: " << RESET;
-                    getline(cin, description);
-                    if (description.empty()) {
-                        cout << RED << INDENT << "Description cannot be empty. Please enter a valid description.\n" << RESET;
-                    }
-                } while (description.empty());
+                descLenValidation(description);
 
                 purchaseCost = getValidateDoubleInRange(
                     INDENT + (string(YELLOW) + "Enter Purchase Cost ( price > 0 ): " + RESET), MIN_PRICE, MAX_PRICE
@@ -590,12 +579,13 @@ void Authentication() {
                         cout << "\n" << RED << INDENT << "Login failed. Username or password incorrect.\n" << RESET;
                         if (attempts > 0)
                             cout << RED << INDENT << "Try again (" << attempts << " attempts left).\n" << RESET;
-                        else
+                        else {
                             cout << RED << INDENT << "No attempts left. Returning to menu.\n" << RESET;
-                        system("pause");
-                        system("cls");
+                        }
                     }
                 }
+                system("pause");
+                system("cls");
                 break;
             }
 
@@ -614,33 +604,21 @@ void Authentication() {
                     }
                 }
             
-                while (true) {
-                    cout << YELLOW << INDENT << "Input GENDER (M/F): " << RESET;
-                    cin >> gender;
-                    gender = toupper(gender);
-
-                    // Validate gender first
-                    if (gender != 'M' && gender != 'F') {
-                        cout << "\n" << RED << INDENT
-                            << "Invalid GENDER. Please enter M or F.\n"
-                            << RESET;
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear any leftover input
-                        continue;  // Ask for gender again, skip age
-                    }
-                    break;
-                }
+                char gender = validateChar();
 
                 int age = getValidateIntInRange(INDENT + (string(YELLOW) + "Input AGE: ") + RESET, MIN_OPTION, MAX_AGE);
 
                 int pw_attempts = 3;
                 bool passwordMatched = false;
             
-                pw1 = getMaskedPassword(YELLOW + INDENT + "Create your PASSWORD: " + RESET);
+                do {
+                    pw1 = getMaskedPassword(YELLOW + INDENT + "Create your PASSWORD: " + RESET);
 
-                if (pw1.length() < 4) {  // Password strength check
-                    cout << RED << INDENT << "PASSWORD too short (min 4 characters), Please try again...\n" << RESET;
-                    return;
-                }
+                    if (pw1.length() < 4) {
+                        cout << RED << INDENT << "PASSWORD too short (min 4 characters), Please try again...\n" << RESET;
+                    }
+
+                } while (pw1.length() < 4);
 
                 while (pw_attempts-- > 0) {
                     pw2 = getMaskedPassword(YELLOW + INDENT + "Confirm PASSWORD: " + RESET);
