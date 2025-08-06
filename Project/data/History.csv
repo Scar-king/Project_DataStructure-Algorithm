@@ -106,3 +106,34 @@ admin|ADD|Product name: HII|04/08/2025 19:30:00
 admin|BACKUP|BACKUP PRODUCT DATA|04/08/2025 19:38:41
 admin|ADD|Product name: TESTing|04/08/2025 19:57:47
 admin|ADD|Product name: IOS|04/08/2025 19:57:57
+admin|DELETE|Product id: 1023, name: |06/08/2025 12:16:44
+admin|DELETE|Product id: 1024, name: |06/08/2025 12:16:55
+admin|DELETE|Product id: 1025, name: `|06/08/2025 12:17:01
+admin|DELETE|Product id: 1026, name: iPhone|06/08/2025 12:17:14
+admin|DELETE|Product id: 1027, name: TESTing|06/08/2025 12:17:20
+admin|DELETE|Product id: 1028, name: HII|06/08/2025 12:17:25
+admin|DELETE|Product id: 1029, name: TESTing|06/08/2025 12:17:29
+admin|DELETE|Product id: 1030, name: IOS|06/08/2025 12:17:35
+admin|ADD|Product name: test|06/08/2025 13:30:21
+admin|DELETE|Product id: 1023, name: test|06/08/2025 13:30:36
+admin|DELETE|Product id: 1021, name: iPhone 18|06/08/2025 13:30:43
+admin|ADD|Product name: iPhone New|06/08/2025 13:31:05
+admin|DELETE|Product id: 1022, name: Samsang|06/08/2025 13:31:28
+admin|DELETE|Product id: 1024, name: iPhone New|06/08/2025 13:31:35
+admin|ADD|Product name: iPhone 25|06/08/2025 13:31:46
+admin|DELETE|Product id: 1025, name: iPhone 25|06/08/2025 13:32:17
+admin|UPDATE|PRODUCT ID: 1020, NAME: Asus ROG Phone 8|06/08/2025 13:33:09
+admin|ADD|Product name: iPhone Low|06/08/2025 13:34:11
+admin|DELETE|Product id: 1026, name: iPhone Low|06/08/2025 13:34:40
+admin|BACKUP|BACKUP PRODUCT DATA|06/08/2025 13:35:33
+admin|RESTORE|RESTORE PRODUCT DATA|06/08/2025 14:48:07
+admin|UPDATE|PRODUCT ID: 1012, NAME: aaaaaaaaaaaaaaaaaaaa|06/08/2025 15:10:46
+admin|UPDATE|PRODUCT ID: 1012, NAME: aaaaaaaaaaaaaaaaaaaa|06/08/2025 15:16:06
+admin|UPDATE|PRODUCT ID: 1012, NAME: 1|06/08/2025 15:17:41
+admin|UPDATE|PRODUCT ID: 1012, NAME: 1|06/08/2025 15:18:18
+admin|UPDATE|PRODUCT ID: 1012, NAME: 1|06/08/2025 15:21:02
+admin|RESTORE|RESTORE PRODUCT DATA|06/08/2025 15:21:14
+admin|RESTORE|RESTORE PRODUCT DATA|06/08/2025 15:37:29
+admin|ADD|Product name: 1|06/08/2025 15:38:07
+admin|RESTORE|RESTORE PRODUCT DATA|06/08/2025 15:38:14
+admin|BACKUP|BACKUP PRODUCT DATA|06/08/2025 15:38:50
