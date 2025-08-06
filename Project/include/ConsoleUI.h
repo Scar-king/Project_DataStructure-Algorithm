@@ -20,6 +20,7 @@ using namespace std::chrono;
 #define CYAN           "\033[1;36m"
 #define GRAY           "\033[0;37m"
 #define ORANGE         "\033[38;2;255;165;0m"
+#define MAGENTA        "\033[35m"
 #define ADD_COLOR      "\033[32m"    // Green
 #define UPDATE_COLOR   "\033[36m"    // Cyan
 #define DELETE_COLOR   "\033[31m"    // Red
@@ -29,6 +30,11 @@ using namespace std::chrono;
 #define NORMAL_YELLOW "\033[0;33m"   // Regular Yellow
 #define DIM_YELLOW    "\033[2;33m"   // Dim Yellow
 #define VERY_DIM      "\033[2;30m"   // Almost black (dim gray)
+
+// FONT
+#define BOLD          "\033[1m"
+#define ITALIC        "\033[3m"
+#define PLAIN         "\033[22m"
 
 void welcome() {
     string art = R"(
@@ -197,7 +203,7 @@ void drawMenu(
     cout << YELLOW;
     printDashedLine();
 
-    cout << INDENT << "\tMENU\n";
+    cout << INDENT << title << "\n";
 
     printDashedLine();
 
@@ -213,73 +219,96 @@ void drawMenu(
 }
 
 void loginPageMenu(){
-    drawMenu("Product Inventory Management", {
-        "1. Login as Administrator",
-        "2. Login as User",
-        "3. Register New User",
-        "4. About Developer (Group 1)",
-        "0. Exit Application"
+    drawMenu(string(ORANGE) + string(BOLD) + "Main Menu - Inventory System" + string(RESET) + string(YELLOW), {
+        string(ITALIC) + string(WHITE) + 
+        "1. " + string(YELLOW)+ "Login as Administrator"       + string(WHITE),
+        "2. " + string(BLUE)  + "Login as User"                + string(WHITE),
+        "3. " + string(GREEN) + "Register New User"            + string(WHITE),
+        "4. " + string(CYAN)  + "About Developer (Group 1)"    + string(WHITE),
+        "0. " + string(RED)   + "Exit Program" + string(RESET) + string(YELLOW)
     }, "Please select an option: ");
 }
 
 // When Click Login as Administrator
 void menuForAdmin() {
-    drawMenu("Menu", {
-        "1. Add New Product",
-        "2. View & Manage Product Tables",
-        "3. Update Product",
-        "4. Delete Product",
-        "5. Search Product",
-        "6. View Low-Stock Products",
-        "7. Backup & Restore Product Data",
-        "8. Profile",
-        "0. Log out"
-    });
+    drawMenu(string(ORANGE) + string(BOLD) + "Admin Panel - Product Management" + string(RESET) + string(YELLOW), {
+        string(ITALIC) + string(WHITE) +
+        "1. " + string(GREEN)   + "Add New Product"               + string(WHITE),
+        "2. " + string(CYAN)    + "View & Manage Product Tables"  + string(WHITE),
+        "3. " + string(BLUE)    + "Update Product"                + string(WHITE),
+        "4. " + string(RED)     + "Delete Product"                + string(WHITE),
+        "5. " + string(WHITE)   + "Search Product"                + string(WHITE),
+        "6. " + string(YELLOW)  + "View Low-Stock Products"       + string(WHITE),
+        "7. " + string(MAGENTA) + "Backup & Restore Product Data" + string(WHITE),
+        "8. " + string(CYAN)    + "Profile"                       + string(WHITE),
+        "0. " + string(RED)     + "Log out"       + string(RESET) + string(YELLOW)
+    }, "Please select an option: ");
 }
 
 // When Admin click on View All Product
 void viewTableMenu(){
-    drawMenu("Menu", {
-        "1. View Product List",
-        "2. Sort Product List by Sale Price (Descending)",
-        "3. Sort Product List by Sale Price (Ascending)",
-        "4. View Overall Report (Profit & Sales)",
-        "5. View Top 5 Best-Selling Products",
-        "6. View Admin History",
-        "7. View Last Month History",
-        "8. View Last Day History",
-        "0. Back"
+    drawMenu(string(ORANGE) + string(BOLD) + "Product Insights & Reports Menu" + string(RESET) + string(YELLOW), {
+        string(ITALIC) + string(WHITE) +
+        "1. " + string(WHITE)   + "View Product List"                            + string(WHITE),
+        "2. " + string(BLUE)    + "Sort Product List by Sale Price (Descending)" + string(WHITE),
+        "3. " + string(BLUE)    + "Sort Product List by Sale Price (Ascending)"  + string(WHITE),
+        "4. " + string(GREEN)   + "View Overall Report (Profit & Sales)"         + string(WHITE),
+        "5. " + string(CYAN)    + "View Top 5 Best-Selling Products"             + string(WHITE),
+        "6. " + string(MAGENTA) + "View Admin History"                           + string(WHITE),
+        "7. " + string(MAGENTA) + "View Last Month History"                      + string(WHITE),
+        "8. " + string(MAGENTA) + "View Last Day History"                        + string(WHITE),
+        "0. " + string(RED)     + "Back"                         + string(RESET) + string(YELLOW)
     }, "Choice: ");
 }
 
 // Click login as User
 void userMenu(){
-    drawMenu("Menu", {
-        "1. View Product List",
-        "2. Search Product",
-        "3. Profile",
-        "0. Back"
-    }, "Choice: ");
+    drawMenu(string(ORANGE) + string(BOLD) + "User Panel - Product Access" + string(RESET) + string(YELLOW), {
+        string(ITALIC) + string(WHITE) +
+        "1. " + string(CYAN) + "View Product List"   + string(WHITE),
+        "2. " + string(WHITE) + "Search Product"     + string(WHITE),
+        "3. " + string(GREEN) + "Profile"            + string(WHITE),
+        "0. " + string(RED) + "Back" + string(RESET) + string(YELLOW)
+    }, "Please select an option: ");
 }
 
 // Backup Menu
 void menuForBackupAndRestore() {
-    drawMenu("Backup & Restore Menu", {
-        "1. Backup Current Product Data",
-        "2. Restore Product Data from Backup",
-        "0. Back"
+    drawMenu(string(ORANGE) + string(BOLD) + "Backup & Restore Menu" + string(RESET) + string(YELLOW), {
+        string(ITALIC) + string(WHITE) +
+        "1. " + string(GREEN) + "Backup Current Product Data"     + string(WHITE),
+        "2. " + string(CYAN) + "Restore Product Data from Backup" + string(WHITE),
+        "0. " + string(RED) + "Back"              + string(RESET) + string(YELLOW)
     }, "Choice: ");
 }
 
 void showDeveloperInfo() {
     devInfo();
-    
-    cout << YELLOW;
-    cout << "=== Welcome to Developer Information ===\n\n";
-    cout << "Team Member            ID                    Task/Job Description\n";
-    cout << "===========================================================================================================" << endl;
-    cout << "Do Davin               p20230018             Data Structures, Code Integration, Program Design, clean code\n";
-    cout << "Sam Sok Leap           p20230031             Data Structures, File & History Manager\n";
-    cout << "Kheang Ann             p20230027             Data Structures, Authentication, Encryption, and Data Handling\n";
-    cout << RESET;
+
+    // Header
+    cout << BOLD << "Welcome to Developer Information\n" << RESET;
+    cout << YELLOW << "========================================================================================================\n" << RESET;
+
+    // Table Headings
+    cout << BOLD << WHITE;
+    printf("%-22s %-18s %-50s\n", "Team Member", "ID", "Task / Job Description");
+    cout << RESET << YELLOW;
+    cout << "--------------------------------------------------------------------------------------------------------\n" << RESET;
+
+    // Developer 1
+    cout << CYAN;
+    printf("%-22s %-18s ", "Do Davin", "p20230018");
+    cout << ITALIC << "Data Structures, Code Integration, Program Design, clean code" << RESET << "\n";
+
+    // Developer 2
+    cout << GREEN;
+    printf("%-22s %-18s ", "Sam Sok Leap", "p20230031");
+    cout << ITALIC << "Data Structures, File & History Manager" << RESET << "\n";
+
+    // Developer 3
+    cout << MAGENTA;
+    printf("%-22s %-18s ", "Kheang Ann", "p20230027");
+    cout << ITALIC << "Data Structures, Authentication, Encryption, and Data Handling" << RESET << "\n";
+
+    cout << YELLOW << "========================================================================================================\n" << RESET;
 }
