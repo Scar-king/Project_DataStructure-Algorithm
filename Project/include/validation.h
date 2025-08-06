@@ -29,6 +29,26 @@ bool isValidDouble(const string& s) {
     return true;
 }
 
+bool isChar(const string& s) {
+    return s.length() == 1 && (s[0] == 'M' || s[0] == 'F');
+}
+
+char validateChar() {
+    string gender;
+    do {
+        cout << YELLOW << INDENT << "Input GENDER (M/F): " << RESET;
+        getline(cin, gender);
+
+        if (!isChar(gender)) {
+            cout << RED << INDENT << "Invalid input. Please enter 'M' or 'F'.\n" << RESET;
+        }
+
+    } while (!isChar(gender));
+
+    return toupper(gender[0]);  
+}
+
+
 int validateMenu(int min, int max, const function<void()> &menuCallback) {
     string input;
     int option;
@@ -117,4 +137,74 @@ double getValidateDoubleInRange(const string &text, double min, double max) {
             cout << RED << INDENT << "Please enter a valid positive number (no letters or symbols).\n" << RESET;
         }
     }
+}
+
+void modelLenValidation (string &model) {
+    do {
+        cout << YELLOW << INDENT << "Please enter a product Model: " << RESET;
+        getline(cin, model);
+
+        if(model.empty()) {
+            cout << RED << INDENT << "MODEL cannot be empty. Please enter a valid MODEL.\n" << RESET;
+        }
+
+        else if (model.length() > 20) {
+            cout << RED << INDENT << "MODEL too long. Max allowed is 20 characters (" 
+                    << model.length() << " entered).\n" << RESET;
+            model.clear();
+        }
+    } while(model.empty() || model.length() > 20);
+}
+
+void modelUpdateLenValidation (string &model, int &targetId) {
+    cout << YELLOW << INDENT << "Updating Product ID: " << RESET << targetId;
+    cout << "\n" << YELLOW << INDENT << "Current model: " << RESET << model;
+    do {
+        cout << "\n" << YELLOW << INDENT << "New model: " << RESET;
+        getline(cin, model);
+
+        if(model.empty()) {
+            cout << RED << INDENT << "MODEL cannot be empty. Please enter a valid MODEL.\n" << RESET;
+        }
+
+        else if (model.length() > 20) {
+            cout << RED << INDENT << "MODEL too long. Max allowed is 20 characters (" 
+                    << model.length() << " entered).\n" << RESET;
+            model.clear();
+        }
+    } while(model.empty() || model.length() > 20);
+}
+
+void descLenValidation (string &description) {
+    do {
+        cout << YELLOW << INDENT << "Enter Description: " << RESET;
+        getline(cin, description);
+
+        if(description.empty()) {
+            cout << RED << INDENT << "Description cannot be empty. Please enter a valid Description.\n" << RESET;
+        }
+
+        else if (description.length() > 35) {
+            cout << RED << INDENT << "Description too long. Max allowed is 35 characters (" 
+                    << description.length() << " entered).\n" << RESET;
+            description.clear();
+        }
+    } while(description.empty() || description.length() > 35);
+}
+
+void descUpdateLenValidation (string &newDescription) {
+    do {
+        cout << YELLOW << INDENT << "Enter new Description: " << RESET;
+        getline(cin, newDescription);
+
+        if(newDescription.empty()) {
+            cout << RED << INDENT << "Description cannot be empty. Please enter a valid description.\n" << RESET;
+        }
+
+        else if (newDescription.length() > 35) {
+            cout << RED << INDENT << "Description too long. Max allowed is 35 characters (" 
+                    << newDescription.length() << " entered).\n" << RESET;
+            newDescription.clear();
+        }
+    } while(newDescription.empty() || newDescription.length() > 35);
 }
