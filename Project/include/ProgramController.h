@@ -13,14 +13,13 @@
 #include "Constants.h"
 
 using namespace std;
-
 // GLOBAL VAR
 ProductList *ls = createList();
 ReportList *rl = createReportList();
 AdminHistoryStack *s = createEmptyStack();
 void Authentication();
 
-const char Encryption_key = 'K';
+const char Encryption_key = 'K'; // key = ASCII 75
 const string AdminPassword = "admin";
 
 struct User {
@@ -60,7 +59,7 @@ void AddUser(Userlist* ls, string username, char gender, int age, string passwor
 string encryptPassword(const string& password) {
     string encrypted = password;
     for (char& ch : encrypted) {
-        ch ^= Encryption_key;
+        ch ^= Encryption_key; // XOR each character with key
     }
     return encrypted;
 }
@@ -134,13 +133,13 @@ string getMaskedPassword(const string& prompt) {
     cout << prompt;
     while (true) {
         ch = _getch();
-        if (ch == 13) {
+        if (ch == 13) { // ASCII 13 = Enter Key
             cout << endl;
             break;
-        } else if (ch == 8) {
+        } else if (ch == 8) { // ASCII 8 = Backspace
             if (!password.empty()) {
-                password.pop_back();
-                cout << "\b \b";
+                password.pop_back(); // Remove the last char from password
+                cout << "\b \b"; // moves cursor back, erases *, and moves cursor again
             }
         } else {
             password += ch;
@@ -505,7 +504,6 @@ void handleUserMenu(string username, char gender, int age) {
             
             case 0:
                 back = true;
-                system("cls");
                 break;
 
             default:
@@ -552,7 +550,7 @@ void Authentication() {
                 cout << YELLOW << INDENT << "Input USERNAME: " << RESET;
                 getline(cin, username);
 
-                if (username.empty() || any_of(username.begin(), username.end(), ::isdigit)) {
+                if (username.empty() || any_of(username.begin(), username.end(), ::isdigit)) { // :: calling the golbal version from <cctype>
                     cout << "\n" << RED << INDENT << "Invalid username. It should not be empty or contain numbers.\n" << RESET;
                     break;
                 }

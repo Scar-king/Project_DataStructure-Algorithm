@@ -607,11 +607,12 @@ void graphVisualization(ReportList *reportList) {
         return;
     }
 
-    // Ensure console supports ASCII block characters
+    // Ensure console supports ASCII block characters (Code page 437)
     SetConsoleCP(437);
     SetConsoleOutputCP(437);
 
-    char block = 178;     // Solid block (ASCII)
+    // char block = 178;     // Solid block (ASCII)
+    char block = 219;     // Solid block (ASCII)
     double scale = 500.0; // 1 block = $500
     const int separatorLength = 100; // Number of '=' line
 
