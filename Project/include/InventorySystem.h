@@ -184,7 +184,6 @@ void deleteProductByID(ProductList* ls, ProductElement* temp) {
                     //tail
                     temp -> prev -> next = nullptr;
                     ls->tail = temp->prev; 
-                    cout << ls -> tail -> id << endl;
                 }
                 //pos
                 else{
@@ -726,7 +725,7 @@ void addHistory(AdminHistoryStack *historyStack,
 }
 
 // Clear all admin history records from the stack and free memory
-void clearAdminHistory(AdminHistoryStack *stack) {
+void clearAdminHistory(AdminHistoryStack *stack) { // optional 
     // Iterate through the stack and delete each history record
     while (stack->top != nullptr) {
         AdminHistory *current = stack->top; // Store the current top element

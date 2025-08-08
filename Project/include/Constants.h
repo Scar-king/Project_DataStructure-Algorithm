@@ -1,4 +1,4 @@
-#pragma once
+#pragma once // Include this file only once per compilation — no matter how many times it's included in different files.
 #include <string>
 using namespace std;
 
